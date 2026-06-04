@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Функциональный анализ → ML/DS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { background: #f8fafc; }
+  body { font-family: 'DM Sans', system-ui, sans-serif; color: #1e293b; background: #f8fafc; min-height: 100vh; padding: 2rem 1.5rem; }
+
+  .wrap { max-width: 1020px; margin: 0 auto; }
+
+  .eyebrow { font-size: 11px; font-weight: 600; letter-spacing: .12em; color: #94a3b8; text-transform: uppercase; margin-bottom: 6px; }
+  h1 { font-size: 26px; font-weight: 600; letter-spacing: -.02em; line-height: 1.25; margin-bottom: 1.75rem; }
+  h1 span { color: #94a3b8; font-weight: 400; }
+
+  /* Filters */
+  .filters { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 1.25rem; align-items: center; }
+  .pill {
+    padding: 5px 14px; border-radius: 999px; font-size: 13px; font-weight: 500;
+    cursor: pointer; border: 1px solid #e2e8f0; background: white; color: #64748b;
+    font-family: inherit; transition: all .15s;
+  }
+  .pill:hover { border-color: #94a3b8; }
+  .pill.active { border-color: #1e293b; background: #1e293b; color: white; }
+  .count { font-size: 13px; color: #94a3b8; margin-left: 4px; }
+
+  /* Toolbar */
+  .toolbar { display: flex; gap: 8px; margin-bottom: 10px; align-items: center; }
+  .sort-btn {
+    background: none; border: none; cursor: pointer; padding: 4px 8px;
+    font-size: 12px; font-weight: 600; color: #94a3b8; font-family: inherit;
+    letter-spacing: .06em; text-transform: uppercase; display: flex; gap: 3px; align-items: center;
+    border-radius: 6px; transition: background .1s;
+  }
+  .sort-btn:hover { background: #f1f5f9; color: #475569; }
+  .sort-btn.active { color: #1e293b; }
+
+  /* Table card */
+  .card { background: white; border-radius: 12px; border: 1px solid #e2e8f0; overflow: hidden; }
+
+  /* Header row */
+  .thead {
+    display: grid; grid-template-columns: 2fr 90px 130px 1fr;
+    border-bottom: 1px solid #e2e8f0; padding: 10px 16px; background: #f8fafc;
+    gap: 0;
+  }
+  .th { font-size: 12px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: .06em; display: flex; align-items: center; gap: 3px; }
+  .th.sortable { cursor: pointer; }
+  .th.sortable:hover { color: #475569; }
+  .th.sort-active { color: #1e293b; }
+
+  /* Body rows */
+  .row-wrap { border-bottom: 1px solid #f1f5f9; }
+  .row-wrap:last-child { border-bottom: none; }
+
+  .row {
+    display: grid; grid-template-columns: 2fr 90px 130px 1fr;
+    padding: 12px 16px; cursor: pointer; gap: 0;
+    transition: background .12s;
+  }
+  .row:hover { background: #f8fafc; }
+  .row.open { background: #fafafa; }
+
+  .book-title { font-weight: 500; font-size: 13px; line-height: 1.35; }
+  .book-author { font-size: 12px; color: #94a3b8; margin-top: 2px; }
+
+  .dots { display: flex; gap: 3px; align-items: center; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: #e2e8f0; transition: background .2s; }
+  .dot.filled { background: #1e293b; }
+
+  .badge {
+    display: inline-block; padding: 2px 9px; border-radius: 999px;
+    font-size: 11px; font-weight: 600; letter-spacing: .03em;
+  }
+  .badge-veryhigh { color: #059669; background: #d1fae5; }
+  .badge-high     { color: #2563eb; background: #dbeafe; }
+  .badge-medium   { color: #d97706; background: #fef3c7; }
+  .badge-low      { color: #6b7280; background: #f3f4f6; }
+
+  .apply { font-size: 12px; color: #64748b; line-height: 1.45; padding-right: 8px; }
+
+  /* Expanded panel */
+  .expand {
+    padding: 0 16px; max-height: 0; overflow: hidden;
+    border-top: 0px solid #f1f5f9;
+    transition: max-height .25s ease, padding .25s ease, border-top-width .25s;
+  }
+  .expand.open {
+    max-height: 220px; padding: 12px 16px 18px;
+    border-top: 1px solid #f1f5f9; background: #f8fafc;
+  }
+  .expand-inner { display: flex; gap: 2rem; flex-wrap: wrap; }
+  .expand-col { flex: 1; min-width: 200px; }
+  .expand-label { font-size: 11px; font-weight: 600; color: #94a3b8; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 6px; }
+  .tags { display: flex; flex-wrap: wrap; gap: 4px; }
+  .tag {
+    display: inline-block; padding: 1px 8px; font-size: 11px;
+    background: #f1f5f9; color: #475569; border-radius: 4px;
+    border: .5px solid #e2e8f0; line-height: 1.8;
+  }
+  .rec-text { font-size: 13px; color: #475569; line-height: 1.6; }
+
+  /* Legend */
+  .legend { margin-top: 1.25rem; display: flex; gap: 1.5rem; flex-wrap: wrap; }
+  .legend span { font-size: 12px; color: #94a3b8; }
+  .legend b { font-weight: 600; }
+
+  @media (max-width: 640px) {
+    .thead { grid-template-columns: 1fr 80px 110px; }
+    .thead .th:nth-child(4) { display: none; }
+    .row { grid-template-columns: 1fr 80px 110px; }
+    .row > *:nth-child(4) { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="eyebrow">Goodreads · Functional Analysis (MMath)</div>
+  <h1>Функциональный анализ<br><span>в контексте ML / Data Science</span></h1>
+
+  <div class="filters" id="filters">
+    <button class="pill active" data-filter="all">Все</button>
+    <button class="pill" data-filter="veryhigh">Очень высокая</button>
+    <button class="pill" data-filter="high">Высокая</button>
+    <button class="pill" data-filter="medium">Средняя</button>
+    <button class="pill" data-filter="low">Низкая</button>
+    <span class="count" id="count"></span>
+  </div>
+
+  <div class="toolbar">
+    <span style="font-size:12px;color:#94a3b8;font-weight:600;letter-spacing:.06em;text-transform:uppercase">Сортировка:</span>
+    <button class="sort-btn active" data-sort="rel">ML-польза</button>
+    <button class="sort-btn" data-sort="diff">Уровень</button>
+    <button class="sort-btn" data-sort="title">Название</button>
+  </div>
+
+  <div class="card">
+    <div class="thead">
+      <div class="th">Книга</div>
+      <div class="th">Уровень</div>
+      <div class="th">ML-польза</div>
+      <div class="th">Применение</div>
+    </div>
+    <div id="tbody"></div>
+  </div>
+
+  <div class="legend">
+    <span><b>Уровень:</b> ● = 1 (базовый) &rarr; ●●●●● = 5 (продвинутый)</span>
+    <span>Нажмите на строку, чтобы раскрыть детали</span>
+  </div>
+</div>
+
+<script>
+const books = [
+  { title: "Fundamentals of Convex Analysis", author: "Hiriart-Urruty & Lemaréchal", diff: 3, rel: "veryhigh", relLabel: "Очень высокая", topics: ["выпуклые множества","субдифференциалы","сопряжённые функции","двойственность"], apply: "SVMs, регуляризация (L1/L2), проксимальные методы, зеркальный спуск", rec: "Ключевая книга перед изучением convex optimization. Напрямую питает теорию SVM, Lasso, Ridge." },
+  { title: "Introductory Functional Analysis with Applications", author: "Erwin Kreyszig", diff: 3, rel: "high", relLabel: "Высокая", topics: ["пространства Гильберта","пространства Банаха","операторы","спектральная теория"], apply: "Kernel methods, PCA, операторные методы в ML", rec: "Лучший вводный курс для ML-инженера. Читабельно, с приложениями. Отправная точка." },
+  { title: "Elements of the Theory of Functions and FA", author: "Колмогоров & Фомин", diff: 3, rel: "high", relLabel: "Высокая", topics: ["метрические пространства","теория меры","пространства Lp","пространства Гильберта"], apply: "Теория меры → теория вероятностей → ML; функциональные пространства", rec: "Классика советской школы. Строгие основания для всего, что ниже. Читать до Brézis." },
+  { title: "A Hilbert Space Problem Book", author: "Paul R. Halmos", diff: 3, rel: "high", relLabel: "Высокая", topics: ["пространства Гильберта","проекции","операторы","ортонормированные базисы"], apply: "RKHS, kernel trick, PCA, квантовые вычисления", rec: "Незаменимо для понимания ядерных методов и RKHS. Через задачи — глубокое понимание." },
+  { title: "Theoretical Numerical Analysis", author: "Atkinson & Han", diff: 3, rel: "high", relLabel: "Высокая", topics: ["интегральные уравнения","аппроксимация","операторные методы","МКЭ"], apply: "Scientific ML, численные PDE, физически-информированные нейросети (PINN)", rec: "Если интересует scientific ML или численные методы — обязательно." },
+  { title: "Functional Analysis, Sobolev Spaces and PDEs", author: "Haïm Brézis", diff: 4, rel: "high", relLabel: "Высокая", topics: ["пространства Соболева","PDE","компактные операторы","спектр"], apply: "Теория регуляризации, deep learning theory, image processing", rec: "Стандарт для понимания регуляризации и вариационных методов. Нужна база." },
+  { title: "Probability in Banach Spaces", author: "Ledoux & Talagrand", diff: 5, rel: "high", relLabel: "Высокая", topics: ["неравенства концентрации","изопериметрия","гауссовы процессы","случайные операторы"], apply: "Statistical learning theory, обобщающая способность, PAC-обучение", rec: "Математика за generalization bounds и VC-theory. Очень сложная, но уникальная." },
+  { title: "FA, Calculus of Variations & Optimal Control", author: "Francis Clarke", diff: 4, rel: "high", relLabel: "Высокая", topics: ["вариационное исчисление","оптимальное управление","субградиенты","нелинейный анализ"], apply: "Reinforcement learning, optimal control, trajectory optimization", rec: "Для тех, кто работает с RL или управлением. Прямая связь с policy optimization." },
+  { title: "PDE Methods for Image Inpainting", author: "Carola-Bibiane Schönlieb", diff: 4, rel: "high", relLabel: "Высокая", topics: ["PDE","вариационные методы","total variation","диффузия"], apply: "Computer vision, image restoration, generative models", rec: "Нишевая, но прямое применение в CV. Понять TV-regularization и диффузионные модели." },
+  { title: "Functional Analysis (Princeton Lectures 4)", author: "Elias M. Stein", diff: 4, rel: "medium", relLabel: "Средняя", topics: ["операторы","гармонический анализ","распределения","осциллирующие интегралы"], apply: "Обработка сигналов, вейвлеты, архитектуры attention", rec: "Хороша после Kreyszig для понимания гармонического анализа под NLP/audio." },
+  { title: "Functional Analysis", author: "Walter Rudin", diff: 4, rel: "medium", relLabel: "Средняя", topics: ["топол. векторные пространства","дистрибуции","преобразование Фурье","операторные алгебры"], apply: "Строгие основания для теории вероятностей и случайных процессов", rec: "Стандарт для аспирантов. Строго, но мало прикладного контекста для ML." },
+  { title: "A Course in Functional Analysis", author: "John B. Conway", diff: 4, rel: "medium", relLabel: "Средняя", topics: ["операторная теория","C*-алгебры","спектральная теория","нормальные операторы"], apply: "Квантовые вычисления, обработка сигналов, operator learning", rec: "Классика для аспирантов. Глубокая операторная теория. Не первая книга для ML." },
+  { title: "Methods of Modern Mathematical Physics", author: "Reed & Simon", diff: 5, rel: "medium", relLabel: "Средняя", topics: ["спектральная теория","самосопряжённые операторы","распределения"], apply: "Квантовые вычисления, physics-informed ML, PDE", rec: "Монументальна, 4 тома. Для тех, кто хочет понять квантовый ML или физику глубоко." },
+  { title: "Elementary Functional Analysis", author: "Barbara D. MacCluer", diff: 2, rel: "medium", relLabel: "Средняя", topics: ["нормированные пространства","линейные операторы","пространства Гильберта","спектр"], apply: "Вход в тему перед Kreyszig", rec: "Лёгкий вход. Подходит как введение перед Kreyszig, если пугает объём." },
+  { title: "Linear Functional Analysis", author: "Rynne & Youngson", diff: 2, rel: "medium", relLabel: "Средняя", topics: ["нормированные пространства","операторы","теоремы Хана-Банаха","собственные значения"], apply: "Базовые концепции нормированных пространств", rec: "Undergraduate-уровень, хорошо написан. Первая книга для студента." },
+  { title: "Linear Analysis", author: "Béla Bollobás", diff: 2, rel: "medium", relLabel: "Средняя", topics: ["нормированные пространства","двойственность","компактные операторы","теорема Хана-Банаха"], apply: "Компактное введение в теорию", rec: "Краткий и элегантный. Для тех, кто хочет быстро пройти теорию." },
+  { title: "Postmodern Analysis", author: "Jürgen Jost", diff: 3, rel: "medium", relLabel: "Средняя", topics: ["пространства Соболева","вариационное исчисление","регулярность PDE","слабые производные"], apply: "Image processing, variational autoencoders, energy-based models", rec: "Неожиданно практичная. Хорошо раскрывает Sobolev/вариационный подход для CV." },
+  { title: "A Course in Modern Mathematical Physics", author: "Peter Szekeres", diff: 3, rel: "medium", relLabel: "Средняя", topics: ["группы","пространства Гильберта","дифференциальная геометрия","тензоры"], apply: "Геометрическое глубокое обучение, manifold learning", rec: "Хорошая связка FA + геометрия. Полезна для geometric deep learning и GNN." },
+  { title: "An Introduction to Functional Analysis", author: "James C. Robinson", diff: 2, rel: "medium", relLabel: "Средняя", topics: ["нормированные пространства","операторы","Гильбертовы пространства","компактность"], apply: "Вводный курс с примерами из PDE", rec: "Современная и чистая подача. Хороший альтернативный вход для MacCluer." },
+  { title: "Real and Functional Analysis", author: "Serge Lang", diff: 4, rel: "low", relLabel: "Низкая", topics: ["вещественный анализ","банаховы пространства","многообразия","интегрирование"], apply: "Чистые математические основания", rec: "Строгий, абстрактный. Мало ML-пользы напрямую. Для любителей Lang." },
+  { title: "An Introduction to Banach Space Theory", author: "Robert E. Megginson", diff: 4, rel: "low", relLabel: "Низкая", topics: ["геометрия банаховых пространств","двойственность","базисы","рефлексивность"], apply: "Продвинутая теория обобщения в Banach", rec: "Глубокая геометрия Банаха. Нужна только при работе с продвинутой learning theory." },
+  { title: "Topics in Banach Space Theory", author: "Albiac & Kalton", diff: 5, rel: "low", relLabel: "Низкая", topics: ["базисы Шаудера","тип и коплекс","суперсвойства","ультрапроизведения"], apply: "Теоретический фундамент, почти нет прямых ML-применений", rec: "Чисто математическая. Для исследователей теории обобщения." },
+  { title: "Moonshine beyond the Monster", author: "Terry Gannon", diff: 5, rel: "low", relLabel: "Низкая", topics: ["модульные формы","теория Ли","алгебры вершинных операторов"], apply: "Нет прямых ML-применений", rec: "Прекрасная математика, но к ML/DS не имеет отношения. Для удовольствия." },
+  { title: "Quadratic Forms and Hecke Operators", author: "Andrianov", diff: 5, rel: "low", relLabel: "Низкая", topics: ["алгебра чисел","квадратичные формы","операторы Гекке"], apply: "Нет прямых ML-применений", rec: "К ML не относится. Попала в список случайно." },
+];
+
+const relOrder = { veryhigh: 0, high: 1, medium: 2, low: 3 };
+let currentFilter = "all";
+let currentSort = "rel";
+let sortDir = 1;
+let openIdx = null;
+
+function dots(n) {
+  return Array.from({ length: 5 }, (_, i) =>
+    `<div class="dot${i < n ? ' filled' : ''}"></div>`
+  ).join('');
+}
+
+function render() {
+  let data = currentFilter === "all" ? [...books] : books.filter(b => b.rel === currentFilter);
+  data.sort((a, b) => {
+    if (currentSort === "rel") return sortDir * (relOrder[a.rel] - relOrder[b.rel]);
+    if (currentSort === "diff") return sortDir * (a.diff - b.diff);
+    if (currentSort === "title") return sortDir * a.title.localeCompare(b.title, 'ru');
+    return 0;
+  });
+
+  document.getElementById('count').textContent = `${data.length} из ${books.length}`;
+
+  const tbody = document.getElementById('tbody');
+  tbody.innerHTML = data.map((b, i) => `
+    <div class="row-wrap" data-i="${i}">
+      <div class="row" onclick="toggle(${i})">
+        <div>
+          <div class="book-title">${b.title}</div>
+          <div class="book-author">${b.author}</div>
+        </div>
+        <div style="display:flex;align-items:center">
+          <div class="dots">${dots(b.diff)}</div>
+        </div>
+        <div style="display:flex;align-items:center">
+          <span class="badge badge-${b.rel}">${b.relLabel}</span>
+        </div>
+        <div class="apply">${b.apply}</div>
+      </div>
+      <div class="expand" id="exp-${i}">
+        <div class="expand-inner">
+          <div class="expand-col">
+            <div class="expand-label">Темы</div>
+            <div class="tags">${b.topics.map(t => `<span class="tag">${t}</span>`).join('')}</div>
+          </div>
+          <div class="expand-col" style="flex:2;min-width:240px">
+            <div class="expand-label">Рекомендация</div>
+            <div class="rec-text">${b.rec}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+
+  openIdx = null;
+}
+
+function toggle(i) {
+  const el = document.getElementById(`exp-${i}`);
+  const row = el.previousElementSibling;
+  if (openIdx === i) {
+    el.classList.remove('open'); row.classList.remove('open');
+    openIdx = null;
+  } else {
+    if (openIdx !== null) {
+      const prev = document.getElementById(`exp-${openIdx}`);
+      if (prev) { prev.classList.remove('open'); prev.previousElementSibling.classList.remove('open'); }
+    }
+    el.classList.add('open'); row.classList.add('open');
+    openIdx = i;
+  }
+}
+
+// Filter pills
+document.getElementById('filters').addEventListener('click', e => {
+  const pill = e.target.closest('.pill');
+  if (!pill) return;
+  document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+  pill.classList.add('active');
+  currentFilter = pill.dataset.filter;
+  render();
+});
+
+// Sort buttons
+document.querySelectorAll('.sort-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    if (currentSort === btn.dataset.sort) { sortDir *= -1; }
+    else { currentSort = btn.dataset.sort; sortDir = 1; }
+    document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    render();
+  });
+});
+
+render();
+</script>
+</body>
+</html>

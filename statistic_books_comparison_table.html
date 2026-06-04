@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DS Books Comparison Table</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:#fff;color:#111;padding:1.5rem}
+.wrap{padding:1rem 0}
+.controls{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:1.25rem;align-items:center}
+.filter-btn{font-size:12px;padding:5px 12px;border:0.5px solid #bbb;border-radius:8px;background:transparent;color:#555;cursor:pointer;transition:all .15s}
+.filter-btn.active{background:#e6f1fb;color:#185fa5;border-color:transparent}
+.filter-btn:hover:not(.active){background:#f5f5f5}
+.search-box{font-size:13px;padding:5px 10px;border:0.5px solid #bbb;border-radius:8px;background:#fff;color:#111;width:180px}
+.search-box:focus{outline:none;border-color:#888}
+.label{font-size:12px;color:#666;white-space:nowrap}
+table{width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed}
+th{font-size:11px;font-weight:500;color:#666;text-align:left;padding:6px 8px;border-bottom:1px solid #e0e0e0;white-space:nowrap;cursor:pointer;user-select:none}
+th:hover{color:#111}
+th.sorted{color:#185fa5}
+td{padding:8px 8px;border-bottom:0.5px solid #ebebeb;vertical-align:top;color:#111}
+tr:hover td{background:#f9f9f9}
+.title-cell{font-weight:500;font-size:13px;line-height:1.3}
+.author{font-size:11px;color:#666;margin-top:2px}
+.badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:10px;font-weight:500;white-space:nowrap}
+.lvl-beg{background:#EAF3DE;color:#3B6D11}
+.lvl-int{background:#FAEEDA;color:#854F0B}
+.lvl-adv{background:#FCEBEB;color:#A32D2D}
+.stars{color:#BA7517;font-size:12px;font-weight:500}
+.dot-row{display:flex;gap:3px;margin-top:3px}
+.dot{width:8px;height:8px;border-radius:50%;background:#ddd}
+.dot.filled{background:#378ADD}
+.tag{display:inline-block;font-size:10px;padding:2px 6px;border-radius:6px;background:#f0f0f0;color:#555;margin:1px;white-space:nowrap}
+.sort-icon{margin-left:4px;opacity:.4;font-size:10px}
+th.sorted .sort-icon{opacity:1}
+.count{font-size:12px;color:#666;margin-bottom:8px}
+h1{font-size:18px;font-weight:500;margin-bottom:0.5rem;color:#111}
+.subtitle{font-size:13px;color:#666;margin-bottom:1.25rem}
+@media(max-width:600px){
+  td:nth-child(4),th:nth-child(4),td:nth-child(6),th:nth-child(6){display:none}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+<h1>Книги по статистике и ML для Data Science</h1>
+<p class="subtitle">Goodreads list: Statistics and Statistical Learning (MMath) — сравнительный анализ топ книг</p>
+
+<div class="controls">
+  <span class="label">Фильтр:</span>
+  <button class="filter-btn active" data-filter="all">Все</button>
+  <button class="filter-btn" data-filter="beginner">Начальный</button>
+  <button class="filter-btn" data-filter="intermediate">Средний</button>
+  <button class="filter-btn" data-filter="advanced">Продвинутый</button>
+  <button class="filter-btn" data-filter="bayesian">Байесовский</button>
+  <button class="filter-btn" data-filter="ml">ML/DL</button>
+  <input type="text" class="search-box" id="search" placeholder="Поиск по названию...">
+</div>
+
+<div class="count" id="count"></div>
+
+<div style="overflow-x:auto">
+<table id="booksTable">
+<thead>
+<tr>
+  <th style="width:22%" data-col="title">Книга <span class="sort-icon">↕</span></th>
+  <th style="width:8%" data-col="level">Уровень <span class="sort-icon">↕</span></th>
+  <th style="width:9%" data-col="rating">Рейтинг GR <span class="sort-icon">↕</span></th>
+  <th style="width:10%">Фокус</th>
+  <th style="width:9%" data-col="math">Математика <span class="sort-icon">↕</span></th>
+  <th style="width:8%">Язык/Инстр.</th>
+  <th style="width:10%">DS-ценность</th>
+  <th style="width:24%">Для кого / когда читать</th>
+</tr>
+</thead>
+<tbody id="tbody"></tbody>
+</table>
+</div>
+</div>
+
+<script>
+const books = [
+  {title:"Introduction to Statistical Learning",author:"James, Witten, Hastie, Tibshirani",level:"beginner",levelLabel:"Начальный",rating:4.51,focus:["Статистика","ML","Практика"],math:2,tools:["R","Python"],ds:5,tags:["bayesian"],note:"Лучший старт для DS. Объясняет ключевые ML-методы без тяжёлой математики. Обязателен перед ESL."},
+  {title:"The Elements of Statistical Learning",author:"Hastie, Tibshirani, Friedman",level:"advanced",levelLabel:"Продвинутый",rating:4.43,focus:["Статистика","ML","Теория"],math:5,tools:["R"],ds:5,tags:["ml"],note:"Классика. Глубокая теория ML. Читать после ISL. Настольная книга исследователей."},
+  {title:"Statistical Inference",author:"Casella & Berger",level:"advanced",levelLabel:"Продвинутый",rating:4.17,focus:["Статистика","Теория вероятностей","Теория"],math:5,tools:["—"],ds:3,tags:[],note:"Фундаментальный учебник по матстатистике. Для глубокого понимания основ, не для практики DS."},
+  {title:"Statistical Rethinking",author:"Richard McElreath",level:"intermediate",levelLabel:"Средний",rating:4.70,focus:["Байесовская","Практика","Причинность"],math:3,tools:["R","Stan"],ds:5,tags:["bayesian"],note:"Лучшая книга по байесовскому мышлению. Интуитивный подход, DAG-диаграммы. Высочайший рейтинг."},
+  {title:"Machine Learning: A Probabilistic Perspective",author:"Kevin P. Murphy",level:"advanced",levelLabel:"Продвинутый",rating:4.34,focus:["ML","Байесовская","Теория"],math:5,tools:["MATLAB","Python"],ds:5,tags:["bayesian","ml"],note:"Энциклопедия ML с вероятностной точки зрения. Незаменима для понимания глубоких моделей."},
+  {title:"Bayesian Data Analysis",author:"Gelman, Carlin, Stern et al.",level:"advanced",levelLabel:"Продвинутый",rating:4.24,focus:["Байесовская","Статистика","Практика"],math:4,tools:["R","Stan"],ds:4,tags:["bayesian"],note:"Стандарт байесовской статистики. Незаменима для прикладного Байеса в DS и науке."},
+  {title:"Principles of Statistics",author:"M.G. Bulmer",level:"beginner",levelLabel:"Начальный",rating:3.99,focus:["Статистика","Основы"],math:2,tools:["—"],ds:2,tags:[],note:"Классический компактный учебник по основам. Хорошая точка входа, но устарел для DS-практики."},
+  {title:"All of Statistics",author:"Larry Wasserman",level:"intermediate",levelLabel:"Средний",rating:4.22,focus:["Статистика","ML","Теория"],math:4,tools:["R"],ds:4,tags:[],note:"Широкий охват от вероятности до ML. Краткий, но плотный. Хорош как bridge-курс."},
+  {title:"Pattern Recognition and Machine Learning",author:"Christopher Bishop",level:"advanced",levelLabel:"Продвинутый",rating:4.38,focus:["ML","Байесовская","Deep Learning"],math:5,tools:["—"],ds:5,tags:["bayesian","ml"],note:"Глубокий байесовский взгляд на ML. Стандарт для понимания нейросетей с первых принципов."},
+  {title:"Probability Theory: The Logic of Science",author:"E.T. Jaynes",level:"advanced",levelLabel:"Продвинутый",rating:4.44,focus:["Теория вероятностей","Байесовская","Философия"],math:5,tools:["—"],ds:3,tags:["bayesian"],note:"Фундаментальный труд о природе вероятности. Обязателен для понимания байесовского подхода."},
+  {title:"Introduction to Probability",author:"Blitzstein & Hwang",level:"beginner",levelLabel:"Начальный",rating:4.55,focus:["Теория вероятностей","Практика"],math:2,tools:["R","Python"],ds:4,tags:[],note:"Лучший современный учебник по теорвер. Интуитивен, полон примеров. Строгая основа для ML."},
+  {title:"Probabilistic Graphical Models",author:"Koller & Friedman",level:"advanced",levelLabel:"Продвинутый",rating:4.15,focus:["Байесовская","ML","Теория"],math:5,tools:["—"],ds:3,tags:["bayesian","ml"],note:"Монументальный труд по графическим моделям. Для специалистов по генеративным моделям."},
+  {title:"Doing Bayesian Data Analysis",author:"John K. Kruschke",level:"beginner",levelLabel:"Начальный",rating:4.29,focus:["Байесовская","Практика"],math:2,tools:["R","JAGS","Stan"],ds:4,tags:["bayesian"],note:"«Собачья книга» — самый доступный вход в байесовский анализ. Много практики."},
+  {title:"Computer Age Statistical Inference",author:"Efron & Hastie",level:"advanced",levelLabel:"Продвинутый",rating:4.29,focus:["Статистика","ML","Теория"],math:4,tools:["R"],ds:4,tags:["ml"],note:"Мост между классической статистикой и современным ML. Бутстрап, LASSO, нейросети."},
+];
+
+const tbody=document.getElementById('tbody');
+const countEl=document.getElementById('count');
+let activeFilter='all',searchVal='',sortCol=null,sortDir=1;
+
+function dots(n,max=5){let s='<div class="dot-row">';for(let i=0;i<max;i++)s+=`<div class="dot${i<n?' filled':''}"></div>`;return s+'</div>';}
+function dsStars(n){const labels=['','Низкая','Ниже ср.','Средняя','Высокая','Ключевая'];const colors=['','#888','#BA7517','#BA7517','#3B6D11','#3B6D11'];return `<span style="font-weight:500;color:${colors[n]};font-size:12px">${labels[n]}</span>`;}
+
+function render(){
+  let data=[...books];
+  if(activeFilter==='bayesian')data=data.filter(b=>b.tags.includes('bayesian'));
+  else if(activeFilter==='ml')data=data.filter(b=>b.tags.includes('ml'));
+  else if(activeFilter!=='all')data=data.filter(b=>b.level===activeFilter);
+  if(searchVal)data=data.filter(b=>b.title.toLowerCase().includes(searchVal)||b.author.toLowerCase().includes(searchVal));
+  if(sortCol){data.sort((a,b)=>{let av=a[sortCol],bv=b[sortCol];if(typeof av==='string')return av.localeCompare(bv)*sortDir;return(av-bv)*sortDir;});}
+  countEl.textContent=`Показано книг: ${data.length} из ${books.length}`;
+  tbody.innerHTML=data.map(b=>`<tr>
+    <td><div class="title-cell">${b.title}</div><div class="author">${b.author}</div></td>
+    <td><span class="badge lvl-${b.level==='beginner'?'beg':b.level==='intermediate'?'int':'adv'}">${b.levelLabel}</span></td>
+    <td><span class="stars">★ ${b.rating.toFixed(2)}</span></td>
+    <td>${b.focus.map(f=>`<span class="tag">${f}</span>`).join('')}</td>
+    <td>${dots(b.math)}</td>
+    <td>${b.tools.map(t=>`<span class="tag">${t}</span>`).join('')}</td>
+    <td>${dsStars(b.ds)}</td>
+    <td style="font-size:12px;color:#555;line-height:1.45">${b.note}</td>
+  </tr>`).join('');
+}
+
+document.querySelectorAll('.filter-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    activeFilter=btn.dataset.filter;
+    render();
+  });
+});
+document.getElementById('search').addEventListener('input',e=>{searchVal=e.target.value.toLowerCase();render();});
+document.querySelectorAll('th[data-col]').forEach(th=>{
+  th.addEventListener('click',()=>{
+    const col=th.dataset.col;
+    if(sortCol===col)sortDir*=-1;else{sortCol=col;sortDir=1;}
+    document.querySelectorAll('th').forEach(t=>t.classList.remove('sorted'));
+    th.classList.add('sorted');
+    th.querySelector('.sort-icon').textContent=sortDir===1?'↑':'↓';
+    render();
+  });
+});
+render();
+</script>
+</body>
+</html>

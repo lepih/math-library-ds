@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Real Analysis (MMath) — Сравнение для Data Science</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f9f9f7; color: #1a1a18; padding: 1.5rem; }
+  h2.title { font-size: 20px; font-weight: 500; margin-bottom: 4px; }
+  .subtitle { font-size: 13px; color: #5f5e5a; margin-bottom: 1.2rem; }
+  .controls { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 1rem; align-items: center; }
+  .controls label { font-size: 12px; color: #5f5e5a; }
+  .controls select, .controls input[type=search] { font-size: 13px; padding: 4px 8px; border-radius: 8px; border: 0.5px solid #bbb; background: #fff; color: #1a1a18; height: 32px; }
+  .controls input[type=search] { width: 200px; }
+  .stat-row { display: flex; gap: 10px; margin-bottom: 1rem; flex-wrap: wrap; }
+  .stat { background: #f1efe8; border-radius: 8px; padding: 8px 14px; }
+  .stat .num { font-size: 20px; font-weight: 500; }
+  .stat .lbl { font-size: 11px; color: #5f5e5a; }
+  .tbl-wrap { overflow-x: auto; border-radius: 12px; border: 0.5px solid #ddd; background: #fff; }
+  table { width: 100%; border-collapse: collapse; font-size: 12.5px; table-layout: fixed; }
+  th { background: #f1efe8; color: #5f5e5a; font-weight: 500; font-size: 11px; text-transform: uppercase; letter-spacing: 0.04em; padding: 8px 10px; text-align: left; border-bottom: 0.5px solid #ddd; cursor: pointer; user-select: none; white-space: nowrap; }
+  th:hover { color: #1a1a18; }
+  td { padding: 8px 10px; border-bottom: 0.5px solid #eee; color: #1a1a18; vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #f9f9f7; }
+  .book { font-weight: 500; font-size: 12.5px; line-height: 1.4; }
+  .author { font-size: 11px; color: #5f5e5a; margin-top: 2px; }
+  .badge { display: inline-block; font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 20px; white-space: nowrap; }
+  .b-beg { background: #EAF3DE; color: #3B6D11; }
+  .b-int { background: #FAEEDA; color: #854F0B; }
+  .b-adv { background: #FAECE7; color: #993C1D; }
+  .b-ext { background: #FCEBEB; color: #A32D2D; }
+  .gr { font-size: 11px; color: #5f5e5a; }
+  .ds-bar { display: flex; gap: 2px; align-items: center; }
+  .ds-dot { width: 9px; height: 9px; border-radius: 50%; }
+  .ds-score { font-size: 11px; color: #5f5e5a; margin-left: 4px; }
+  .tags { display: flex; flex-wrap: wrap; gap: 3px; }
+  .tag { font-size: 10px; background: #f1efe8; border: 0.5px solid #ddd; color: #5f5e5a; padding: 1px 6px; border-radius: 10px; white-space: nowrap; }
+  .rec { font-size: 11px; color: #444; line-height: 1.4; }
+  .sort-arrow { margin-left: 3px; opacity: 0.5; font-size: 10px; }
+  .sort-active .sort-arrow { opacity: 1; }
+  .empty { text-align: center; padding: 2rem; color: #5f5e5a; font-size: 13px; }
+  .col-book { width: 170px; }
+  .col-lvl { width: 90px; }
+  .col-gr { width: 65px; }
+  .col-ds { width: 80px; }
+  .col-topics { width: 200px; }
+  .col-rec { width: 155px; }
+  .legend { display: flex; gap: 12px; flex-wrap: wrap; font-size: 11px; color: #5f5e5a; margin-bottom: 0.8rem; align-items: center; }
+  .leg-item { display: flex; align-items: center; gap: 4px; }
+  .leg-dot { width: 9px; height: 9px; border-radius: 50%; }
+  #shown-count { font-size: 11px; color: #5f5e5a; margin-top: 8px; }
+</style>
+</head>
+<body>
+
+<h2 class="title">Сравнение книг: Real Analysis (MMath) для Data Science</h2>
+<p class="subtitle">52 книги · оценка актуальности, сложности и тем для специалиста DS</p>
+
+<div class="stat-row">
+  <div class="stat"><div class="num" id="cnt">52</div><div class="lbl">книг всего</div></div>
+  <div class="stat"><div class="num" id="cnt-hi">—</div><div class="lbl">высокая актуальность DS</div></div>
+  <div class="stat"><div class="num" id="cnt-beg">—</div><div class="lbl">доступны новичку</div></div>
+</div>
+
+<div class="controls">
+  <div><label>Уровень&nbsp;</label><select id="fil-lvl"><option value="">Все уровни</option><option>Начальный</option><option>Средний</option><option>Продвинутый</option><option>Экспертный</option></select></div>
+  <div><label>Актуальность DS&nbsp;</label><select id="fil-ds"><option value="">Любая</option><option value="5">★★★★★ Критически важно</option><option value="4">★★★★ Высокая</option><option value="3">★★★ Средняя</option><option value="2">★★ Низкая</option><option value="1">★ Минимальная</option></select></div>
+  <div><label>Тема&nbsp;</label><select id="fil-topic"><option value="">Все темы</option><option>Вектор. исч.</option><option>Мат. анализ</option><option>Исчисление</option><option>Теория меры</option><option>Комплексный анализ</option><option>Тензоры</option></select></div>
+  <input type="search" id="search" placeholder="Поиск по названию или автору…">
+</div>
+
+<div class="legend">
+  <span style="font-weight:500;font-size:11px;">Актуальность DS:</span>
+  <span class="leg-item"><span class="leg-dot" style="background:#1D9E75"></span>Критическая (5)</span>
+  <span class="leg-item"><span class="leg-dot" style="background:#639922"></span>Высокая (4)</span>
+  <span class="leg-item"><span class="leg-dot" style="background:#EF9F27"></span>Средняя (3)</span>
+  <span class="leg-item"><span class="leg-dot" style="background:#D85A30"></span>Низкая (2)</span>
+  <span class="leg-item"><span class="leg-dot" style="background:#888780"></span>Минимальная (1)</span>
+</div>
+
+<div class="tbl-wrap">
+  <table id="tbl">
+    <thead>
+      <tr>
+        <th class="col-book" data-col="book">Книга / Автор <span class="sort-arrow">↕</span></th>
+        <th class="col-lvl" data-col="lvl">Уровень <span class="sort-arrow">↕</span></th>
+        <th class="col-gr" data-col="gr">GR рейт. <span class="sort-arrow">↕</span></th>
+        <th class="col-ds" data-col="ds">DS score <span class="sort-arrow">↕</span></th>
+        <th class="col-topics">Ключевые темы для DS</th>
+        <th class="col-rec">Рекомендация для DS-специалиста</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+</div>
+<p id="shown-count"></p>
+
+<script>
+const books = [
+  {book:"Understanding Analysis", author:"Stephen Abbott", lvl:"Начальный", gr:4.49, ds:5, mainTopic:"Мат. анализ", topics:["Последовательности","Пределы","Непрерывность","Сходимость"], rec:"Лучший старт: мягко вводит строгость, необходимую для понимания градиентного спуска и сходимости алгоритмов"},
+  {book:"How to Think About Analysis", author:"Lara Alcock", lvl:"Начальный", gr:4.35, ds:4, mainTopic:"Мат. анализ", topics:["Доказательства","Пределы","Интегралы"], rec:"Идеально для самостоятельного изучения: учит читать и строить математические аргументы"},
+  {book:"Calculus (Strang)", author:"Gilbert Strang", lvl:"Начальный", gr:4.17, ds:5, mainTopic:"Исчисление", topics:["Дифференцирование","Интегрирование","Ряды","Прикладные задачи"], rec:"Практический подход MIT; охватывает всё для ML: производные, оптимизация, дифференциальные уравнения"},
+  {book:"Calculus: An Intuitive and Physical Approach", author:"Morris Kline", lvl:"Начальный", gr:4.32, ds:4, mainTopic:"Исчисление", topics:["Геометрический смысл","Физические приложения","Частные производные"], rec:"Строит интуицию — важно для понимания, а не механического применения правил"},
+  {book:"Thomas' Calculus", author:"Joel R. Hass et al.", lvl:"Начальный", gr:4.05, ds:3, mainTopic:"Исчисление", topics:["Стандартный курс","Многомерное исч.","Ряды"], rec:"Стандартный учебник вуза; хорошая база, но без строгости анализа"},
+  {book:"Calculus (Anton)", author:"Howard Anton", lvl:"Начальный", gr:4.20, ds:3, mainTopic:"Исчисление", topics:["Стандартный курс","Ряды Тейлора"], rec:"Классика вузовского курса; годится как справочник"},
+  {book:"A First Course in Calculus", author:"Serge Lang", lvl:"Начальный", gr:4.37, ds:3, mainTopic:"Исчисление", topics:["Дифференцирование","Интегрирование","Функции"], rec:"Лаконичный и строгий старт; предпочтительнее Anton/Thomas для тех, кто планирует углубляться"},
+  {book:"Elementary Analysis: The Theory of Calculus", author:"Kenneth A. Ross", lvl:"Начальный", gr:3.87, ds:4, mainTopic:"Мат. анализ", topics:["Теоремы о пределах","Непрерывность","Дифференцируемость"], rec:"Мост от вузового курса к строгому анализу; хорошо читается самостоятельно"},
+  {book:"Calculus, Vol. 1 (Apostol)", author:"Tom M. Apostol", lvl:"Средний", gr:4.28, ds:5, mainTopic:"Исчисление", topics:["Линейная алгебра","Одномерное исч.","Матрицы"], rec:"Уникально: вводит линейную алгебру вместе с исчислением — золото для DS; готовит к многомерной оптимизации"},
+  {book:"Calculus, Vol. 2 (Apostol)", author:"Tom M. Apostol", lvl:"Средний", gr:4.28, ds:5, mainTopic:"Исчисление", topics:["Многомерное исч.","Линейная алгебра","Диф. уравнения","Вероятность"], rec:"Вторая часть охватывает многомерную оптимизацию, якобианы, вероятность — ядро математики ML"},
+  {book:"Calculus (Spivak)", author:"Michael Spivak", lvl:"Средний", gr:4.52, ds:4, mainTopic:"Мат. анализ", topics:["Строгие доказательства","Пределы","Интегралы Римана"], rec:"Элегантная строгость; развивает математическую зрелость, но медленный темп — для углублённого изучения"},
+  {book:"Mathematical Analysis (Apostol)", author:"Tom M. Apostol", lvl:"Средний", gr:4.09, ds:4, mainTopic:"Мат. анализ", topics:["Топология R^n","Интегралы","Ряды функций"], rec:"Строгий анализ с топологическим взглядом; необходим для понимания пространств признаков"},
+  {book:"Div, Grad, Curl, and All That", author:"Harry M. Schey", lvl:"Средний", gr:4.24, ds:5, mainTopic:"Вектор. исч.", topics:["Градиент","Дивергенция","Ротор","Поля"], rec:"Лучшее введение в векторное исчисление: градиент — фундамент backpropagation и оптимизации"},
+  {book:"Vector Calculus (Marsden)", author:"Jerrold E. Marsden", lvl:"Средний", gr:4.11, ds:5, mainTopic:"Вектор. исч.", topics:["Градиент","Якобиан","Теорема Стокса","Потоки"], rec:"Полноценный курс: якобианы, гессианы, многомерные интегралы — всё нужно для ML"},
+  {book:"Vector Calculus (Matthews)", author:"Paul C. Matthews", lvl:"Средний", gr:4.30, ds:4, mainTopic:"Вектор. исч.", topics:["Векторные поля","Теоремы Гаусса/Стокса"], rec:"Компактный и ясный; хорош как дополнение к Marsden"},
+  {book:"Multivariable Mathematics", author:"Theodore Shifrin", lvl:"Средний", gr:4.18, ds:5, mainTopic:"Вектор. исч.", topics:["Линейная алгебра","Многомерное исч.","Многообразия"], rec:"Объединяет LA и многомерное исч. — идеальная подготовка к теории ML"},
+  {book:"Vector Calculus, LA & Differential Forms", author:"John H. Hubbard", lvl:"Продвинутый", gr:4.41, ds:5, mainTopic:"Вектор. исч.", topics:["Дифференц. формы","Якобианы","Многообразия","LA"], rec:"Унифицированный подход; строгая основа для понимания градиентных потоков и геом. глубокого обучения"},
+  {book:"Analysis I", author:"Terence Tao", lvl:"Продвинутый", gr:4.56, ds:4, mainTopic:"Мат. анализ", topics:["Аксиоматика","Последовательности","Ряды","Метрические пространства"], rec:"Строжайшие основания; формирует математическую культуру, нужную для чтения теоретических статей DS"},
+  {book:"Analysis II", author:"Terence Tao", lvl:"Продвинутый", gr:4.58, ds:4, mainTopic:"Мат. анализ", topics:["Функциональный анализ","Мера","Интегрирование","Ряды Фурье"], rec:"Мера и интегрирование — основа теории вероятностей; ряды Фурье важны для обработки сигналов и аудио-ML"},
+  {book:"Principles of Mathematical Analysis", author:"Walter Rudin", lvl:"Продвинутый", gr:4.27, ds:3, mainTopic:"Мат. анализ", topics:["Строгий анализ","Метрические пр-ва","Ряды функций"], rec:"«Baby Rudin» — обязательный ориентир; сложен как первый учебник, но важен для академической карьеры в DS"},
+  {book:"Introductory Real Analysis", author:"A.N. Kolmogorov & S.V. Fomin", lvl:"Продвинутый", gr:4.19, ds:4, mainTopic:"Мат. анализ", topics:["Функциональный анализ","Метрические пр-ва","Меры"], rec:"Советская школа: лаконично и полно охватывает функциональный анализ, основу ML на гильбертовых пространствах"},
+  {book:"Real Analysis (Royden)", author:"H.L. Royden", lvl:"Продвинутый", gr:3.99, ds:4, mainTopic:"Теория меры", topics:["Мера Лебега","Интеграл Лебега","L^p пространства"], rec:"Стандарт теории меры; L^p пространства — основа для PAC-learning и статистической теории обучения"},
+  {book:"Real Analysis: Measure Theory...", author:"Elias M. Stein", lvl:"Продвинутый", gr:4.25, ds:5, mainTopic:"Теория меры", topics:["Мера Лебега","Гильбертовы пр-ва","Преобразование Фурье","L^p"], rec:"Лучший для DS: Фурье-анализ, гильбертовы пространства, теория вероятностей — три кита математики ML"},
+  {book:"Real Analysis and Probability", author:"R.M. Dudley", lvl:"Экспертный", gr:3.68, ds:5, mainTopic:"Теория меры", topics:["Теория вероятностей","Мера","Стохастические процессы","ЦПТ"], rec:"Прямая связь: реальный анализ → вероятность; незаменим для понимания байесовских методов и стат. обучения"},
+  {book:"Real and Complex Analysis", author:"Walter Rudin", lvl:"Экспертный", gr:4.29, ds:3, mainTopic:"Комплексный анализ", topics:["Комплексный анализ","Мера","Гармонический анализ"], rec:"«Big Rudin»; актуален для продвинутых исследований (сигналы, спектральные методы), но не для старта"},
+  {book:"Introduction to Topology & Modern Analysis", author:"George F. Simmons", lvl:"Продвинутый", gr:4.32, ds:3, mainTopic:"Мат. анализ", topics:["Топология","Функциональный анализ","Банаховы пр-ва"], rec:"Топология и функциональный анализ; полезно для TDA и kernel-методов (SVM, GP)"},
+  {book:"The Cauchy-Schwarz Master Class", author:"J. Michael Steele", lvl:"Продвинутый", gr:4.65, ds:3, mainTopic:"Мат. анализ", topics:["Неравенства","Оценки","Анализ"], rec:"Неравенство Коши-Шварца — везде в ML; развивает навык оценок, важный для анализа алгоритмов"},
+  {book:"Mathematical Analysis I", author:"Vladimir A. Zorich", lvl:"Продвинутый", gr:4.56, ds:4, mainTopic:"Мат. анализ", topics:["Строгий анализ","Полнота","Компактность","Дифференцирование"], rec:"Исчерпывающий советский учебник; более читаем, чем Rudin, при той же глубине"},
+  {book:"A Course of Pure Mathematics", author:"G.H. Hardy", lvl:"Средний", gr:4.21, ds:2, mainTopic:"Мат. анализ", topics:["Классический анализ","История","Доказательства"], rec:"Историческое значение велико, но устарел для практики DS; больше культурная ценность"},
+  {book:"A Course of Modern Analysis", author:"Whittaker & Watson", lvl:"Экспертный", gr:4.57, ds:2, mainTopic:"Комплексный анализ", topics:["Специальные функции","Комплексный анализ"], rec:"Специальные функции (гамма, бесселя); нужны в байесовских методах, но для узких специалистов"},
+  {book:"Advanced Calculus (Widder)", author:"David Vernon Widder", lvl:"Средний", gr:4.13, ds:3, mainTopic:"Мат. анализ", topics:["Ряды","Частные производные","Кратные интегралы"], rec:"Добротный классический учебник; менее популярен, чем Apostol, но компактнее"},
+  {book:"Advanced Calculus: A Geometric View", author:"James J. Callahan", lvl:"Средний", gr:4.35, ds:4, mainTopic:"Вектор. исч.", topics:["Геом. интерпретация","Многомерные производные","Якобианы"], rec:"Визуальный подход к многомерному исчислению — отлично строит интуицию для понимания оптимизации"},
+  {book:"Introduction to Calculus and Analysis I", author:"Richard Courant", lvl:"Средний", gr:4.29, ds:4, mainTopic:"Исчисление", topics:["Строгость + приложения","Физика","Вариационное исч."], rec:"Редкий баланс строгости и интуиции; вариационное исчисление полезно для RL"},
+  {book:"Introduction to Calculus and Analysis II", author:"Richard Courant", lvl:"Средний", gr:4.38, ds:4, mainTopic:"Вектор. исч.", topics:["Многомерное исч.","ОДУ","Функции нескольких переменных"], rec:"Отличное дополнение к первому тому; ОДУ важны для понимания нейронных ODENet"},
+  {book:"Calculus of Several Variables", author:"Serge Lang", lvl:"Средний", gr:4.12, ds:4, mainTopic:"Вектор. исч.", topics:["Частные производные","Кратные интегралы","Поверхности"], rec:"Сжатый и строгий; хорош как второй курс после однопеременного Lang"},
+  {book:"Real Mathematical Analysis", author:"Charles Chapman Pugh", lvl:"Продвинутый", gr:4.09, ds:3, mainTopic:"Мат. анализ", topics:["Топология","Метрические пр-ва","Ряды функций"], rec:"Живой и нестандартный учебник; много картинок — помогает интуиции, важно для начинающих теоретиков"},
+  {book:"Schaum's Outline of Vector Analysis", author:"Murray R. Spiegel", lvl:"Начальный", gr:4.03, ds:4, mainTopic:"Вектор. исч.", topics:["Задачи","Градиент","Теоремы векторного исч."], rec:"Решебник: сотни задач по векторному исчислению; практика необходима для закрепления"},
+  {book:"Schaum's Outline of Advanced Calculus", author:"Murray R. Spiegel", lvl:"Начальный", gr:4.19, ds:3, mainTopic:"Мат. анализ", topics:["Задачи","Ряды","Интегралы"], rec:"Задачник для отработки; полезен в паре с основным учебником"},
+  {book:"Schaum's Outline of Tensor Calculus", author:"David C. Kay", lvl:"Средний", gr:3.96, ds:3, mainTopic:"Тензоры", topics:["Тензоры","Ковариантный анализ"], rec:"Тензоры важны для понимания TensorFlow / PyTorch на глубоком уровне; задачник удобен"},
+  {book:"A Radical Approach to Real Analysis", author:"David M. Bressoud", lvl:"Средний", gr:4.22, ds:3, mainTopic:"Мат. анализ", topics:["История","Ряды Фурье","Строгость"], rec:"Историко-педагогический подход; помогает понять, зачем нужна строгость — мотивирует изучение"},
+  {book:"Undergraduate Analysis", author:"Serge Lang", lvl:"Средний", gr:4.09, ds:3, mainTopic:"Мат. анализ", topics:["Банаховы пр-ва","Функции нескольких переменных","Интегралы"], rec:"Более продвинутый, чем названо; включает основы функционального анализа"},
+  {book:"Mathematical Analysis: A Straightforward Approach", author:"Ken Binmore", lvl:"Начальный", gr:3.91, ds:3, mainTopic:"Мат. анализ", topics:["Пределы","Непрерывность","Интегрирование"], rec:"Доступный учебник для первого знакомства; менее глубок, чем Abbott"},
+  {book:"Real and Functional Analysis", author:"Serge Lang", lvl:"Экспертный", gr:3.82, ds:3, mainTopic:"Мат. анализ", topics:["Функциональный анализ","Меры","Спектральная теория"], rec:"Для тех, кто изучает математические основы ML на исследовательском уровне"},
+  {book:"A Course in Mathematical Analysis (3 vol)", author:"D.J.H. Garling", lvl:"Продвинутый", gr:4.09, ds:3, mainTopic:"Мат. анализ", topics:["Комплексный анализ","Теория меры","Интегрирование"], rec:"Полный трёхтомный курс; хороший справочник, но длинный для DS-подготовки"},
+  {book:"Introduction to Real Analysis (Bartle)", author:"Robert G. Bartle", lvl:"Начальный", gr:4.00, ds:4, mainTopic:"Мат. анализ", topics:["Последовательности","Непрерывность","Интегралы Римана"], rec:"Классика для первого строгого курса; ясное изложение, много примеров — хорош для самостоятельного изучения"},
+  {book:"Introduction to Real Analysis (Schramm)", author:"Michael J. Schramm", lvl:"Начальный", gr:3.86, ds:3, mainTopic:"Мат. анализ", topics:["Метрические пр-ва","Топология","Сходимость"], rec:"Вводит метрические пространства раньше других начальных учебников — хорошая подготовка к ML-теории"},
+  {book:"Differential and Integral Calculus (Courant)", author:"Richard Courant", lvl:"Средний", gr:4.55, ds:3, mainTopic:"Исчисление", topics:["Классическое исчисление","Физика","Приложения"], rec:"Классика с прекрасным стилем изложения; старше, но глубже большинства современных учебников"},
+  {book:"Analysis (Lieb & Loss)", author:"Elliott H. Lieb & Michael Loss", lvl:"Экспертный", gr:3.76, ds:3, mainTopic:"Мат. анализ", topics:["Неравенства","Функциональный анализ","Пространства Соболева"], rec:"Пространства Соболева важны для глубинного понимания нейросетей; для продвинутых исследователей"},
+  {book:"Real Analysis and Probability (Dudley)", author:"R.M. Dudley", lvl:"Экспертный", gr:3.68, ds:5, mainTopic:"Теория меры", topics:["Вероятностные пространства","Сходимость","ЦПТ","Эмпирические процессы"], rec:"Мост анализа и вероятности: эмпирические процессы — основа теории обобщения в ML (VC-теория)"},
+  {book:"Mathematical Analysis II (Zorich)", author:"Vladimir A. Zorich", lvl:"Продвинутый", gr:4.56, ds:4, mainTopic:"Мат. анализ", topics:["Многомерный анализ","Дифференц. формы","Интегральные теоремы"], rec:"Второй том Зорича: многомерный анализ и дифференциальные формы — строгая основа для понимания оптимизации"},
+];
+
+const lvlOrder = {Начальный:1, Средний:2, Продвинутый:3, Экспертный:4};
+const dsColors = {1:"#888780", 2:"#D85A30", 3:"#EF9F27", 4:"#639922", 5:"#1D9E75"};
+
+let sortCol = "ds", sortDir = -1;
+let filtered = [...books];
+
+function dsBars(score) {
+  let html = '<div class="ds-bar">';
+  for (let i = 1; i <= 5; i++) html += `<div class="ds-dot" style="background:${i<=score ? dsColors[score] : '#ddd'}"></div>`;
+  html += `<span class="ds-score">${score}/5</span></div>`;
+  return html;
+}
+
+function lvlBadge(l) {
+  const cls = {Начальный:"b-beg", Средний:"b-int", Продвинутый:"b-adv", Экспертный:"b-ext"}[l];
+  return `<span class="badge ${cls}">${l}</span>`;
+}
+
+function render() {
+  const tbody = document.getElementById('tbody');
+  const lvl = document.getElementById('fil-lvl').value;
+  const ds = document.getElementById('fil-ds').value;
+  const topic = document.getElementById('fil-topic').value;
+  const q = document.getElementById('search').value.toLowerCase();
+
+  filtered = books.filter(b => {
+    if (lvl && b.lvl !== lvl) return false;
+    if (ds && b.ds !== +ds) return false;
+    if (topic && b.mainTopic !== topic) return false;
+    if (q && !b.book.toLowerCase().includes(q) && !b.author.toLowerCase().includes(q)) return false;
+    return true;
+  });
+
+  filtered.sort((a,b) => {
+    let av = a[sortCol], bv = b[sortCol];
+    if (sortCol === 'lvl') { av = lvlOrder[av]; bv = lvlOrder[bv]; }
+    if (sortCol === 'book') { av = av.toLowerCase(); bv = bv.toLowerCase(); }
+    return av < bv ? -sortDir : av > bv ? sortDir : 0;
+  });
+
+  const hi = books.filter(b=>b.ds>=4).length;
+  const beg = books.filter(b=>b.lvl==="Начальный").length;
+  document.getElementById('cnt').textContent = books.length;
+  document.getElementById('cnt-hi').textContent = hi;
+  document.getElementById('cnt-beg').textContent = beg;
+  document.getElementById('shown-count').textContent = `Показано ${filtered.length} из ${books.length} книг`;
+
+  if (!filtered.length) { tbody.innerHTML = '<tr><td colspan="6" class="empty">Нет книг, соответствующих фильтрам</td></tr>'; return; }
+
+  tbody.innerHTML = filtered.map(b => `
+    <tr>
+      <td class="col-book"><div class="book">${b.book}</div><div class="author">${b.author}</div></td>
+      <td class="col-lvl">${lvlBadge(b.lvl)}</td>
+      <td class="col-gr"><div style="font-size:13px;font-weight:500">${b.gr.toFixed(2)}</div><div class="gr">GR avg</div></td>
+      <td class="col-ds">${dsBars(b.ds)}</td>
+      <td><div class="tags">${b.topics.map(t=>`<span class="tag">${t}</span>`).join('')}</div></td>
+      <td><div class="rec">${b.rec}</div></td>
+    </tr>
+  `).join('');
+}
+
+document.querySelectorAll('th[data-col]').forEach(th => {
+  th.addEventListener('click', () => {
+    document.querySelectorAll('th').forEach(t=>t.classList.remove('sort-active'));
+    th.classList.add('sort-active');
+    const col = th.dataset.col;
+    if (sortCol === col) sortDir *= -1; else { sortCol = col; sortDir = col==='book'||col==='lvl' ? 1 : -1; }
+    th.querySelector('.sort-arrow').textContent = sortDir === 1 ? '↑' : '↓';
+    render();
+  });
+});
+['fil-lvl','fil-ds','fil-topic','search'].forEach(id => document.getElementById(id).addEventListener('input', render));
+
+render();
+</script>
+</body>
+</html>

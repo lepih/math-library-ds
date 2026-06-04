@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Numerical Methods — ML/DS Reading Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500&family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #F6F4EF;
+    --surface: #FFFFFF;
+    --text: #18181B;
+    --text2: #52525B;
+    --text3: #A1A1AA;
+    --border: #E4E0D8;
+    --border2: #D0CBbf;
+    --accent: #2B4C8C;
+    --accent-bg: #EEF2FF;
+
+    --linalg: #4338CA; --linalg-bg: #ECEEF9;
+    --optim:  #047857; --optim-bg: #D1FAE5;
+    --numana: #B45309; --numana-bg: #FEF3C7;
+    --stats:  #0E7490; --stats-bg: #CFFAFE;
+    --geo:    #BE185D; --geo-bg: #FCE7F3;
+    --spec:   #6D28D9; --spec-bg: #EDE9FE;
+
+    --r5: #14532D; --r5-bg: #DCFCE7; --r5-b: #86EFAC;
+    --r4: #1E3A8A; --r4-bg: #DBEAFE; --r4-b: #93C5FD;
+    --r3: #78350F; --r3-bg: #FEF3C7; --r3-b: #FCD34D;
+    --r2: #3F3F46; --r2-bg: #F4F4F5; --r2-b: #D4D4D8;
+    --r1: #71717A; --r1-bg: #FAFAFA; --r1-b: #E4E4E7;
+  }
+
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 14px;
+    line-height: 1.5;
+    min-height: 100vh;
+  }
+
+  header {
+    background: var(--text);
+    color: #fff;
+    padding: 2.5rem 2rem 2rem;
+    position: relative;
+    overflow: hidden;
+  }
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: 0; right: 0;
+    width: 320px; height: 100%;
+    background: linear-gradient(135deg, transparent 40%, rgba(255,255,255,0.03) 100%);
+    pointer-events: none;
+  }
+  .header-inner { max-width: 1300px; margin: 0 auto; }
+  .header-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: rgba(255,255,255,0.45);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    margin-bottom: 0.75rem;
+  }
+  h1 {
+    font-family: 'Fraunces', serif;
+    font-weight: 300;
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    color: #fff;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+    margin-bottom: 0.5rem;
+  }
+  h1 em {
+    font-style: italic;
+    color: rgba(255,255,255,0.6);
+  }
+  .header-sub {
+    font-size: 13px;
+    color: rgba(255,255,255,0.5);
+    font-weight: 300;
+    max-width: 560px;
+    margin-bottom: 1.75rem;
+    line-height: 1.6;
+  }
+  .stats-row {
+    display: flex;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+  }
+  .stat-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  .stat-num {
+    font-size: 22px;
+    font-weight: 600;
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+  }
+  .stat-label {
+    font-size: 11px;
+    color: rgba(255,255,255,0.4);
+    font-family: 'JetBrains Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .stat-divider {
+    width: 1px;
+    background: rgba(255,255,255,0.12);
+    align-self: stretch;
+    margin: 2px 0;
+  }
+
+  .controls-bar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 1px 8px rgba(0,0,0,0.05);
+  }
+  .controls-inner {
+    max-width: 1300px;
+    margin: 0 auto;
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .ctrl-group {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .ctrl-label {
+    font-size: 11px;
+    color: var(--text3);
+    font-family: 'JetBrains Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    white-space: nowrap;
+  }
+  select, input[type="text"] {
+    font-family: 'Outfit', sans-serif;
+    font-size: 13px;
+    padding: 5px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg);
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.15s;
+    cursor: pointer;
+  }
+  select:focus, input[type="text"]:focus {
+    border-color: var(--accent);
+  }
+  input[type="text"] { width: 200px; cursor: text; }
+
+  .ctrl-sep { width: 1px; height: 24px; background: var(--border); }
+
+  .result-count {
+    margin-left: auto;
+    font-size: 12px;
+    color: var(--text3);
+    font-family: 'JetBrains Mono', monospace;
+    white-space: nowrap;
+  }
+  .result-count span {
+    color: var(--text);
+    font-weight: 500;
+  }
+
+  .btn-clear {
+    font-family: 'Outfit', sans-serif;
+    font-size: 12px;
+    padding: 4px 10px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: transparent;
+    color: var(--text2);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .btn-clear:hover { background: var(--border); }
+
+  main {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 1.5rem 2rem 4rem;
+  }
+
+  .table-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 960px;
+  }
+
+  thead tr {
+    background: #FAFAF9;
+    border-bottom: 1.5px solid var(--border);
+  }
+  th {
+    padding: 10px 14px;
+    text-align: left;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text3);
+    font-family: 'JetBrains Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+    transition: color 0.15s;
+  }
+  th:hover { color: var(--text); }
+  th.sorted { color: var(--text); }
+  th .arrow { margin-left: 4px; opacity: 0.4; font-size: 10px; }
+  th.sorted .arrow { opacity: 1; }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.1s;
+  }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: #FAFAF9; }
+  tbody tr.hidden { display: none; }
+
+  td { padding: 12px 14px; vertical-align: top; }
+
+  .book-rank {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text3);
+    padding-top: 2px;
+  }
+  .book-title {
+    font-weight: 500;
+    font-size: 13.5px;
+    color: var(--text);
+    line-height: 1.4;
+    margin-bottom: 3px;
+  }
+  .book-author {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    color: var(--text3);
+  }
+  .book-gr {
+    font-size: 10px;
+    color: var(--text3);
+    margin-top: 3px;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .badge {
+    display: inline-block;
+    font-size: 10.5px;
+    font-weight: 500;
+    padding: 3px 8px;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+  .badge-linalg { background: var(--linalg-bg); color: var(--linalg); }
+  .badge-optim  { background: var(--optim-bg);  color: var(--optim); }
+  .badge-numana { background: var(--numana-bg); color: var(--numana); }
+  .badge-stats  { background: var(--stats-bg);  color: var(--stats); }
+  .badge-geo    { background: var(--geo-bg);    color: var(--geo); }
+  .badge-spec   { background: var(--spec-bg);   color: var(--spec); }
+
+  .level-badge {
+    display: inline-block;
+    font-size: 10.5px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    background: var(--bg);
+    color: var(--text2);
+    border: 1px solid var(--border);
+    white-space: nowrap;
+  }
+
+  .rel-cell { white-space: nowrap; }
+  .stars {
+    font-size: 13px;
+    letter-spacing: 0.5px;
+    display: block;
+    margin-bottom: 4px;
+  }
+  .rel-label {
+    font-size: 10px;
+    font-family: 'JetBrains Mono', monospace;
+    padding: 2px 6px;
+    border-radius: 3px;
+    display: inline-block;
+  }
+  .r5 .stars { color: var(--r5); }
+  .r5 .rel-label { background: var(--r5-bg); color: var(--r5); }
+  .r4 .stars { color: var(--r4); }
+  .r4 .rel-label { background: var(--r4-bg); color: var(--r4); }
+  .r3 .stars { color: var(--r3); }
+  .r3 .rel-label { background: var(--r3-bg); color: var(--r3); }
+  .r2 .stars { color: var(--r2); }
+  .r2 .rel-label { background: var(--r2-bg); color: var(--r2); }
+  .r1 .stars { color: var(--r1); }
+  .r1 .rel-label { background: var(--r1-bg); color: var(--r1); }
+
+  .topics-cell {
+    font-size: 12.5px;
+    color: var(--text2);
+    line-height: 1.55;
+    max-width: 340px;
+  }
+  .prereqs-cell {
+    font-size: 12px;
+    color: var(--text2);
+    line-height: 1.5;
+    max-width: 200px;
+  }
+
+  .legend {
+    display: flex;
+    gap: 1rem 2rem;
+    flex-wrap: wrap;
+    padding: 1.25rem 0 0.25rem;
+    font-size: 12px;
+    color: var(--text2);
+  }
+  .legend-item { display: flex; align-items: center; gap: 6px; }
+  .legend-dot {
+    width: 10px; height: 10px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
+
+  .no-results {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text3);
+    font-size: 13px;
+    display: none;
+  }
+  .no-results.visible { display: block; }
+
+  @media (max-width: 700px) {
+    header, .controls-bar, main { padding-left: 1rem; padding-right: 1rem; }
+    input[type="text"] { width: 140px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="header-label">Goodreads List #162828 · Numerical Methods (MMath)</div>
+    <h1>Путеводитель по численным методам<br><em>для подготовки к ML / Data Science</em></h1>
+    <p class="header-sub">52 книги проанализированы и оценены по релевантности для ML/DS-карьеры. Рейтинг отражает, насколько книга ускоряет понимание математических основ машинного обучения.</p>
+    <div class="stats-row">
+      <div class="stat-item">
+        <span class="stat-num" id="total-count">52</span>
+        <span class="stat-label">книги в списке</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-num">7</span>
+        <span class="stat-label">критически важных (5★)</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-num">8</span>
+        <span class="stat-label">очень полезных (4★)</span>
+      </div>
+      <div class="stat-divider"></div>
+      <div class="stat-item">
+        <span class="stat-num">14</span>
+        <span class="stat-label">умеренно полезных (3★)</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="controls-bar">
+  <div class="controls-inner">
+    <div class="ctrl-group">
+      <span class="ctrl-label">Категория</span>
+      <select id="f-cat">
+        <option value="">Все</option>
+        <option value="linalg">Линейная алгебра и матрицы</option>
+        <option value="optim">Оптимизация</option>
+        <option value="numana">Числ. анализ (общий)</option>
+        <option value="stats">Статистика / ML</option>
+        <option value="geo">Вычисл. геометрия</option>
+        <option value="spec">Специализированные</option>
+      </select>
+    </div>
+    <div class="ctrl-sep"></div>
+    <div class="ctrl-group">
+      <span class="ctrl-label">Уровень</span>
+      <select id="f-level">
+        <option value="">Все</option>
+        <option value="1">Базовый</option>
+        <option value="2">Средний</option>
+        <option value="3">Продвинутый</option>
+      </select>
+    </div>
+    <div class="ctrl-sep"></div>
+    <div class="ctrl-group">
+      <span class="ctrl-label">ML/DS ≥</span>
+      <select id="f-rel">
+        <option value="1">Любая</option>
+        <option value="3">3★ и выше</option>
+        <option value="4">4★ и выше</option>
+        <option value="5">Только 5★</option>
+      </select>
+    </div>
+    <div class="ctrl-sep"></div>
+    <div class="ctrl-group">
+      <span class="ctrl-label">Поиск</span>
+      <input type="text" id="f-search" placeholder="Название или автор…">
+    </div>
+    <div class="ctrl-group">
+      <span class="ctrl-label">Сорт.</span>
+      <select id="f-sort">
+        <option value="rank">По рейтингу списка</option>
+        <option value="rel-desc">По ML/DS (↓)</option>
+        <option value="rel-asc">По ML/DS (↑)</option>
+        <option value="cat">По категории</option>
+        <option value="level">По уровню</option>
+        <option value="title">По названию</option>
+      </select>
+    </div>
+    <button class="btn-clear" id="btn-clear">Сбросить</button>
+    <span class="result-count">Показано: <span id="shown-count">52</span> из 52</span>
+  </div>
+</div>
+
+<main>
+  <div class="table-wrap">
+    <table id="main-table">
+      <thead>
+        <tr>
+          <th style="width:4%">#</th>
+          <th style="width:24%">Книга / Автор</th>
+          <th style="width:11%">Категория</th>
+          <th style="width:7%">Уровень</th>
+          <th style="width:8%">ML/DS ★</th>
+          <th style="width:31%">Ключевые темы для ML/DS</th>
+          <th style="width:15%">Предпосылки</th>
+        </tr>
+      </thead>
+      <tbody id="tbody">
+      </tbody>
+    </table>
+    <div class="no-results" id="no-results">Ничего не найдено. <a href="#" id="reset-link" style="color: var(--accent)">Сбросить фильтры</a></div>
+  </div>
+
+  <div class="legend">
+    <strong style="font-size:12px; color:var(--text2); font-weight:500">Категории:</strong>
+    <span class="legend-item"><span class="legend-dot" style="background:#ECEEF9; border:1px solid #4338CA"></span><span style="color:var(--linalg)">Линейная алгебра / матрицы</span></span>
+    <span class="legend-item"><span class="legend-dot" style="background:#D1FAE5; border:1px solid #047857"></span><span style="color:var(--optim)">Оптимизация</span></span>
+    <span class="legend-item"><span class="legend-dot" style="background:#FEF3C7; border:1px solid #B45309"></span><span style="color:var(--numana)">Числ. анализ (общий)</span></span>
+    <span class="legend-item"><span class="legend-dot" style="background:#CFFAFE; border:1px solid #0E7490"></span><span style="color:var(--stats)">Статистика / ML</span></span>
+    <span class="legend-item"><span class="legend-dot" style="background:#FCE7F3; border:1px solid #BE185D"></span><span style="color:var(--geo)">Вычисл. геометрия</span></span>
+    <span class="legend-item"><span class="legend-dot" style="background:#EDE9FE; border:1px solid #6D28D9"></span><span style="color:var(--spec)">Специализированные</span></span>
+  </div>
+</main>
+
+<script>
+const CATS = {
+  linalg: 'Линейная алгебра',
+  optim:  'Оптимизация',
+  numana: 'Числ. анализ',
+  stats:  'Статистика/ML',
+  geo:    'Вычисл. геометрия',
+  spec:   'Специализир.',
+};
+const LEVELS = { 1:'Базовый', 2:'Средний', 3:'Продвинутый' };
+const REL_LABELS = { 5:'Критично', 4:'Очень полезна', 3:'Умеренно', 2:'Периферийно', 1:'Нерелевантна' };
+const STARS_TXT = { 5:'★★★★★', 4:'★★★★☆', 3:'★★★☆☆', 2:'★★☆☆☆', 1:'★☆☆☆☆' };
+
+const books = [
+  {rank:1,  title:'Numerical Recipes: The Art of Scientific Computing', author:'W.H. Press, S.A. Teukolsky, W.T. Vetterling, B.P. Flannery', cat:'numana', level:2, rel:5, gr:'4.31', score:490,
+   topics:'Полная «аптечка» численного программиста: SVD, FFT, интерполяция, МНК, числ. оптимизация, генерация случайных чисел, MCMC. Каждый алгоритм с кодом.',
+   prereqs:'Матанализ, базовая линалгебра'},
+  {rank:2,  title:'Matrix Computations', author:'G.H. Golub, C.F. Van Loan', cat:'linalg', level:3, rel:5, gr:'4.26', score:371,
+   topics:'Канонический справочник по матричным алгоритмам: SVD (основа PCA, LSA, рекоменд. систем), QR/LU, итерац. методы, МНК. Настольная книга всех, кто пишет ML-математику.',
+   prereqs:'Линейная алгебра, матанализ'},
+  {rank:3,  title:'Numerical Linear Algebra', author:'L.N. Trefethen, D. Bau III', cat:'linalg', level:2, rel:5, gr:'4.29', score:292,
+   topics:'Лучшее введение в числ. линейную алгебру: SVD, нормы, QR, устойчивость, задача собств. чисел. Чёткий мост от линалгебры к ML-математике. Читается как учебник, а не справочник.',
+   prereqs:'Курс линейной алгебры'},
+  {rank:6,  title:'Numerical Optimization', author:'J. Nocedal, S.J. Wright', cat:'optim', level:3, rel:5, gr:'4.31', score:289,
+   topics:'Математика за всеми ML-оптимизаторами: градиентный спуск, L-BFGS, сопряжённые градиенты, trust-region, SQP. Если хотите понять, что делает Adam «под капотом» — это источник.',
+   prereqs:'Матанализ, линалгебра'},
+  {rank:12, title:'Numerical Analysis for Statisticians', author:'K. Lange', cat:'stats', level:3, rel:5, gr:'4.50', score:232,
+   topics:'EM-алгоритм, MM-алгоритмы, MCMC, числ. интегрирование для байесовских методов, числ. оптимизация — весь инструментарий ML-статистика.',
+   prereqs:'Математическая статистика, матанализ, линалгебра'},
+  {rank:32, title:'Matrix Algebra: Theory, Computations, and Applications in Statistics', author:'J.E. Gentle', cat:'stats', level:2, rel:5, gr:'4.00', score:169,
+   topics:'Матричное дифференцирование (∂L/∂W — основа backprop), произведение Кронекера, специальные матрицы, обобщённая обратная. Обязательна для понимания нейросетей.',
+   prereqs:'Линейная алгебра'},
+  {rank:3,  title:'Computational Geometry: Algorithms and Applications', author:'M. de Berg et al.', cat:'geo', level:2, rel:2, gr:'4.17', score:292,
+   topics:'Диаграммы Вороного, выпуклая оболочка, пространственный поиск, Делоне. Актуально для k-NN, пространственной кластеризации, геометрического обучения.',
+   prereqs:'Алгоритмы, базовая геометрия'},
+  {rank:8,  title:'Topics in Matrix Analysis', author:'R.A. Horn, C.R. Johnson', cat:'linalg', level:3, rel:4, gr:'4.35', score:250,
+   topics:'Матричные неравенства, матричные функции, операторные нормы, частичные порядки. Продвинутая теория для исследований в kernel methods, матричных разложениях.',
+   prereqs:'Matrix Analysis (Horn & Johnson)'},
+  {rank:9,  title:'Theoretical Numerical Analysis: A Functional Analysis Framework', author:'K.E. Atkinson, W. Han', cat:'numana', level:3, rel:2, gr:'4.23', score:249,
+   topics:'Числ. методы через функциональный анализ, МКЭ, теория операторов. Теоретически глубоко, но мало прямой связи с практическим ML.',
+   prereqs:'Функциональный анализ, числ. методы'},
+  {rank:10, title:'Applications of Lie Groups to Differential Equations', author:'P.J. Olver', cat:'spec', level:3, rel:1, gr:'4.29', score:244,
+   topics:'Симметрийные методы для ОДУ. Нишевая тема; релевантна лишь для исследований по symmetry-aware ML и equivariant neural networks.',
+   prereqs:'Дифф. геометрия, ОДУ, абстрактная алгебра'},
+  {rank:11, title:'Introduction to Numerical Linear Algebra and Optimisation', author:'P.G. Ciarlet', cat:'linalg', level:2, rel:4, gr:'4.50', score:241,
+   topics:'Компактный учебник: линейные системы, МНК, выпуклая оптимизация — охватывает оба ключевых блока за один том. Хорош как концентрированное введение.',
+   prereqs:'Линейная алгебра'},
+  {rank:13, title:'The Numerical Solution of Integral Equations of the Second Kind', author:'K.E. Atkinson', cat:'spec', level:3, rel:1, gr:'4.50', score:229,
+   topics:'Числ. решение уравнений Фредгольма и Вольтерра. Очень специализированная тема; в стандартном ML не встречается.',
+   prereqs:'Функциональный анализ, числ. методы'},
+  {rank:14, title:'Iterative Krylov Methods for Large Linear Systems', author:'H.A. van der Vorst', cat:'linalg', level:3, rel:3, gr:'4.14', score:228,
+   topics:'CG, GMRES, BiCGSTAB, BiCG — итерационные методы для больших систем. Полезны при работе с крупными разреженными ML-задачами (графы, разреж. регрессия).',
+   prereqs:'Численная линейная алгебра'},
+  {rank:15, title:'Numerical Analysis', author:'W. Gautschi', cat:'numana', level:2, rel:3, gr:'4.17', score:227,
+   topics:'Анализ ошибок, квадратуры, интерполяция, матричные задачи — особый акцент на строгие оценки точности. Полезен для понимания, почему алгоритмы дают именно такую ошибку.',
+   prereqs:'Матанализ, линейная алгебра'},
+  {rank:16, title:'Matrix Analysis', author:'R.A. Horn, C.R. Johnson', cat:'linalg', level:3, rel:4, gr:'4.33', score:225,
+   topics:'Теория собственных чисел, положительная определённость, нормы матриц — математический фундамент ядерных методов (SVM, GP) и ковариационного анализа.',
+   prereqs:'Сильная линейная алгебра, матанализ'},
+  {rank:17, title:"A Student's Guide to Numerical Methods", author:'I.H. Hutchinson', cat:'numana', level:1, rel:3, gr:'4.40', score:222,
+   topics:'Доступное введение с примерами на Python/Matlab. Хорошая стартовая точка перед более серьёзными учебниками. Без излишней теории.',
+   prereqs:'Базовый Python, первый курс матанализа'},
+  {rank:18, title:'The Theory of Composites', author:'G.W. Milton', cat:'spec', level:3, rel:1, gr:'5.00', score:219,
+   topics:'Физика и математика композитных материалов — не имеет практического отношения к ML/DS.',
+   prereqs:'ЧДУ, физика, функциональный анализ'},
+  {rank:19, title:'Spectral Methods for Time-Dependent Problems', author:'J.S. Hesthaven, S. Gottlieb, D. Gottlieb', cat:'spec', level:3, rel:1, gr:'4.71', score:218,
+   topics:'Спектральные методы для ЧДУ. Актуально лишь в нише Physics-Informed Neural Networks (PINN).',
+   prereqs:'ЧДУ, функциональный анализ'},
+  {rank:20, title:'Numerical Methods in Matrix Computations', author:'Å. Björck', cat:'linalg', level:3, rel:4, gr:'4.40', score:213,
+   topics:'МНК, QR, SVD, разреженные матрицы, задача собств. чисел. Современная альтернатива Golub & Van Loan — местами полнее; хорошо читается в паре.',
+   prereqs:'Линейная алгебра, числ. методы'},
+  {rank:21, title:'Practical Extrapolation Methods', author:'A. Sidi', cat:'spec', level:3, rel:2, gr:'4.25', score:208,
+   topics:'Ускорение сходимости рядов, трансформации Эйткена, ε-алгоритм. Нишевая тема; изредка встречается при работе с итерационными алгоритмами.',
+   prereqs:'Анализ, числ. методы'},
+  {rank:22, title:'Greedy Approximation', author:'V. Temlyakov', cat:'spec', level:3, rel:3, gr:'4.67', score:205,
+   topics:'Жадные алгоритмы, разреженные представления, basis pursuit — математическая основа Lasso и compressed sensing в ML.',
+   prereqs:'Функциональный анализ, линейная алгебра'},
+  {rank:23, title:'Methods of Numerical Integration', author:'P.J. Davis, P. Rabinowitz', cat:'numana', level:2, rel:1, gr:'5.00', score:204,
+   topics:'Полная теория квадратур. Классика, но узкоспециализированная — вне основного ML-стека.',
+   prereqs:'Матанализ'},
+  {rank:24, title:'Scattered Data Approximation', author:'H. Wendland', cat:'spec', level:3, rel:3, gr:'4.00', score:201,
+   topics:'Радиальные базисные функции, ядра, интерполяция разбросанных данных — математика ядерных методов (SVM, GP, mesh-free methods).',
+   prereqs:'Функциональный анализ, матанализ'},
+  {rank:25, title:'Approximation Algorithms', author:'V.V. Vazirani', cat:'spec', level:3, rel:3, gr:'4.20', score:186,
+   topics:'NP-трудные задачи, LP-релаксации, жадные схемы с гарантиями. Полезно для combinatorial ML и задач оперативного исследования.',
+   prereqs:'Алгоритмы, дискретная математика'},
+  {rank:26, title:'Matrix Analysis and Applied Linear Algebra', author:'C.D. Meyer', cat:'linalg', level:2, rel:4, gr:'4.24', score:183,
+   topics:'Сингулярные числа, цепи Маркова (PageRank), псевдообратная матрица, спектральный анализ. Более доступен, чем Horn & Johnson — хороший переход к ним.',
+   prereqs:'Базовая линейная алгебра'},
+  {rank:27, title:'Numerical Analysis', author:'T. Sauer', cat:'numana', level:1, rel:3, gr:'4.24', score:179,
+   topics:'Современный и практичный стандартный курс: корни, интерполяция, числ. интегрирование, ОДУ. Читается легче Burden & Faires.',
+   prereqs:'Первый курс матанализа'},
+  {rank:28, title:'An Introduction to Numerical Analysis', author:'K.E. Atkinson', cat:'numana', level:2, rel:2, gr:'3.93', score:177,
+   topics:'Классический академический учебник. Строгий, но без прямой связи с ML-задачами.',
+   prereqs:'Матанализ, линейная алгебра'},
+  {rank:29, title:'A First Course in the Numerical Analysis of Differential Equations', author:'A. Iserles', cat:'spec', level:2, rel:2, gr:'3.96', score:175,
+   topics:'Числ. методы для ОДУ: конечные разности, многошаговые методы, устойчивость. Нужен для Neural ODEs, но узкоспециализирован.',
+   prereqs:'ОДУ, матанализ'},
+  {rank:30, title:'Theory of Point Estimation', author:'E.L. Lehmann, G. Casella', cat:'stats', level:3, rel:2, gr:'3.83', score:173,
+   topics:'Теория оценок, MVU, достаточность, экспоненциальные семейства. Скорее теоретическая статистика, чем числ. методы.',
+   prereqs:'Математическая статистика'},
+  {rank:31, title:'Numerical Methods', author:'R.L. Burden, J.D. Faires', cat:'numana', level:1, rel:2, gr:'4.11', score:171,
+   topics:'Сокращённая версия «Numerical Analysis» тех же авторов. Обзорный курс без глубины.',
+   prereqs:'Матанализ'},
+  {rank:33, title:'Fundamentals of Matrix Computations', author:'D.S. Watkins', cat:'linalg', level:2, rel:3, gr:'4.10', score:167,
+   topics:'LU, QR, задача собственных чисел, итерационные методы — доступнее Golub, но менее полный. Хорош как переходный учебник.',
+   prereqs:'Линейная алгебра'},
+  {rank:34, title:'Computational Geometry: An Introduction', author:'F.P. Preparata, M.I. Shamos', cat:'geo', level:2, rel:2, gr:'4.10', score:161,
+   topics:'Классика вычислительной геометрии 1985 г. Исторически важна, но de Berg актуальнее.',
+   prereqs:'Алгоритмы'},
+  {rank:35, title:'Applied Linear Algebra and Matrix Analysis', author:'T.S. Shores', cat:'linalg', level:1, rel:2, gr:'3.95', score:159,
+   topics:'Вводный прикладной курс — слишком базовый для ML-специалиста, работает как подготовка к более серьёзным текстам.',
+   prereqs:'Матанализ'},
+  {rank:36, title:'Iterative Methods for Sparse Linear Systems', author:'Y. Saad', cat:'linalg', level:3, rel:4, gr:'4.11', score:155,
+   topics:'Методы Крылова (GMRES, CG, MINRES), предобусловливание — критически важны для больших разреженных ML-систем. Книга доступна бесплатно на сайте автора.',
+   prereqs:'Числ. линейная алгебра'},
+  {rank:37, title:'Introduction to Numerical Analysis', author:'J. Stoer, R. Bulirsch', cat:'numana', level:2, rel:2, gr:'4.13', score:151,
+   topics:'Немецкая классика. Строгая, полная, но практически устарела как учебник для ML-подготовки.',
+   prereqs:'Матанализ, линейная алгебра'},
+  {rank:38, title:'Numerical Methods that Work', author:'F.S. Acton', cat:'numana', level:2, rel:2, gr:'4.17', score:149,
+   topics:'Нетривиальные инженерные советы по числ. программированию. Ценна практической мудростью, но устарела (1970).',
+   prereqs:'Числ. методы, Fortran/C'},
+  {rank:39, title:'Numerical Solution of Stochastic Differential Equations', author:'P.E. Kloeden, E. Platen', cat:'spec', level:3, rel:3, gr:'3.92', score:147,
+   topics:'Методы Ойлера-Маруямы, Милштейна для СДУ. Фундамент для диффузионных генеративных моделей (DDPM, Score Matching) и MCMC.',
+   prereqs:'СДУ, теория вероятностей, матанализ'},
+  {rank:40, title:'Perturbation Methods', author:'E.J. Hinch', cat:'spec', level:3, rel:1, gr:'4.00', score:145,
+   topics:'Асимптотические разложения, теория возмущений для ЧДУ. Физически ориентирована; в ML не применяется напрямую.',
+   prereqs:'ОДУ, анализ'},
+  {rank:41, title:'Numerical Linear Algebra: An Introduction', author:'H. Wendland', cat:'linalg', level:2, rel:2, gr:'3.62', score:141,
+   topics:'Компактный вводный курс. Менее полный и ясный, чем Trefethen — выбирайте Trefethen.',
+   prereqs:'Линейная алгебра'},
+  {rank:42, title:'Templates for the Solution of Linear Systems', author:'R. Barrett et al.', cat:'linalg', level:2, rel:2, gr:'3.60', score:133,
+   topics:'Справочник по итерац. методам для линейных систем. Устарел; доступен бесплатно онлайн.',
+   prereqs:'Числ. линейная алгебра'},
+  {rank:43, title:"LAPACK Users' Guide", author:'E. Anderson et al.', cat:'spec', level:2, rel:2, gr:'3.60', score:131,
+   topics:'Документация к LAPACK. Нужна при разработке высокопроизводительного числ. кода; не учебник.',
+   prereqs:'Числ. линейная алгебра, C/Fortran'},
+  {rank:44, title:'Geometry and Topology for Mesh Generation', author:'H. Edelsbrunner', cat:'geo', level:3, rel:1, gr:'3.00', score:127,
+   topics:'Геометрия и топология для генерации сеток МКЭ. Нишевая тема, вне стандартного ML.',
+   prereqs:'Топология, вычисл. геометрия'},
+  {rank:45, title:'Numerical Methods of Statistics', author:'J.F. Monahan', cat:'stats', level:2, rel:4, gr:'4.00', score:121,
+   topics:'Генерация случайных чисел, методы Монте-Карло, матричные методы для регрессии и MLE — практически ориентирован на DS-задачи.',
+   prereqs:'Статистика, линейная алгебра'},
+  {rank:46, title:'Numerical Methods in Physics with Python', author:'A. Gezerlis', cat:'numana', level:2, rel:3, gr:'4.00', score:119,
+   topics:'Числ. методы на Python: ОДУ, интегрирование, линейная алгебра. Практично, но ориентировано на физику, а не на ML.',
+   prereqs:'Python, матанализ'},
+  {rank:47, title:'Direct Methods for Sparse Linear Systems', author:'T.A. Davis', cat:'linalg', level:3, rel:2, gr:'4.00', score:115,
+   topics:'Прямые разреженные решатели (CHOLMOD, UMFPACK). Актуально для реализации, а не для понимания ML-алгоритмов.',
+   prereqs:'Числ. линейная алгебра'},
+  {rank:48, title:'A Practical Guide to Pseudospectral Methods', author:'B. Fornberg', cat:'spec', level:3, rel:1, gr:'4.00', score:113,
+   topics:'Псевдоспектральные методы для ЧДУ. Очень нишевая тема.',
+   prereqs:'ЧДУ, спектральный анализ'},
+  {rank:49, title:'Simulating Hamiltonian Dynamics', author:'B. Leimkuhler, S. Reich', cat:'spec', level:3, rel:2, gr:'4.00', score:109,
+   topics:'Симплектические интеграторы для гамильтоновой динамики. Актуально для Hamiltonian Monte Carlo (HMC) в байесовском ML.',
+   prereqs:'Классическая механика, ОДУ'},
+  {rank:50, title:'Templates for the Solution of Algebraic Eigenvalue Problems', author:'Z. Bai et al.', cat:'linalg', level:3, rel:2, gr:'4.00', score:103,
+   topics:'Справочник по алгоритмам задачи собственных чисел. Нишевый справочник для реализации.',
+   prereqs:'Числ. линейная алгебра'},
+  {rank:51, title:'Matrix Analysis (2nd edition)', author:'R.A. Horn, C.R. Johnson', cat:'linalg', level:3, rel:4, gr:'4.33', score:100,
+   topics:'Второе издание #16 — расширенное и исправленное. Если брать Horn & Johnson, предпочтительно это издание.',
+   prereqs:'Сильная линейная алгебра, матанализ'},
+  {rank:52, title:'An Introduction to Numerical Analysis', author:'E. Süli, D. Mayers', cat:'numana', level:2, rel:2, gr:'3.38', score:98,
+   topics:'Кембриджский вводный курс — математически строгий, но с ограниченной связью с ML.',
+   prereqs:'Матанализ, линейная алгебра'},
+];
+
+function renderStars(rel) {
+  return `<div class="rel-cell r${rel}">
+    <span class="stars">${STARS_TXT[rel]}</span>
+    <span class="rel-label">${REL_LABELS[rel]}</span>
+  </div>`;
+}
+
+function renderRow(b) {
+  const catLabel = CATS[b.cat];
+  return `<tr data-rank="${b.rank}" data-cat="${b.cat}" data-level="${b.level}" data-rel="${b.rel}"
+              data-search="${(b.title + ' ' + b.author).toLowerCase()}">
+    <td><span class="book-rank">${b.rank}</span></td>
+    <td>
+      <div class="book-title">${b.title}</div>
+      <div class="book-author">${b.author}</div>
+      <div class="book-gr">GR ${b.gr}★ · score ${b.score}</div>
+    </td>
+    <td><span class="badge badge-${b.cat}">${catLabel}</span></td>
+    <td><span class="level-badge">${LEVELS[b.level]}</span></td>
+    <td>${renderStars(b.rel)}</td>
+    <td><div class="topics-cell">${b.topics}</div></td>
+    <td><div class="prereqs-cell">${b.prereqs}</div></td>
+  </tr>`;
+}
+
+const tbody = document.getElementById('tbody');
+tbody.innerHTML = books.map(renderRow).join('');
+
+const rows = Array.from(tbody.querySelectorAll('tr'));
+
+function applyFilters() {
+  const cat = document.getElementById('f-cat').value;
+  const level = document.getElementById('f-level').value;
+  const rel = parseInt(document.getElementById('f-rel').value) || 1;
+  const q = document.getElementById('f-search').value.toLowerCase().trim();
+  const sort = document.getElementById('f-sort').value;
+
+  let visible = rows.filter(r => {
+    if (cat && r.dataset.cat !== cat) return false;
+    if (level && r.dataset.level !== level) return false;
+    if (parseInt(r.dataset.rel) < rel) return false;
+    if (q && !r.dataset.search.includes(q)) return false;
+    return true;
+  });
+
+  const sortFns = {
+    'rank':     (a, b) => +a.dataset.rank - +b.dataset.rank,
+    'rel-desc': (a, b) => +b.dataset.rel - +a.dataset.rel,
+    'rel-asc':  (a, b) => +a.dataset.rel - +b.dataset.rel,
+    'cat':      (a, b) => a.dataset.cat.localeCompare(b.dataset.cat),
+    'level':    (a, b) => +a.dataset.level - +b.dataset.level,
+    'title':    (a, b) => a.querySelector('.book-title').textContent.localeCompare(
+                           b.querySelector('.book-title').textContent, 'ru'),
+  };
+  visible.sort(sortFns[sort]);
+
+  const hidden = new Set(rows.filter(r => !visible.includes(r)));
+  rows.forEach(r => r.classList.toggle('hidden', hidden.has(r)));
+
+  visible.forEach((r, i) => tbody.appendChild(r));
+
+  document.getElementById('shown-count').textContent = visible.length;
+  document.getElementById('no-results').classList.toggle('visible', visible.length === 0);
+}
+
+['f-cat','f-level','f-rel','f-sort'].forEach(id => {
+  document.getElementById(id).addEventListener('change', applyFilters);
+});
+document.getElementById('f-search').addEventListener('input', applyFilters);
+
+function clearAll() {
+  document.getElementById('f-cat').value = '';
+  document.getElementById('f-level').value = '';
+  document.getElementById('f-rel').value = '1';
+  document.getElementById('f-sort').value = 'rank';
+  document.getElementById('f-search').value = '';
+  applyFilters();
+}
+
+document.getElementById('btn-clear').addEventListener('click', clearAll);
+document.getElementById('reset-link').addEventListener('click', e => { e.preventDefault(); clearAll(); });
+
+applyFilters();
+</script>
+</body>
+</html>

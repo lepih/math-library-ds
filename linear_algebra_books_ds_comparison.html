@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Линейная алгебра для Data Science — сравнительная таблица</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #fff; color: #1a1a1a; padding: 24px; }
+  h1 { font-size: 20px; font-weight: 500; margin-bottom: 6px; }
+  .subtitle { font-size: 13px; color: #666; margin-bottom: 20px; }
+  .controls { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
+  .filter-btn { padding: 5px 14px; border-radius: 20px; border: 0.5px solid #ccc; background: transparent; color: #555; font-size: 13px; cursor: pointer; transition: all 0.15s; }
+  .filter-btn.active { background: #185FA5; border-color: #185FA5; color: #fff; }
+  .filter-btn:hover:not(.active) { background: #f5f5f5; color: #111; }
+  .filter-label { font-size: 13px; color: #888; align-self: center; }
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; table-layout: fixed; }
+  th { text-align: left; padding: 8px 10px; font-size: 11px; font-weight: 500; color: #888; border-bottom: 0.5px solid #e0e0e0; text-transform: uppercase; letter-spacing: 0.04em; }
+  td { padding: 10px 10px; border-bottom: 0.5px solid #f0f0f0; color: #1a1a1a; vertical-align: top; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #f9f9f9; }
+  .book-title { font-weight: 500; font-size: 13px; line-height: 1.3; }
+  .author { font-size: 11px; color: #888; margin-top: 2px; }
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 500; white-space: nowrap; }
+  .badge-high { background: #EAF3DE; color: #3B6D11; }
+  .badge-very-high { background: #E1F5EE; color: #0F6E56; }
+  .badge-medium { background: #FAEEDA; color: #854F0B; }
+  .badge-low { background: #F1EFE8; color: #5F5E5A; }
+  .badge-beginner { background: #E6F1FB; color: #185FA5; }
+  .badge-intermediate { background: #EEEDFE; color: #534AB7; }
+  .badge-advanced { background: #FBEAF0; color: #993556; }
+  .badge-applied { background: #EAF3DE; color: #3B6D11; }
+  .badge-theory { background: #EEEDFE; color: #534AB7; }
+  .badge-computational { background: #E1F5EE; color: #0F6E56; }
+  .badge-practice { background: #FAEEDA; color: #854F0B; }
+  .stars { color: #BA7517; font-size: 12px; }
+  .score { font-size: 12px; color: #888; }
+  .topics { font-size: 12px; color: #555; line-height: 1.5; }
+  .hidden { display: none; }
+  .col-title { width: 22%; }
+  .col-level { width: 10%; }
+  .col-ds { width: 10%; }
+  .col-focus { width: 11%; }
+  .col-topics { width: 27%; }
+  .col-rating { width: 10%; }
+  .col-for { width: 10%; }
+  .legend { margin-top: 12px; padding: 10px 0; border-top: 0.5px solid #e0e0e0; display: flex; gap: 16px; flex-wrap: wrap; }
+  .legend span { font-size: 12px; color: #555; }
+  .legend-label { font-size: 12px; color: #888; }
+</style>
+</head>
+<body>
+
+<h1>Линейная алгебра для Data Science</h1>
+<p class="subtitle">Сравнительный анализ 52 книг со списка Goodreads «Linear Algebra (MMath)» в контексте подготовки к DS/ML</p>
+
+<div class="controls">
+  <span class="filter-label">Фильтр по DS-релевантности:</span>
+  <button class="filter-btn active" onclick="filter('all',this)">Все книги</button>
+  <button class="filter-btn" onclick="filter('very-high',this)">★ Очень высокая</button>
+  <button class="filter-btn" onclick="filter('high',this)">Высокая</button>
+  <button class="filter-btn" onclick="filter('medium',this)">Средняя</button>
+</div>
+
+<div class="table-wrap">
+<table>
+  <thead>
+    <tr>
+      <th class="col-title">Книга / Автор</th>
+      <th class="col-level">Уровень</th>
+      <th class="col-ds">DS-польза</th>
+      <th class="col-focus">Фокус</th>
+      <th class="col-topics">Ключевые темы для DS</th>
+      <th class="col-rating">Оценка</th>
+      <th class="col-for">Лучше всего для</th>
+    </tr>
+  </thead>
+  <tbody id="table-body">
+
+    <tr data-ds="very-high">
+      <td><div class="book-title">Linear Algebra and Learning from Data</div><div class="author">Gilbert Strang</div></td>
+      <td><span class="badge badge-beginner">Нач–Ср</span></td>
+      <td><span class="badge badge-very-high">★★ Макс</span></td>
+      <td><span class="badge badge-applied">Прикл.</span></td>
+      <td class="topics">SVD, PCA, нейросети, оптимизация, пространства матриц, регрессия</td>
+      <td><div class="stars">★★★★</div><div class="score">4.35 · #20</div></td>
+      <td class="topics">ML-инженерам, дата-сайентистам</td>
+    </tr>
+
+    <tr data-ds="very-high">
+      <td><div class="book-title">Coding the Matrix</div><div class="author">Philip N. Klein</div></td>
+      <td><span class="badge badge-beginner">Нач–Ср</span></td>
+      <td><span class="badge badge-very-high">★★ Макс</span></td>
+      <td><span class="badge badge-applied">Прикл.</span></td>
+      <td class="topics">Реализация алгоритмов на Python, компьютерное зрение, NLP-основы, геометрия данных</td>
+      <td><div class="stars">★★★★</div><div class="score">4.14 · #12</div></td>
+      <td class="topics">Программистам, входящим в DS</td>
+    </tr>
+
+    <tr data-ds="very-high">
+      <td><div class="book-title">Introduction to Applied Linear Algebra</div><div class="author">Stephen Boyd</div></td>
+      <td><span class="badge badge-beginner">Нач–Ср</span></td>
+      <td><span class="badge badge-very-high">★★ Макс</span></td>
+      <td><span class="badge badge-applied">Прикл.</span></td>
+      <td class="topics">Метод наименьших квадратов, регрессия, классификация, кластеризация</td>
+      <td><div class="stars">★★★★</div><div class="score">4.20 · #37</div></td>
+      <td class="topics">Начинающим DS / ML</td>
+    </tr>
+
+    <tr data-ds="very-high">
+      <td><div class="book-title">Matrix Algebra: Theory, Computations, and Applications in Statistics</div><div class="author">James E. Gentle</div></td>
+      <td><span class="badge badge-intermediate">Средний</span></td>
+      <td><span class="badge badge-very-high">★★ Макс</span></td>
+      <td><span class="badge badge-applied">Прикл.</span></td>
+      <td class="topics">Статистические модели, регрессия, ковариационные матрицы, вычисления</td>
+      <td><div class="stars">★★★★</div><div class="score">4.00 · #39</div></td>
+      <td class="topics">Статистикам, data scientists</td>
+    </tr>
+
+    <tr data-ds="high">
+      <td><div class="book-title">Linear Algebra and Its Applications</div><div class="author">Gilbert Strang</div></td>
+      <td><span class="badge badge-beginner">Нач–Ср</span></td>
+      <td><span class="badge badge-high">★ Высокая</span></td>
+      <td><span class="badge badge-applied">Прикл.</span></td>
+      <td class="topics">Разложения матриц, собственные значения, ортогональность, SVD</td>
+      <td><div class="stars">★★★★</div><div class="score">4.30 · #6</div></td>
+      <td class="topics">Классический старт для DS</td>
+    </tr>
+
+    <tr data-ds="high">
+      <td><div class="book-title">Introduction to Linear Algebra</div><div class="author">Gilbert Strang</div></td>
+      <td><span class="badge badge-beginner">Начальный</span></td>
+      <td><span class="badge badge-high">★ Высокая</span></td>
+      <td><span class="badge badge-applied">Прикл.</span></td>
+      <td class="topics">Системы уравнений, проекции, собственные векторы, PCA-интуиция</td>
+      <td><div class="stars">★★★★</div><div class="score">4.24 · #7</div></td>
+      <td class="topics">Первая книга по LA для DS</td>
+    </tr>
+
+    <tr data-ds="high">
+      <td><div class="book-title">Matrix Computations</div><div class="author">Gene H. Golub</div></td>
+      <td><span class="badge badge-advanced">Продвинутый</span></td>
+      <td><span class="badge badge-high">★ Высокая</span></td>
+      <td><span class="badge badge-computational">Числ.</span></td>
+      <td class="topics">SVD, QR-разложение, итеративные методы, стабильность алгоритмов</td>
+      <td><div class="stars">★★★★</div><div class="score">4.26 · #3</div></td>
+      <td class="topics">DS/ML-исследователям</td>
+    </tr>
+
+    <tr data-ds="high">
+      <td><div class="book-title">Numerical Linear Algebra</div><div class="author">Lloyd N. Trefethen</div></td>
+      <td><span class="badge badge-advanced">Продвинутый</span></td>
+      <td><span class="badge badge-high">★ Высокая</span></td>
+      <td><span class="badge badge-computational">Числ.</span></td>
+      <td class="topics">SVD, QR, кондиционирование, решение систем, спектральный анализ</td>
+      <td><div class="stars">★★★★</div><div class="score">4.29 · #13</div></td>
+      <td class="topics">ML-исследователям, численным методам</td>
+    </tr>
+
+    <tr data-ds="high">
+      <td><div class="book-title">Matrix Analysis</div><div class="author">Roger A. Horn</div></td>
+      <td><span class="badge badge-advanced">Продвинутый</span></td>
+      <td><span class="badge badge-high">★ Высокая</span></td>
+      <td><span class="badge badge-theory">Теория</span></td>
+      <td class="topics">Спектральная теория, SVD, матричные нормы, положительно определённые матрицы</td>
+      <td><div class="stars">★★★★</div><div class="score">4.33 · #17</div></td>
+      <td class="topics">ML-теоретикам</td>
+    </tr>
+
+    <tr data-ds="high">
+      <td><div class="book-title">Applied Linear Algebra and Matrix Analysis</div><div class="author">Thomas S. Shores</div></td>
+      <td><span class="badge badge-intermediate">Средний</span></td>
+      <td><span class="badge badge-high">★ Высокая</span></td>
+      <td><span class="badge badge-applied">Прикл.</span></td>
+      <td class="topics">Численные методы, МНК, SVD, приложения к реальным задачам</td>
+      <td><div class="stars">★★★★</div><div class="score">3.95 · #42</div></td>
+      <td class="topics">DS-специалистам</td>
+    </tr>
+
+    <tr data-ds="medium">
+      <td><div class="book-title">Linear Algebra Done Right</div><div class="author">Sheldon Axler</div></td>
+      <td><span class="badge badge-intermediate">Средний</span></td>
+      <td><span class="badge badge-medium">Средняя</span></td>
+      <td><span class="badge badge-theory">Теория</span></td>
+      <td class="topics">Векторные пространства, операторы, спектральная теория (без матриц)</td>
+      <td><div class="stars">★★★★</div><div class="score">4.40 · #1</div></td>
+      <td class="topics">Строгая теор. база для ML</td>
+    </tr>
+
+    <tr data-ds="medium">
+      <td><div class="book-title">Linear Algebra: Step by Step</div><div class="author">Kuldeep Singh</div></td>
+      <td><span class="badge badge-beginner">Начальный</span></td>
+      <td><span class="badge badge-medium">Средняя</span></td>
+      <td><span class="badge badge-applied">Прикл.</span></td>
+      <td class="topics">Базовые операции, системы, определители, собственные значения</td>
+      <td><div class="stars">★★★★</div><div class="score">4.39 · #33</div></td>
+      <td class="topics">Самостоятельное изучение</td>
+    </tr>
+
+    <tr data-ds="medium">
+      <td><div class="book-title">Finite-Dimensional Vector Spaces</div><div class="author">Paul R. Halmos</div></td>
+      <td><span class="badge badge-advanced">Продвинутый</span></td>
+      <td><span class="badge badge-medium">Средняя</span></td>
+      <td><span class="badge badge-theory">Теория</span></td>
+      <td class="topics">Абстрактные пространства, операторы, двойственность — классика</td>
+      <td><div class="stars">★★★★★</div><div class="score">4.47 · #2</div></td>
+      <td class="topics">Глубокий теор. фундамент</td>
+    </tr>
+
+    <tr data-ds="medium">
+      <td><div class="book-title">Linear Algebra (Friedberg)</div><div class="author">Stephen H. Friedberg</div></td>
+      <td><span class="badge badge-intermediate">Средний</span></td>
+      <td><span class="badge badge-medium">Средняя</span></td>
+      <td><span class="badge badge-theory">Теория</span></td>
+      <td class="topics">Строгие доказательства, каноническая форма, внутренние произведения</td>
+      <td><div class="stars">★★★★</div><div class="score">4.12 · #9</div></td>
+      <td class="topics">Матем. фундамент для ML</td>
+    </tr>
+
+    <tr data-ds="medium">
+      <td><div class="book-title">Schaum's Outline of Linear Algebra</div><div class="author">Seymour Lipschutz</div></td>
+      <td><span class="badge badge-beginner">Начальный</span></td>
+      <td><span class="badge badge-medium">Средняя</span></td>
+      <td><span class="badge badge-practice">Практика</span></td>
+      <td class="topics">Много задач с решениями, матричные операции, базис, ранг</td>
+      <td><div class="stars">★★★★</div><div class="score">3.91 · #8</div></td>
+      <td class="topics">Быстрое повторение, экзамен</td>
+    </tr>
+
+    <tr data-ds="medium">
+      <td><div class="book-title">Multivariable Mathematics</div><div class="author">Theodore Shifrin</div></td>
+      <td><span class="badge badge-intermediate">Средний</span></td>
+      <td><span class="badge badge-medium">Средняя</span></td>
+      <td><span class="badge badge-applied">Прикл.</span></td>
+      <td class="topics">LA + матанализ + многообразия — важно для продвинутого ML</td>
+      <td><div class="stars">★★★★</div><div class="score">4.18 · #15</div></td>
+      <td class="topics">Обработка и геом. данных</td>
+    </tr>
+
+    <tr data-ds="medium">
+      <td><div class="book-title">Linear Algebra Problem Book</div><div class="author">Paul R. Halmos</div></td>
+      <td><span class="badge badge-intermediate">Средний</span></td>
+      <td><span class="badge badge-medium">Средняя</span></td>
+      <td><span class="badge badge-practice">Практика</span></td>
+      <td class="topics">Задачи с подсказками — развитие математического мышления</td>
+      <td><div class="stars">★★★★★</div><div class="score">4.54 · #4</div></td>
+      <td class="topics">Углублённое понимание LA</td>
+    </tr>
+
+  </tbody>
+</table>
+</div>
+
+<div class="legend">
+  <span class="legend-label">DS-польза:</span>
+  <span><span class="badge badge-very-high">★★ Макс</span> — прямо про DS/ML</span>
+  <span><span class="badge badge-high">★ Высокая</span> — сильная база</span>
+  <span><span class="badge badge-medium">Средняя</span> — теор. фундамент</span>
+</div>
+
+<script>
+function filter(level, btn) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  const rows = document.querySelectorAll('#table-body tr[data-ds]');
+  rows.forEach(row => {
+    if (level === 'all' || row.dataset.ds === level) {
+      row.classList.remove('hidden');
+    } else {
+      row.classList.add('hidden');
+    }
+  });
+}
+</script>
+</body>
+</html>

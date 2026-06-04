@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Математическая библиотека · DS / ML</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&family=Lora:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #0d0f14;
+  --surface:   #13161e;
+  --border:    #222635;
+  --border-h:  #c8a84b;
+  --gold:      #c8a84b;
+  --gold-dim:  #8a6e28;
+  --text:      #d4d8e8;
+  --text-dim:  #6b7390;
+  --text-mute: #3a3f55;
+  --white:     #eef0f8;
+}
+
+html { background: var(--bg); }
+
+body {
+  font-family: 'Lora', Georgia, serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* ── background texture ── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 10%, rgba(200,168,75,.06) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 90%, rgba(56,80,160,.08) 0%, transparent 55%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.page {
+  position: relative;
+  z-index: 1;
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 72px 32px 100px;
+}
+
+/* ── header ── */
+.eyebrow {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.eyebrow::after {
+  content: '';
+  flex: 1;
+  max-width: 60px;
+  height: 1px;
+  background: var(--gold-dim);
+  opacity: .5;
+}
+
+h1 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(28px, 5vw, 46px);
+  font-weight: 600;
+  line-height: 1.18;
+  color: var(--white);
+  letter-spacing: -.02em;
+  margin-bottom: 14px;
+}
+
+h1 em {
+  font-style: italic;
+  font-weight: 400;
+  color: var(--gold);
+}
+
+.header-desc {
+  font-size: 15px;
+  color: var(--text-dim);
+  line-height: 1.7;
+  max-width: 520px;
+  margin-bottom: 64px;
+  font-family: 'Lora', serif;
+}
+
+/* ── divider ── */
+.divider {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 40px;
+}
+.divider-line { flex: 1; height: 1px; background: var(--border); }
+.divider-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--text-mute);
+}
+
+/* ── grid ── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 72px;
+}
+
+/* ── card ── */
+.card {
+  position: relative;
+  background: var(--surface);
+  padding: 28px 28px 24px;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  transition: background .2s;
+  overflow: hidden;
+}
+
+.card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: var(--gold);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform .3s cubic-bezier(.4,0,.2,1);
+}
+
+.card:hover { background: #161a25; }
+.card:hover::before { transform: scaleX(1); }
+
+.card-num {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 11px;
+  color: var(--text-mute);
+  margin-bottom: 16px;
+  letter-spacing: .06em;
+}
+
+.card-icon {
+  font-size: 22px;
+  margin-bottom: 14px;
+  line-height: 1;
+  filter: saturate(.7);
+  transition: filter .2s;
+}
+.card:hover .card-icon { filter: saturate(1.2); }
+
+.card-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 17px;
+  font-weight: 600;
+  color: var(--white);
+  line-height: 1.3;
+  margin-bottom: 8px;
+  transition: color .2s;
+}
+.card:hover .card-title { color: var(--gold); }
+
+.card-sub {
+  font-size: 12px;
+  color: var(--text-dim);
+  line-height: 1.55;
+  font-family: 'Lora', serif;
+  flex: 1;
+  margin-bottom: 20px;
+}
+
+.card-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: auto;
+}
+
+.card-tag {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  letter-spacing: .08em;
+  color: var(--text-mute);
+  text-transform: uppercase;
+}
+
+.card-arrow {
+  font-size: 14px;
+  color: var(--gold-dim);
+  transition: transform .2s, color .2s;
+}
+.card:hover .card-arrow {
+  transform: translateX(4px);
+  color: var(--gold);
+}
+
+/* ── footer note ── */
+.footer-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 20px 24px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+.footer-note-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.footer-note-text { font-size: 13px; color: var(--text-dim); line-height: 1.65; }
+.footer-note-text strong { color: var(--text); font-weight: 600; }
+
+/* ── responsive ── */
+@media (max-width: 580px) {
+  .page { padding: 48px 20px 72px; }
+  .grid { grid-template-columns: 1fr; }
+}
+
+/* ── page load animation ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(18px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.eyebrow { animation: fadeUp .5s ease both; }
+h1       { animation: fadeUp .5s .08s ease both; }
+.header-desc { animation: fadeUp .5s .15s ease both; }
+.divider { animation: fadeUp .4s .22s ease both; }
+.grid    { animation: fadeUp .5s .28s ease both; }
+.footer-note { animation: fadeUp .4s .38s ease both; }
+
+</style>
+</head>
+<body>
+<div class="page">
+
+  <p class="eyebrow">Математическая библиотека</p>
+
+  <h1>Книги по <em>математике</em><br>для DS &amp; ML</h1>
+
+  <p class="header-desc">
+    Сравнительные таблицы ключевых учебников по шести дисциплинам —
+    от линейной алгебры до функционального анализа.
+    Рейтинги Goodreads, уровень сложности, DS-ценность и рекомендации когда читать.
+  </p>
+
+  <div class="divider">
+    <div class="divider-line"></div>
+    <span class="divider-label">6 разделов</span>
+    <div class="divider-line"></div>
+  </div>
+
+  <div class="grid">
+
+    <a class="card" href="linear_algebra_books_ds_comparison.html">
+      <div class="card-num">01</div>
+      <div class="card-icon">⊞</div>
+      <div class="card-title">Линейная алгебра</div>
+      <div class="card-sub">Основа любого ML-стека. Матрицы, разложения, пространства. От Strang до Axler.</div>
+      <div class="card-meta">
+        <span class="card-tag">Linear Algebra</span>
+        <span class="card-arrow">→</span>
+      </div>
+    </a>
+
+    <a class="card" href="real_analysis_ds_comparison.html">
+      <div class="card-num">02</div>
+      <div class="card-icon">∂</div>
+      <div class="card-title">Математический анализ</div>
+      <div class="card-sub">Пределы, дифференцирование, интегрирование. Строгая база для теории оптимизации.</div>
+      <div class="card-meta">
+        <span class="card-tag">Real Analysis</span>
+        <span class="card-arrow">→</span>
+      </div>
+    </a>
+
+    <a class="card" href="functional_analysis_ml_table.html">
+      <div class="card-num">03</div>
+      <div class="card-icon">∫</div>
+      <div class="card-title">Функциональный анализ</div>
+      <div class="card-sub">Банаховы и гильбертовы пространства, RKHS, операторы. Для глубокого понимания ML.</div>
+      <div class="card-meta">
+        <span class="card-tag">Functional Analysis</span>
+        <span class="card-arrow">→</span>
+      </div>
+    </a>
+
+    <a class="card" href="probability_books_ds_comparison.html">
+      <div class="card-num">04</div>
+      <div class="card-icon">𝑃</div>
+      <div class="card-title">Теория вероятностей</div>
+      <div class="card-sub">Случайные величины, распределения, предельные теоремы. От Blitzstein до Jaynes.</div>
+      <div class="card-meta">
+        <span class="card-tag">Probability</span>
+        <span class="card-arrow">→</span>
+      </div>
+    </a>
+
+    <a class="card" href="statistic_books_comparison_table.html">
+      <div class="card-num">05</div>
+      <div class="card-icon">σ̂</div>
+      <div class="card-title">Статистика и ML</div>
+      <div class="card-sub">ISL, ESL, байесовский подход, графические модели. Прикладной взгляд на вывод.</div>
+      <div class="card-meta">
+        <span class="card-tag">Statistics · ML</span>
+        <span class="card-arrow">→</span>
+      </div>
+    </a>
+
+    <a class="card" href="numerical_methods_ml_ds.html">
+      <div class="card-num">06</div>
+      <div class="card-icon">≈</div>
+      <div class="card-title">Численные методы</div>
+      <div class="card-sub">Оптимизация, численное дифференцирование, решение систем. Вычислительная сторона ML.</div>
+      <div class="card-meta">
+        <span class="card-tag">Numerical Methods</span>
+        <span class="card-arrow">→</span>
+      </div>
+    </a>
+
+  </div>
+
+  <div class="footer-note">
+    <span class="footer-note-icon">📖</span>
+    <div class="footer-note-text">
+      Каждая таблица содержит <strong>сортировку по рейтингу, уровню и DS-ценности</strong>,
+      а также фильтрацию по тегам и поиск. Книги подобраны с учётом пути
+      <strong>линейная алгебра → анализ → вероятность → статистика → ML</strong>.
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
