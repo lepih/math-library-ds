@@ -1,419 +1,871 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Математическая библиотека · DS / ML</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;500&family=Lora:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
-<style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Математика для ML / DS</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300&family=Syne:wght@400;500;700&family=JetBrains+Mono:wght@400;500&display=swap"
+    rel="stylesheet">
+  <style>
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
 
-:root {
-  --bg:        #0d0f14;
-  --surface:   #13161e;
-  --border:    #222635;
-  --border-h:  #c8a84b;
-  --gold:      #c8a84b;
-  --gold-dim:  #8a6e28;
-  --text:      #d4d8e8;
-  --text-dim:  #6b7390;
-  --text-mute: #3a3f55;
-  --white:     #eef0f8;
-}
+    :root {
+      --bg: #f5f4f0;
+      --bg-card: #ffffff;
+      --bg-hover: #faf9f7;
+      --text: #1c1e26;
+      --muted: #7c8496;
+      --dim: #e0e2e9;
+      --border: rgba(0, 0, 0, 0.07);
+      --border-h: rgba(0, 0, 0, 0.14);
 
-html { background: var(--bg); }
+      --c1: #5348c7;
+      --c1a: rgba(83, 72, 199, .08);
+      --c2: #1a9e72;
+      --c2a: rgba(26, 158, 114, .08);
+      --c3: #b07908;
+      --c3a: rgba(176, 121, 8, .08);
+      --c4: #8a9099;
+      --c4a: rgba(138, 144, 153, .08);
+    }
 
-body {
-  font-family: 'Lora', Georgia, serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100vh;
-  padding: 0;
-  overflow-x: hidden;
-}
+    html {
+      scroll-behavior: smooth;
+    }
 
-/* ── background texture ── */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background:
-    radial-gradient(ellipse 80% 50% at 20% 10%, rgba(200,168,75,.06) 0%, transparent 60%),
-    radial-gradient(ellipse 60% 40% at 80% 90%, rgba(56,80,160,.08) 0%, transparent 55%);
-  pointer-events: none;
-  z-index: 0;
-}
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Syne', sans-serif;
+      font-size: 14px;
+      line-height: 1.6;
+      min-height: 100vh;
+    }
 
-.page {
-  position: relative;
-  z-index: 1;
-  max-width: 920px;
-  margin: 0 auto;
-  padding: 72px 32px 100px;
-}
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: radial-gradient(rgba(0, 0, 0, 0.038) 1px, transparent 1px);
+      background-size: 28px 28px;
+      pointer-events: none;
+      z-index: 0;
+    }
 
-/* ── header ── */
-.eyebrow {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
-  letter-spacing: .18em;
-  text-transform: uppercase;
-  color: var(--gold);
-  margin-bottom: 20px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.eyebrow::after {
-  content: '';
-  flex: 1;
-  max-width: 60px;
-  height: 1px;
-  background: var(--gold-dim);
-  opacity: .5;
-}
+    .wrap {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 0 2rem;
+      position: relative;
+      z-index: 1;
+    }
 
-h1 {
-  font-family: 'Playfair Display', Georgia, serif;
-  font-size: clamp(28px, 5vw, 46px);
-  font-weight: 600;
-  line-height: 1.18;
-  color: var(--white);
-  letter-spacing: -.02em;
-  margin-bottom: 14px;
-}
+    /* ── HEADER ── */
+    header {
+      padding: 4.5rem 0 3rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 2.5rem;
+    }
 
-h1 em {
-  font-style: italic;
-  font-weight: 400;
-  color: var(--gold);
-}
+    .header-eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px;
+      color: var(--muted);
+      letter-spacing: .18em;
+      text-transform: uppercase;
+      margin-bottom: 1.1rem;
+    }
 
-.header-desc {
-  font-size: 15px;
-  color: var(--text-dim);
-  line-height: 1.7;
-  max-width: 520px;
-  margin-bottom: 64px;
-  font-family: 'Lora', serif;
-}
+    header h1 {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: clamp(2.8rem, 6vw, 4.2rem);
+      font-weight: 300;
+      line-height: 1.08;
+      color: var(--text);
+      margin-bottom: 1rem;
+    }
 
-/* ── divider ── */
-.divider {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-bottom: 40px;
-}
-.divider-line { flex: 1; height: 1px; background: var(--border); }
-.divider-label {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10px;
-  letter-spacing: .14em;
-  text-transform: uppercase;
-  color: var(--text-mute);
-}
+    header h1 em {
+      font-style: italic;
+      color: var(--c1);
+    }
 
-/* ── grid ── */
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 1px;
-  background: var(--border);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  overflow: hidden;
-  margin-bottom: 72px;
-}
+    .header-sub {
+      font-size: 13.5px;
+      color: var(--muted);
+      max-width: 600px;
+      line-height: 1.8;
+      margin-bottom: 1.75rem;
+    }
 
-/* ── card ── */
-.card {
-  position: relative;
-  background: var(--surface);
-  padding: 28px 28px 24px;
-  text-decoration: none;
-  color: inherit;
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  transition: background .2s;
-  overflow: hidden;
-}
+    /* ── DESCRIPTION GRID ── */
+    .header-meta {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 8px;
+      max-width: 900px;
+    }
 
-.card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 2px;
-  background: var(--gold);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform .3s cubic-bezier(.4,0,.2,1);
-}
+    .meta-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 13px 15px;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, .04);
+    }
 
-.card:hover { background: #161a25; }
-.card:hover::before { transform: scaleX(1); }
+    .meta-card-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      letter-spacing: .13em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 5px;
+    }
 
-.card-num {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 11px;
-  color: var(--text-mute);
-  margin-bottom: 16px;
-  letter-spacing: .06em;
-}
+    .meta-card-text {
+      font-size: 11.5px;
+      color: var(--text);
+      line-height: 1.55;
+    }
 
-.card-icon {
-  font-size: 22px;
-  margin-bottom: 14px;
-  line-height: 1;
-  filter: saturate(.7);
-  transition: filter .2s;
-}
-.card:hover .card-icon { filter: saturate(1.2); }
+    .meta-card-text strong {
+      color: var(--c1);
+      font-weight: 600;
+    }
 
-.card-title {
-  font-family: 'Playfair Display', Georgia, serif;
-  font-size: 17px;
-  font-weight: 600;
-  color: var(--white);
-  line-height: 1.3;
-  margin-bottom: 8px;
-  transition: color .2s;
-}
-.card:hover .card-title { color: var(--gold); }
+    /* ── NAV ── */
+    nav {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
 
-.card-sub {
-  font-size: 12px;
-  color: var(--text-dim);
-  line-height: 1.55;
-  font-family: 'Lora', serif;
-  flex: 1;
-  margin-bottom: 20px;
-}
+    .btn {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px;
+      padding: 5px 13px;
+      border-radius: 99px;
+      border: 1px solid var(--border);
+      background: transparent;
+      color: var(--muted);
+      cursor: pointer;
+      letter-spacing: .04em;
+      transition: border-color .2s, color .2s, background .2s, box-shadow .2s;
+      line-height: 1.8;
+    }
 
-.card-meta {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: auto;
-}
+    .btn:hover {
+      border-color: var(--border-h);
+      color: var(--text);
+      background: var(--bg-card);
+    }
 
-.card-tag {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10px;
-  letter-spacing: .08em;
-  color: var(--text-mute);
-  text-transform: uppercase;
-}
+    .btn.on-all {
+      background: var(--bg-card);
+      border-color: rgba(0, 0, 0, .16);
+      color: var(--text);
+      box-shadow: 0 1px 4px rgba(0, 0, 0, .06);
+    }
 
-.card-arrow {
-  font-size: 14px;
-  color: var(--gold-dim);
-  transition: transform .2s, color .2s;
-}
-.card:hover .card-arrow {
-  transform: translateX(4px);
-  color: var(--gold);
-}
+    .btn.on-1 {
+      background: var(--c1a);
+      border-color: var(--c1);
+      color: var(--c1);
+    }
 
-/* ── featured card ── */
-.card-featured {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 24px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-  padding: 28px 32px;
-  text-decoration: none;
-  color: inherit;
-  margin-bottom: 20px;
-  position: relative;
-  overflow: hidden;
-  transition: background .2s;
-}
-.card-featured::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; bottom: 0;
-  width: 3px;
-  background: var(--gold);
-  transform: scaleY(0);
-  transform-origin: top;
-  transition: transform .3s cubic-bezier(.4,0,.2,1);
-}
-.card-featured:hover { background: #161a25; }
-.card-featured:hover::before { transform: scaleY(1); }
-.card-featured:hover .card-title { color: var(--gold); }
-.card-featured:hover .card-arrow { transform: translateX(4px); color: var(--gold); }
+    .btn.on-2 {
+      background: var(--c2a);
+      border-color: var(--c2);
+      color: var(--c2);
+    }
 
-.featured-left { display: flex; align-items: center; gap: 20px; }
-.featured-icon { font-size: 28px; flex-shrink: 0; filter: saturate(.7); transition: filter .2s; }
-.card-featured:hover .featured-icon { filter: saturate(1.2); }
-.featured-label {
-  font-family: 'IBM Plex Mono', monospace;
-  font-size: 10px;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  color: var(--gold-dim);
-  margin-bottom: 6px;
-}
-.featured-desc {
-  font-size: 12px;
-  color: var(--text-dim);
-  line-height: 1.5;
-  font-family: 'Lora', serif;
-  margin-top: 5px;
-  max-width: 480px;
-}
+    .btn.on-3 {
+      background: var(--c3a);
+      border-color: var(--c3);
+      color: var(--c3);
+    }
 
-/* ── footer note ── */
-.footer-note {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  padding: 20px 24px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 4px;
-}
-.footer-note-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
-.footer-note-text { font-size: 13px; color: var(--text-dim); line-height: 1.65; }
-.footer-note-text strong { color: var(--text); font-weight: 600; }
+    .btn.on-4 {
+      background: var(--c4a);
+      border-color: var(--c4);
+      color: var(--c4);
+    }
 
-/* ── responsive ── */
-@media (max-width: 580px) {
-  .page { padding: 48px 20px 72px; }
-  .grid { grid-template-columns: 1fr; }
-}
+    /* ── LEGEND ── */
+    .legend {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1.4rem;
+      padding: 13px 18px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 3rem;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, .04);
+    }
 
-/* ── page load animation ── */
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(18px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-.eyebrow { animation: fadeUp .5s ease both; }
-h1       { animation: fadeUp .5s .08s ease both; }
-.header-desc { animation: fadeUp .5s .15s ease both; }
-.card-featured { animation: fadeUp .4s .22s ease both; }
-.divider { animation: fadeUp .4s .30s ease both; }
-.grid    { animation: fadeUp .5s .36s ease both; }
-.footer-note { animation: fadeUp .4s .46s ease both; }
+    .legend-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9.5px;
+      color: var(--muted);
+      letter-spacing: .13em;
+      text-transform: uppercase;
+    }
 
-</style>
+    .legend-items {
+      display: flex;
+      gap: 1.4rem;
+      flex-wrap: wrap;
+    }
+
+    .leg-item {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px;
+      color: #454a58;
+    }
+
+    .leg-segs {
+      display: flex;
+      gap: 2px;
+    }
+
+    .leg-seg {
+      width: 14px;
+      height: 3px;
+      border-radius: 1.5px;
+      background: var(--dim);
+    }
+
+    .leg-seg.on {
+      background: rgba(0, 0, 0, .32);
+    }
+
+    .legend-sep {
+      width: 1px;
+      height: 18px;
+      background: var(--border);
+      margin: 0 4px;
+    }
+
+    .legend-books-hint {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px;
+      color: var(--muted);
+    }
+
+    /* ── TIER SECTION ── */
+    .tier {
+      margin-bottom: 4rem;
+      opacity: 0;
+      animation: rise .5s ease forwards;
+    }
+
+    .tier:nth-child(1) {
+      animation-delay: .05s
+    }
+
+    .tier:nth-child(2) {
+      animation-delay: .15s
+    }
+
+    .tier:nth-child(3) {
+      animation-delay: .25s
+    }
+
+    .tier:nth-child(4) {
+      animation-delay: .35s
+    }
+
+    .tier-head {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 14px;
+      flex-wrap: wrap;
+    }
+
+    .tier-num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      letter-spacing: .12em;
+      opacity: .6;
+    }
+
+    .tier-name {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 1.55rem;
+      font-weight: 400;
+      line-height: 1;
+    }
+
+    .tier-tag {
+      margin-left: auto;
+      font-size: 12px;
+      color: var(--muted);
+      font-style: italic;
+    }
+
+    .t1 .tier-num,
+    .t1 .tier-name {
+      color: var(--c1)
+    }
+
+    .t2 .tier-num,
+    .t2 .tier-name {
+      color: var(--c2)
+    }
+
+    .t3 .tier-num,
+    .t3 .tier-name {
+      color: var(--c3)
+    }
+
+    .t4 .tier-num,
+    .t4 .tier-name {
+      color: var(--c4)
+    }
+
+    /* ── CARDS ── */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(195px, 1fr));
+      gap: 9px;
+    }
+
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 13px 15px;
+      position: relative;
+      overflow: hidden;
+      transition: background .2s, border-color .2s, box-shadow .2s;
+      opacity: 0;
+      animation: rise .4s ease forwards;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, .04);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card:hover {
+      background: var(--bg-hover);
+      box-shadow: 0 3px 12px rgba(0, 0, 0, .08);
+    }
+
+    .card.has-link {
+      cursor: pointer;
+    }
+
+    .card.has-link::after {
+      content: '📚';
+      position: absolute;
+      top: 11px;
+      right: 13px;
+      font-size: 13px;
+      opacity: .35;
+      transition: opacity .2s, transform .2s;
+      pointer-events: none;
+    }
+
+    .card.has-link:hover::after {
+      opacity: .75;
+      transform: scale(1.15);
+    }
+
+    .t1 .card {
+      border-left: 2px solid var(--c1);
+    }
+
+    .t2 .card {
+      border-left: 2px solid var(--c2);
+    }
+
+    .t3 .card {
+      border-left: 2px solid var(--c3);
+    }
+
+    .t4 .card {
+      border-left: 2px solid var(--c4);
+    }
+
+    .t1 .card:hover {
+      border-color: var(--c1);
+    }
+
+    .t2 .card:hover {
+      border-color: var(--c2);
+    }
+
+    .t3 .card:hover {
+      border-color: var(--c3);
+    }
+
+    .t4 .card:hover {
+      border-color: var(--c4);
+    }
+
+    .card-ghost {
+      position: absolute;
+      right: -4px;
+      top: -12px;
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 5.5rem;
+      font-weight: 600;
+      line-height: 1;
+      opacity: .045;
+      color: #000;
+      user-select: none;
+      pointer-events: none;
+      letter-spacing: -.02em;
+    }
+
+    .card-code {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9.5px;
+      letter-spacing: .07em;
+      margin-bottom: 5px;
+      opacity: .8;
+    }
+
+    .t1 .card-code {
+      color: var(--c1)
+    }
+
+    .t2 .card-code {
+      color: var(--c2)
+    }
+
+    .t3 .card-code {
+      color: var(--c3)
+    }
+
+    .t4 .card-code {
+      color: var(--c4)
+    }
+
+    .card-title {
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--text);
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+
+    .spec-tag {
+      display: inline-block;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9px;
+      padding: 1px 6px;
+      border-radius: 4px;
+      margin-bottom: 7px;
+      letter-spacing: .04em;
+    }
+
+    .t3 .spec-tag {
+      background: var(--c3a);
+      color: var(--c3);
+      border: 1px solid rgba(176, 121, 8, .2);
+    }
+
+    .depth-track {
+      height: 3px;
+      background: var(--dim);
+      border-radius: 2px;
+      margin-bottom: 4px;
+      overflow: hidden;
+    }
+
+    .depth-fill {
+      height: 100%;
+      border-radius: 2px;
+      width: 0;
+      transition: width .7s ease .1s;
+    }
+
+    .t1 .depth-fill {
+      background: var(--c1)
+    }
+
+    .t2 .depth-fill {
+      background: var(--c2)
+    }
+
+    .t3 .depth-fill {
+      background: var(--c3)
+    }
+
+    .t4 .depth-fill {
+      background: var(--c4)
+    }
+
+    .depth-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 9.5px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+
+    .card-note {
+      font-size: 11px;
+      color: var(--muted);
+      line-height: 1.55;
+      border-top: 1px solid var(--border);
+      padding-top: 8px;
+      flex: 1;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 2.5rem 0 3.5rem;
+      border-top: 1px solid var(--border);
+      margin-top: 1rem;
+    }
+
+    .footer-txt {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px;
+      color: var(--muted);
+      line-height: 1.9;
+      max-width: 640px;
+    }
+
+    .footer-txt strong {
+      color: var(--text);
+      font-weight: 500;
+    }
+
+    /* ── ANIMATION ── */
+    @keyframes rise {
+      from {
+        opacity: 0;
+        transform: translateY(14px)
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0)
+      }
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media(max-width:600px) {
+      header {
+        padding: 2.5rem 0 2rem;
+      }
+
+      .tier-tag {
+        display: none;
+      }
+    }
+  </style>
 </head>
+
 <body>
-<div class="page">
+  <div class="wrap">
 
-  <p class="eyebrow">Математическая библиотека</p>
+    <header>
+      <p class="header-eyebrow">Дорожная карта · Mathematics for ML / DS</p>
+      <h1>Математика<br>для <em>ML&nbsp;/ Data Science</em></h1>
+      <p class="header-sub">Персональная карта математических дисциплин, ранжированных по практической ценности для
+        машинного обучения и анализа данных. Разделы классифицированы по системе MSC 2020 и распределены по четырём
+        уровням приоритета. Для ключевых разделов собраны детальные сравнения учебников: Goodreads-рейтинги, уровень
+        математики, DS-ценность, рекомендации по очерёдности чтения.</p>
+    </header>
 
-  <h1>Книги по <em>математике</em><br>для DS &amp; ML</h1>
+    <nav id="nav">
+      <button class="btn on-all" data-f="all">Все разделы</button>
+      <button class="btn" data-f="t1">01 · Фундамент</button>
+      <button class="btn" data-f="t2">02 · Важно</button>
+      <button class="btn" data-f="t3">03 · Специализации</button>
+      <button class="btn" data-f="t4">04 · Не нужно</button>
+    </nav>
 
-  <p class="header-desc">
-    Сравнительные таблицы ключевых учебников по шести дисциплинам —
-    от линейной алгебры до функционального анализа.
-    Рейтинги Goodreads, уровень сложности, DS-ценность и рекомендации когда читать.
-  </p>
-
-  <a class="card-featured" href="math_for_ml_ds.html">
-    <div class="featured-left">
-      <div class="featured-icon">🗺</div>
-      <div>
-        <div class="featured-label">Обзор · Roadmap</div>
-        <div class="card-title">Математика для ML / DS</div>
-        <div class="featured-desc">Дорожная карта: какие дисциплины нужны, в каком порядке изучать и зачем каждая из них важна для Data Science.</div>
+    <div class="legend">
+      <span class="legend-label">Глубина изучения</span>
+      <div class="legend-items">
+        <div class="leg-item">
+          <div class="leg-segs">
+            <div class="leg-seg on"></div>
+            <div class="leg-seg"></div>
+            <div class="leg-seg"></div>
+            <div class="leg-seg"></div>
+          </div>
+          знакомство
+        </div>
+        <div class="leg-item">
+          <div class="leg-segs">
+            <div class="leg-seg on"></div>
+            <div class="leg-seg on"></div>
+            <div class="leg-seg"></div>
+            <div class="leg-seg"></div>
+          </div>
+          рабочий
+        </div>
+        <div class="leg-item">
+          <div class="leg-segs">
+            <div class="leg-seg on"></div>
+            <div class="leg-seg on"></div>
+            <div class="leg-seg on"></div>
+            <div class="leg-seg"></div>
+          </div>
+          уверенный
+        </div>
+        <div class="leg-item">
+          <div class="leg-segs">
+            <div class="leg-seg on"></div>
+            <div class="leg-seg on"></div>
+            <div class="leg-seg on"></div>
+            <div class="leg-seg on"></div>
+          </div>
+          эксперт
+        </div>
+      </div>
+      <div class="legend-sep"></div>
+      <div class="legend-books-hint">
+        <span style="font-size:11px">📚</span>
+        клик на карточку открывает таблицу книг
       </div>
     </div>
-    <span class="card-arrow" style="font-size:18px;flex-shrink:0">→</span>
-  </a>
 
-  <div class="divider">
-    <div class="divider-line"></div>
-    <span class="divider-label">6 разделов</span>
-    <div class="divider-line"></div>
-  </div>
+    <div id="sections"></div>
 
-  <div class="grid">
-
-    <a class="card" href="linear_algebra_books_ds_comparison.html">
-      <div class="card-num">01</div>
-      <div class="card-icon">⊞</div>
-      <div class="card-title">Линейная алгебра</div>
-      <div class="card-sub">Основа любого ML-стека. Матрицы, разложения, пространства. От Strang до Axler.</div>
-      <div class="card-meta">
-        <span class="card-tag">Linear Algebra</span>
-        <span class="card-arrow">→</span>
-      </div>
-    </a>
-
-    <a class="card" href="real_analysis_ds_comparison.html">
-      <div class="card-num">02</div>
-      <div class="card-icon">∂</div>
-      <div class="card-title">Математический анализ</div>
-      <div class="card-sub">Пределы, дифференцирование, интегрирование. Строгая база для теории оптимизации.</div>
-      <div class="card-meta">
-        <span class="card-tag">Real Analysis</span>
-        <span class="card-arrow">→</span>
-      </div>
-    </a>
-
-    <a class="card" href="functional_analysis_ml_table.html">
-      <div class="card-num">03</div>
-      <div class="card-icon">∫</div>
-      <div class="card-title">Функциональный анализ</div>
-      <div class="card-sub">Банаховы и гильбертовы пространства, RKHS, операторы. Для глубокого понимания ML.</div>
-      <div class="card-meta">
-        <span class="card-tag">Functional Analysis</span>
-        <span class="card-arrow">→</span>
-      </div>
-    </a>
-
-    <a class="card" href="probability_books_ds_comparison.html">
-      <div class="card-num">04</div>
-      <div class="card-icon">𝑃</div>
-      <div class="card-title">Теория вероятностей</div>
-      <div class="card-sub">Случайные величины, распределения, предельные теоремы. От Blitzstein до Jaynes.</div>
-      <div class="card-meta">
-        <span class="card-tag">Probability</span>
-        <span class="card-arrow">→</span>
-      </div>
-    </a>
-
-    <a class="card" href="statistic_books_comparison_table.html">
-      <div class="card-num">05</div>
-      <div class="card-icon">σ̂</div>
-      <div class="card-title">Статистика и ML</div>
-      <div class="card-sub">ISL, ESL, байесовский подход, графические модели. Прикладной взгляд на вывод.</div>
-      <div class="card-meta">
-        <span class="card-tag">Statistics · ML</span>
-        <span class="card-arrow">→</span>
-      </div>
-    </a>
-
-    <a class="card" href="numerical_methods_ml_ds.html">
-      <div class="card-num">06</div>
-      <div class="card-icon">≈</div>
-      <div class="card-title">Численные методы</div>
-      <div class="card-sub">Оптимизация, численное дифференцирование, решение систем. Вычислительная сторона ML.</div>
-      <div class="card-meta">
-        <span class="card-tag">Numerical Methods</span>
-        <span class="card-arrow">→</span>
-      </div>
-    </a>
+    <footer>
+      <p class="footer-txt">
+        <strong>Текущий маршрут:</strong> Velleman → Линейная алгебра → Анализ → Вероятность → Статистика → ML —
+        правильная последовательность.<br>
+        <strong>Следующий приоритет после статистики:</strong> 94 · Теория информации — короткий курс с очень высокой
+        практической отдачей.<br>
+        <strong>Источник классификации:</strong> MSC 2020 (Mathematics Subject Classification)
+      </p>
+    </footer>
 
   </div>
 
-  <div class="footer-note">
-    <span class="footer-note-icon">📖</span>
-    <div class="footer-note-text">
-      Каждая таблица содержит <strong>сортировку по рейтингу, уровню и DS-ценности</strong>,
-      а также фильтрацию по тегам и поиск. Книги подобраны с учётом пути
-      <strong>линейная алгебра → анализ → вероятность → статистика → ML</strong>.
-    </div>
-  </div>
+  <script>
+    const TIERS = [
+      {
+        id: 't1', num: '01', name: 'Фундамент',
+        tag: 'Без этого работа в ML невозможна',
+        items: [
+          {
+            code: '15', name: 'Линейная алгебра', depth: 4, dlabel: 'эксперт',
+            note: 'Матрицы, SVD, eigendecomp, PCA — используется ежедневно',
+            link: 'linear_algebra_books_ds_comparison.html'
+          },
+          {
+            code: '60', name: 'Теория вероятностей и случайные процессы', depth: 4, dlabel: 'эксперт',
+            note: 'Байес, распределения, MLE, MCMC, стохастические процессы',
+            link: 'probability_books_ds_comparison.html'
+          },
+          {
+            code: '62', name: 'Статистика и статистическое обучение', depth: 4, dlabel: 'эксперт',
+            note: 'Гипотезы, регрессия, bias-variance, кросс-валидация',
+            link: 'statistic_books_comparison_table.html'
+          },
+          {
+            code: '26', name: 'Вещественный анализ', depth: 3, dlabel: 'уверенный',
+            note: 'Производные, оптимизация, сходимость, выпуклые функции',
+            link: 'real_analysis_ds_comparison.html'
+          },
+          {
+            code: '65', name: 'Численные методы', depth: 3, dlabel: 'уверенный',
+            note: 'Gradient descent, численная стабильность, float-арифметика',
+            link: 'numerical_methods_ml_ds.html'
+          },
+        ]
+      },
+      {
+        id: 't2', num: '02', name: 'Важно',
+        tag: 'Отделяет практика от исследователя',
+        items: [
+          {
+            code: '94', name: 'Теория информации и коммуникации', depth: 3, dlabel: 'уверенный',
+            note: 'Энтропия, KL-дивергенция, взаимная информация — везде в ML'
+          },
+          {
+            code: '28', name: 'Теория меры и интегрирование', depth: 2, dlabel: 'рабочий',
+            note: 'Основа строгой теории вероятностей, σ-алгебры, интеграл Лебега'
+          },
+          {
+            code: '68', name: 'Теоретическая информатика', depth: 2, dlabel: 'рабочий',
+            note: 'Сложность, PAC-обучение, алгоритмы, VC-размерность'
+          },
+          {
+            code: '46', name: 'Функциональный анализ', depth: 1, dlabel: 'знакомство',
+            note: 'Ядра, RKHS, банаховы пространства, SVM в общем виде',
+            link: 'functional_analysis_ml_table.html'
+          },
+          {
+            code: '37', name: 'Динамические системы и эргодическая теория', depth: 1, dlabel: 'знакомство',
+            note: 'Понимание оптимизации, RNN, нейронные ОДУ'
+          },
+          {
+            code: '03', name: 'Логика и теория множеств', depth: 1, dlabel: 'знакомство',
+            note: 'Формальные рассуждения — уже частично покрыто через Velleman',
+            link: 'logic_ml_ds_books.html'
+          },
+        ]
+      },
+      {
+        id: 't3', num: '03', name: 'Специализации',
+        tag: 'Нужно в зависимости от направления',
+        items: [
+          {
+            code: '53', name: 'Дифференциальная геометрия', depth: 1, dlabel: 'знакомство', spec: 'Геометрич. DL',
+            note: 'Многообразия, геодезики, Риманова оптимизация'
+          },
+          {
+            code: '42', name: 'Гармонический анализ', depth: 1, dlabel: 'знакомство', spec: 'Signal / Audio ML',
+            note: 'Фурье-анализ, вейвлеты, основа свёрточных сетей'
+          },
+          {
+            code: '35', name: 'ДУ в частных производных', depth: 1, dlabel: 'знакомство', spec: 'Physics-based ML',
+            note: 'PINN, диффузионные модели, уравнение Фоккера–Планка'
+          },
+          {
+            code: '49', name: 'Вариационное исчисление и оптимальное управление', depth: 1, dlabel: 'знакомство', spec: 'RL / Control',
+            note: 'Политики, уравнение Беллмана, MDP'
+          },
+          {
+            code: '91', name: 'Теория игр, экономика, финансы', depth: 1, dlabel: 'знакомство', spec: 'RL / GAN',
+            note: 'Равновесия Нэша, multi-agent, mechanism design'
+          },
+          {
+            code: '82', name: 'Статистическая физика', depth: 1, dlabel: 'знакомство', spec: 'Теория DL',
+            note: 'Энергетические модели, связь с нейросетями, Ising → RBM'
+          },
+          {
+            code: '20', name: 'Теория групп', depth: 1, dlabel: 'знакомство', spec: 'Equivariant NN',
+            note: 'Симметрии в нейросетях, графовые нейросети, G-CNN'
+          },
+          {
+            code: '55', name: 'Алгебраическая топология', depth: 1, dlabel: 'знакомство', spec: 'TDA',
+            note: 'Persistent homology, topological data analysis'
+          },
+        ]
+      },
+      {
+        id: 't4', num: '04', name: 'Не нужно для ML/DS',
+        tag: 'Красиво, но без практической отдачи',
+        items: [
+          {
+            code: '11–14', name: 'Теория чисел, теория полей, коммутативная алгебра, алгебраическая геометрия', depth: 0, dlabel: '—',
+            note: 'Разве что для криптографии или ZK-proofs'
+          },
+          {
+            code: '16–19', name: 'Некоммутативные кольца, алгебры Ли, теория категорий, K-теория', depth: 0, dlabel: '—',
+            note: 'Теория категорий — для типизированного ФП, не для ML'
+          },
+          {
+            code: '30–47 (нишевые)', name: 'Комплексный анализ, спец. функции, интегральные уравнения, операторная теория...', depth: 0, dlabel: '—',
+            note: 'Косвенно полезны в лучшем случае'
+          },
+          {
+            code: '70–86', name: 'Классическая механика, гидродинамика, электродинамика, КМ, астрофизика...', depth: 0, dlabel: '—',
+            note: 'Только для физика-ориентированного ML / scientific computing'
+          },
+        ]
+      }
+    ];
 
-</div>
+    const depthPct = { 0: 0, 1: 25, 2: 50, 3: 75, 4: 100 };
+
+    function buildSections(filter) {
+      const container = document.getElementById('sections');
+      container.innerHTML = '';
+
+      TIERS.forEach((tier, ti) => {
+        if (filter !== 'all' && filter !== tier.id) return;
+
+        const sec = document.createElement('section');
+        sec.className = `tier ${tier.id}`;
+        sec.style.animationDelay = (ti * .08) + 's';
+
+        sec.innerHTML = `
+      <div class="tier-head">
+        <span class="tier-num">${tier.num}</span>
+        <span class="tier-name">${tier.name}</span>
+        <span class="tier-tag">${tier.tag}</span>
+      </div>
+      <div class="grid"></div>`;
+
+        const grid = sec.querySelector('.grid');
+
+        tier.items.forEach((item, ii) => {
+          const card = document.createElement('div');
+          card.className = 'card' + (item.link ? ' has-link' : '');
+          card.style.animationDelay = (.05 + ti * .08 + ii * .04) + 's';
+
+          const ghostCode = item.code.split('–')[0].replace(/[^0-9]/g, '').slice(0, 2);
+          const specHtml = item.spec ? `<div class="spec-tag">${item.spec}</div>` : '';
+
+          card.innerHTML = `
+        <div class="card-ghost" aria-hidden="true">${ghostCode}</div>
+        <div class="card-code">${item.code}</div>
+        ${specHtml}
+        <div class="card-title">${item.name}</div>
+        <div class="depth-track"><div class="depth-fill" data-pct="${depthPct[item.depth]}"></div></div>
+        <div class="depth-label">${item.dlabel}</div>
+        <div class="card-note">${item.note}</div>`;
+
+          if (item.link) {
+            card.addEventListener('click', () => { window.location.href = item.link; });
+          }
+
+          grid.appendChild(card);
+        });
+
+        container.appendChild(sec);
+      });
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          document.querySelectorAll('.depth-fill').forEach(el => {
+            el.style.width = el.dataset.pct + '%';
+          });
+        });
+      });
+    }
+
+    let current = 'all';
+    document.getElementById('nav').addEventListener('click', e => {
+      const btn = e.target.closest('.btn');
+      if (!btn) return;
+      const f = btn.dataset.f;
+      current = f;
+      document.querySelectorAll('.btn').forEach(b => {
+        b.className = 'btn';
+        if (b === btn) b.className = 'btn on-' + (f === 'all' ? 'all' : f.replace('t', ''));
+      });
+      buildSections(f);
+    });
+
+    buildSections('all');
+  </script>
 </body>
+
 </html>

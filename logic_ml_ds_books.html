@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Logic & Set Theory — ML/DS Navigator</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400&family=Plus+Jakarta+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #f4f2ec;
+  --surface:   #ffffff;
+  --surface2:  #faf9f6;
+  --border:    #e2ddd4;
+  --border2:   #ccc8be;
+  --ink:       #1c1a16;
+  --ink2:      #635f57;
+  --ink3:      #a09b90;
+  --accent:    #2b5278;
+  --accent-bg: #edf3f9;
+
+  --high-bg:  #e8f5ed;
+  --high-fg:  #1f6b3a;
+  --high-bd:  #b8dfc6;
+  --mid-bg:   #fef3e2;
+  --mid-fg:   #8a5a10;
+  --mid-bd:   #f0d09a;
+  --low-bg:   #f0ede8;
+  --low-fg:   #7a756c;
+  --low-bd:   #d4cfc8;
+
+  --d1-bg: #e8f0fb; --d1-fg: #1a4a8a; --d1-bd: #b0c8f0;
+  --d2-bg: #ede8fb; --d2-fg: #42278a; --d2-bd: #c4b8f0;
+  --d3-bg: #fce8e1; --d3-fg: #8a3218; --d3-bd: #f0b8a8;
+  --d4-bg: #fce8e8; --d4-fg: #8a1a1a; --d4-bd: #f0b0b0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-weight: 300;
+  font-size: 14px;
+  line-height: 1.65;
+  min-height: 100vh;
+}
+
+/* ── Header ── */
+header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 2.8rem 2.8rem 2.2rem;
+  position: relative;
+  overflow: hidden;
+}
+header::after {
+  content: '∀∃⊂⊃∩∪';
+  position: absolute;
+  right: 2rem;
+  top: 1.8rem;
+  font-size: 4.5rem;
+  color: var(--border);
+  letter-spacing: 0.15em;
+  line-height: 1;
+  font-family: 'Fraunces', serif;
+  pointer-events: none;
+  user-select: none;
+}
+.eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.7rem;
+}
+header h1 {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: clamp(1.9rem, 3.5vw, 2.9rem);
+  font-weight: 600;
+  line-height: 1.12;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+  max-width: 600px;
+}
+header h1 em {
+  font-style: italic;
+  color: var(--accent);
+}
+.h-sub {
+  margin-top: 0.9rem;
+  color: var(--ink2);
+  font-size: 13.5px;
+  max-width: 560px;
+  line-height: 1.6;
+}
+.h-chips {
+  margin-top: 1.2rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+.h-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 4px;
+  background: var(--accent-bg);
+  color: var(--accent);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10.5px;
+  letter-spacing: 0.05em;
+  border: 1px solid #c4d8ec;
+}
+
+/* ── Legend ── */
+.legend-bar {
+  background: var(--surface2);
+  border-bottom: 1px solid var(--border);
+  padding: 0.8rem 2.8rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.8rem;
+  align-items: center;
+}
+.leg-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  color: var(--ink3);
+  margin-right: 2px;
+}
+.leg-group { display: flex; align-items: center; gap: 5px; }
+
+/* ── Pill ── */
+.pill {
+  display: inline-block;
+  padding: 2px 9px;
+  border-radius: 4px;
+  font-size: 11.5px;
+  font-weight: 500;
+  white-space: nowrap;
+  border: 1px solid transparent;
+}
+.pill-high { background: var(--high-bg); color: var(--high-fg); border-color: var(--high-bd); }
+.pill-mid  { background: var(--mid-bg);  color: var(--mid-fg);  border-color: var(--mid-bd);  }
+.pill-low  { background: var(--low-bg);  color: var(--low-fg);  border-color: var(--low-bd);  }
+.pill-d1   { background: var(--d1-bg);   color: var(--d1-fg);   border-color: var(--d1-bd);   }
+.pill-d2   { background: var(--d2-bg);   color: var(--d2-fg);   border-color: var(--d2-bd);   }
+.pill-d3   { background: var(--d3-bg);   color: var(--d3-fg);   border-color: var(--d3-bd);   }
+.pill-d4   { background: var(--d4-bg);   color: var(--d4-fg);   border-color: var(--d4-bd);   }
+
+/* ── Controls ── */
+.controls {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0.75rem 2.8rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  box-shadow: 0 1px 0 var(--border), 0 2px 8px rgba(0,0,0,0.04);
+}
+.srch-wrap { position: relative; flex: 1; min-width: 180px; max-width: 280px; }
+.srch-wrap svg {
+  position: absolute; left: 10px; top: 50%;
+  transform: translateY(-50%);
+  color: var(--ink3); pointer-events: none;
+}
+input[type=text] {
+  width: 100%; padding: 7px 10px 7px 32px;
+  background: var(--bg);
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  color: var(--ink); font-size: 13px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  outline: none; transition: border-color 0.15s, box-shadow 0.15s;
+}
+input[type=text]::placeholder { color: var(--ink3); }
+input[type=text]:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(43,82,120,0.1); }
+
+select {
+  padding: 7px 28px 7px 10px;
+  background: var(--bg);
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  color: var(--ink2); font-size: 13px;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  outline: none; cursor: pointer; appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23a09b90'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 9px center;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(43,82,120,0.1); }
+
+.btn-reset {
+  padding: 7px 14px;
+  background: transparent;
+  border: 1px solid var(--border2);
+  border-radius: 6px;
+  color: var(--ink3);
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  font-size: 12px; cursor: pointer;
+  transition: all 0.15s;
+}
+.btn-reset:hover { border-color: var(--accent); color: var(--accent); }
+.ctrl-count { margin-left: auto; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--ink3); white-space: nowrap; }
+.ctrl-count b { color: var(--accent); font-weight: 500; }
+
+/* ── Table ── */
+.table-wrap { padding: 1.5rem 2.8rem 3.5rem; overflow-x: auto; }
+
+table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+col.c-book  { width: 23%; }
+col.c-topic { width: 13%; }
+col.c-diff  { width: 10%; }
+col.c-rel   { width: 11%; }
+col.c-gr    { width: 6%;  }
+col.c-ml    { width: 37%; }
+
+thead th {
+  text-align: left; padding: 0 1rem 10px 0;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; font-weight: 400;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: var(--ink3);
+  border-bottom: 2px solid var(--border);
+  cursor: pointer; user-select: none;
+  white-space: nowrap;
+  transition: color 0.15s;
+}
+thead th:hover { color: var(--ink2); }
+thead th.sorted { color: var(--accent); }
+.sarr { margin-left: 4px; font-size: 10px; opacity: 0.5; }
+thead th.sorted .sarr { opacity: 1; }
+
+tbody tr { border-bottom: 1px solid var(--border); transition: background 0.1s; }
+tbody tr:hover { background: var(--surface2); }
+
+tbody td { padding: 11px 1rem 11px 0; vertical-align: top; }
+
+.bk-title {
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 14.5px; font-weight: 600;
+  line-height: 1.3; color: var(--ink);
+}
+.bk-author {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; color: var(--ink3); margin-top: 3px;
+}
+.bk-star {
+  display: inline-block; margin-top: 5px;
+  font-size: 10px; font-weight: 500;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.06em; text-transform: uppercase;
+  padding: 1px 7px; border-radius: 3px;
+  background: var(--accent-bg);
+  color: var(--accent);
+  border: 1px solid #c4d8ec;
+}
+.topic-tag {
+  display: inline-block;
+  font-size: 11px; padding: 2px 8px;
+  border-radius: 4px;
+  background: var(--bg);
+  color: var(--ink2);
+  border: 1px solid var(--border);
+}
+.gr-val {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 13px; font-weight: 500; color: var(--accent);
+}
+.ml-text { font-size: 12.5px; color: var(--ink2); line-height: 1.55; }
+
+.no-results {
+  text-align: center; padding: 3.5rem 0;
+  color: var(--ink3); font-size: 14px; font-style: italic;
+}
+
+/* ── Footer ── */
+footer {
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+  padding: 1.2rem 2.8rem;
+  display: flex; justify-content: space-between;
+  flex-wrap: wrap; gap: 0.5rem;
+  font-size: 12px; color: var(--ink3);
+}
+footer a { color: var(--accent); text-decoration: none; }
+footer a:hover { text-decoration: underline; }
+
+/* scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+@media (max-width: 860px) {
+  header, .controls, .legend-bar, .table-wrap, footer { padding-left: 1.2rem; padding-right: 1.2rem; }
+  header::after { display: none; }
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="eyebrow">Goodreads · List #162727 · Logic &amp; Set Theory (MMath)</div>
+  <h1>55 книг по логике<br>и теории множеств —<br><em>навигатор для ML/DS</em></h1>
+  <p class="h-sub">Сравнительный анализ каждой книги с позиции подготовки к машинному обучению и data science. Фильтрация по релевантности, сложности и теме.</p>
+  <div class="h-chips">
+    <span class="h-chip">55 книг</span>
+    <span class="h-chip">4 уровня сложности</span>
+    <span class="h-chip">13 тем</span>
+    <span class="h-chip">8 рекомендаций</span>
+  </div>
+</header>
+
+<div class="legend-bar">
+  <div class="leg-group">
+    <span class="leg-label">Релевантность</span>
+    <span class="pill pill-high">▲ Высокая</span>
+    <span class="pill pill-mid">● Средняя</span>
+    <span class="pill pill-low">▼ Низкая</span>
+  </div>
+  <div class="leg-group">
+    <span class="leg-label">Сложность</span>
+    <span class="pill pill-d1">Начальный</span>
+    <span class="pill pill-d2">Средний</span>
+    <span class="pill pill-d3">Продвинутый</span>
+    <span class="pill pill-d4">Экспертный</span>
+  </div>
+</div>
+
+<div class="controls">
+  <div class="srch-wrap">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" id="search" placeholder="Поиск по названию или автору…" oninput="render()">
+  </div>
+  <select id="rel-f" onchange="render()">
+    <option value="">Вся релевантность</option>
+    <option value="high">▲ Высокая</option>
+    <option value="mid">● Средняя</option>
+    <option value="low">▼ Низкая</option>
+  </select>
+  <select id="diff-f" onchange="render()">
+    <option value="">Вся сложность</option>
+    <option value="Начальный">Начальный</option>
+    <option value="Средний">Средний</option>
+    <option value="Продвинутый">Продвинутый</option>
+    <option value="Экспертный">Экспертный</option>
+  </select>
+  <select id="topic-f" onchange="render()">
+    <option value="">Все темы</option>
+    <option>Дискретная математика</option>
+    <option>Теория вычислений</option>
+    <option>Теория множеств</option>
+    <option>Матем. логика</option>
+    <option>Доказательства</option>
+    <option>Логика в CS</option>
+    <option>Статистика</option>
+    <option>Рассуждения</option>
+    <option>Теория типов</option>
+    <option>Комбинаторика</option>
+    <option>Философия</option>
+    <option>Основания</option>
+    <option>История логики</option>
+  </select>
+  <button class="btn-reset" onclick="reset()">Сбросить</button>
+  <div class="ctrl-count">Показано: <b id="counter">55</b> / 55</div>
+</div>
+
+<div class="table-wrap">
+  <table>
+    <colgroup>
+      <col class="c-book"><col class="c-topic"><col class="c-diff">
+      <col class="c-rel"><col class="c-gr"><col class="c-ml">
+    </colgroup>
+    <thead>
+      <tr>
+        <th onclick="sortBy('title')" id="h-title">Книга / Автор <span class="sarr">↕</span></th>
+        <th onclick="sortBy('topic')" id="h-topic">Тема <span class="sarr">↕</span></th>
+        <th onclick="sortBy('diff')"  id="h-diff">Сложность <span class="sarr">↕</span></th>
+        <th onclick="sortBy('rel')"   id="h-rel">ML/DS <span class="sarr">↕</span></th>
+        <th onclick="sortBy('gr')"    id="h-gr">GR ★ <span class="sarr">↕</span></th>
+        <th>Что даёт для ML/DS</th>
+      </tr>
+    </thead>
+    <tbody id="tbody"></tbody>
+  </table>
+</div>
+
+<footer>
+  <span>Список: <a href="https://www.goodreads.com/list/show/162727" target="_blank">goodreads.com/list/show/162727</a> · MMath, 2021</span>
+  <span>Оценки релевантности — авторские, на основе ML/DS roadmap</span>
+</footer>
+
+<script>
+const BOOKS = [
+  {title:"How to Prove It",author:"D. J. Velleman",topic:"Доказательства",diff:"Начальный",rel:"mid",gr:4.30,must:true,ml:"Строгость математических рассуждений; необходима для понимания теории ML, статистических доказательств и вывода алгоритмов"},
+  {title:"Naive Set Theory",author:"P. R. Halmos",topic:"Теория множеств",diff:"Средний",rel:"mid",gr:4.23,must:false,ml:"Фундамент теории вероятностей и меры; функции, отношения, кардиналы — повсеместно в ML-математике"},
+  {title:"On Formally Undecidable Propositions",author:"K. Gödel",topic:"Основания",diff:"Экспертный",rel:"low",gr:4.47,must:false,ml:"Теоремы о неполноте — исторически важны; прямой пользы для практики ML/DS нет"},
+  {title:"Homotopy Type Theory",author:"Univalent Foundations",topic:"Теория типов",diff:"Экспертный",rel:"low",gr:4.53,must:false,ml:"Нишевая связь с формальной верификацией ML-систем; не для практика"},
+  {title:"Mathematical Logic",author:"S. C. Kleene",topic:"Матем. логика",diff:"Продвинутый",rel:"low",gr:4.37,must:false,ml:"Глубокие основания формальной логики; полезно для исследователей, не для инженеров ML"},
+  {title:"Introduction to the Theory of Computation",author:"M. Sipser",topic:"Теория вычислений",diff:"Средний",rel:"mid",gr:4.24,must:false,ml:"NP-полнота, разрешимость — понимание пределов обучения, PAC-learning, сложность алгоритмов"},
+  {title:"Introduction to Automata Theory, Languages, and Computation",author:"Hopcroft, Motwani, Ullman",topic:"Теория вычислений",diff:"Средний",rel:"mid",gr:4.05,must:false,ml:"Формальные языки, автоматы — основа NLP, токенизации, грамматик; понимание разрешимости"},
+  {title:"Principia Mathematica",author:"Whitehead & Russell",topic:"Основания",diff:"Экспертный",rel:"low",gr:3.98,must:false,ml:"Исторический монументальный труд; нет практической пользы для ML/DS"},
+  {title:"Essays on the Theory of Numbers",author:"R. Dedekind",topic:"Основания",diff:"Продвинутый",rel:"low",gr:4.15,must:false,ml:"Исторически важно для оснований математики; не релевантно для ML/DS"},
+  {title:"Mathematical Proofs: A Transition",author:"Chartrand, Polimeni, Zhang",topic:"Доказательства",diff:"Начальный",rel:"mid",gr:4.08,must:false,ml:"Развивает строгость мышления и умение читать доказательства; полезно на старте изучения мат. ML"},
+  {title:"A Mathematical Introduction to Logic",author:"H. B. Enderton",topic:"Матем. логика",diff:"Средний",rel:"low",gr:3.96,must:false,ml:"Формальная логика первого порядка; косвенно полезна для AI-систем, не для практического DS"},
+  {title:"Computational Complexity: A Modern Approach",author:"Arora & Barak",topic:"Теория вычислений",diff:"Продвинутый",rel:"mid",gr:4.32,must:false,ml:"PAC-learning, VC-dimension, hardness of approximation — для ML-теоретиков и исследователей"},
+  {title:"From Frege to Gödel",author:"J. Van Heijenoort",topic:"История логики",diff:"Экспертный",rel:"low",gr:4.61,must:false,ml:"Первоисточники истории логики; нет применения в ML"},
+  {title:"Generatingfunctionology",author:"H. S. Wilf",topic:"Комбинаторика",diff:"Средний",rel:"mid",gr:4.61,must:false,ml:"Производящие функции для анализа алгоритмов; полезно для теоретических аспектов ML"},
+  {title:"Patterns of Plausible Inference",author:"G. Pólya",topic:"Рассуждения",diff:"Средний",rel:"high",gr:4.51,must:true,ml:"Правдоподобный вывод, аналогия, индукция — эпистемологическая основа машинного обучения; Pólya предвосхищает байесовское мышление"},
+  {title:"99 Variations on a Proof",author:"P. Ording",topic:"Доказательства",diff:"Начальный",rel:"low",gr:4.33,must:false,ml:"Литературный взгляд на доказательства; культурная ценность, нет прямой пользы для ML"},
+  {title:"Set Theory and the Continuum Hypothesis",author:"P. Cohen",topic:"Теория множеств",diff:"Экспертный",rel:"low",gr:4.22,must:false,ml:"Форсинг и независимость — абстрактная теория; не применимо в ML/DS"},
+  {title:"Set Theory and Metric Spaces",author:"I. Kaplansky",topic:"Теория множеств",diff:"Средний",rel:"high",gr:4.35,must:true,ml:"Метрические пространства — фундамент kNN, SVM, кластеризации, норм и оптимизации; один из наиболее полезных разделов"},
+  {title:"Set Theory: An Introduction to Independence Proofs",author:"K. Kunen",topic:"Теория множеств",diff:"Экспертный",rel:"low",gr:4.25,must:false,ml:"Доказательства независимости ZFC; не применимо в ML"},
+  {title:"Set Theory",author:"T. J. Jech",topic:"Теория множеств",diff:"Экспертный",rel:"low",gr:4.43,must:false,ml:"Полный профессиональный курс теории множеств; избыточно для ML"},
+  {title:"Frege: Basic Laws of Arithmetic",author:"G. Frege",topic:"История логики",diff:"Экспертный",rel:"low",gr:4.20,must:false,ml:"Основы логицизма; нет применения в ML/DS"},
+  {title:"The Frege Reader",author:"G. Frege",topic:"История логики",diff:"Продвинутый",rel:"low",gr:4.08,must:false,ml:"Философия языка и значения; нет пользы для ML-практика"},
+  {title:"Schaum's Outline of Discrete Mathematics",author:"S. Lipschutz",topic:"Дискретная математика",diff:"Начальный",rel:"high",gr:3.81,must:true,ml:"Практические задачи: комбинаторика, теория графов, логика, отношения — всё прямо в ML/DS"},
+  {title:"Computability and Logic",author:"Boolos, Burgess, Jeffrey",topic:"Теория вычислений",diff:"Средний",rel:"mid",gr:4.13,must:false,ml:"Вычислимость и разрешимость; важно для понимания теоретических ограничений обучения"},
+  {title:"Lectures on the Foundations of Mathematics",author:"L. Wittgenstein",topic:"Философия",diff:"Продвинутый",rel:"low",gr:4.28,must:false,ml:"Философия математики; нет применения в ML/DS"},
+  {title:"Elements of Set Theory",author:"H. B. Enderton",topic:"Теория множеств",diff:"Начальный",rel:"mid",gr:4.21,must:false,ml:"Функции, отношения, ординалы — база для понимания формальных основ теории вероятностей и ML"},
+  {title:"Induction and Analogy in Mathematics",author:"G. Pólya",topic:"Рассуждения",diff:"Средний",rel:"high",gr:4.36,must:true,ml:"Математическое открытие через аналогию — прямая связь с индуктивным обучением, обобщением"},
+  {title:"Schaum's Outline of Set Theory",author:"S. Lipschutz",topic:"Теория множеств",diff:"Начальный",rel:"mid",gr:4.00,must:false,ml:"Задачник по теории множеств; полезен для практики и закрепления материала"},
+  {title:"Mathematical Logic",author:"W. V. O. Quine",topic:"Матем. логика",diff:"Продвинутый",rel:"low",gr:4.09,must:false,ml:"Философская логика; нет прямого применения в ML"},
+  {title:"The Foundations of Mathematics",author:"D. Tall",topic:"Основания",diff:"Начальный",rel:"mid",gr:4.07,must:false,ml:"Мост между школьной и строгой математикой; полезен для начинающих в математике ML"},
+  {title:"Axiomatic Set Theory",author:"P. C. Suppes",topic:"Теория множеств",diff:"Продвинутый",rel:"low",gr:4.19,must:false,ml:"Аксиоматика ZFC; избыточно для ML-практика"},
+  {title:"Topoi: The Categorial Analysis of Logic",author:"R. Goldblatt",topic:"Теория типов",diff:"Экспертный",rel:"low",gr:4.27,must:false,ml:"Категорная логика; нишевая связь с функциональными языками и некоторыми областями ML"},
+  {title:"Foundations of Geometry",author:"D. Hilbert",topic:"Основания",diff:"Продвинутый",rel:"low",gr:4.24,must:false,ml:"Аксиоматическая геометрия; историческая ценность, не для ML"},
+  {title:"Introduction to Set Theory",author:"Hrbacek & Jech",topic:"Теория множеств",diff:"Начальный",rel:"mid",gr:4.32,must:false,ml:"Хорошее вводное изложение; даёт базу для понимания мат. анализа и основ ML"},
+  {title:"Introduction to Logic",author:"P. C. Suppes",topic:"Матем. логика",diff:"Начальный",rel:"mid",gr:3.87,must:false,ml:"Пропозициональная и предикатная логика — применимо в AI, экспертных системах"},
+  {title:"A Book of Set Theory",author:"C. C. Pinter",topic:"Теория множеств",diff:"Начальный",rel:"mid",gr:4.28,must:false,ml:"Доступное введение с упражнениями; полезно для понимания математики ML"},
+  {title:"Automata and Computability",author:"D. C. Kozen",topic:"Теория вычислений",diff:"Средний",rel:"mid",gr:4.21,must:false,ml:"Лаконичный курс; понимание NLP-грамматик и пределов вычислений"},
+  {title:"Certified Programming with Dependent Types",author:"A. Chlipala",topic:"Теория типов",diff:"Экспертный",rel:"low",gr:4.28,must:false,ml:"Coq и зависимые типы; нишево для верификации ML-программ"},
+  {title:"Set Theory and Its Logic",author:"W. V. O. Quine",topic:"Теория множеств",diff:"Продвинутый",rel:"low",gr:3.86,must:false,ml:"Философский подход; не релевантно для ML"},
+  {title:"Oxford Handbook of Philosophy of Mathematics and Logic",author:"S. Shapiro (ed.)",topic:"Философия",diff:"Продвинутый",rel:"low",gr:4.48,must:false,ml:"Академическая философия математики; не для ML-практика"},
+  {title:"Introduction to Logic",author:"I. M. Copi",topic:"Матем. логика",diff:"Начальный",rel:"mid",gr:4.07,must:false,ml:"Классический учебник логики; общеобразовательная польза, развивает аналитическое мышление"},
+  {title:"Set Theory and Logic",author:"R. R. Stoll",topic:"Теория множеств",diff:"Начальный",rel:"mid",gr:4.02,must:false,ml:"Совмещённое введение в теорию множеств и логику; нормальная математическая база"},
+  {title:"Statistics As Principled Argument",author:"R. P. Abelson",topic:"Статистика",diff:"Начальный",rel:"high",gr:4.14,must:true,ml:"Статистическое мышление и аргументация данными — прямой core Data Science; редкая книга в этом списке"},
+  {title:"An Introduction to Mathematical Logic",author:"R. E. Hodel",topic:"Матем. логика",diff:"Средний",rel:"low",gr:4.13,must:false,ml:"Формальная логика; не имеет прямого применения в ML/DS"},
+  {title:"Mathematics for Computer Science",author:"Lehman, Leighton, Meyer",topic:"Дискретная математика",diff:"Начальный",rel:"high",gr:3.84,must:true,ml:"Прямое применение: графы, вероятность, комбинаторика, доказательства — обязательная база для CS/ML"},
+  {title:"Logic in Computer Science",author:"Huth & Ryan",topic:"Логика в CS",diff:"Средний",rel:"high",gr:3.93,must:true,ml:"Темпоральная логика, model checking, верификация — применимо в формальных методах AI и безопасности ML"},
+  {title:"Schaum's Outline of Logic",author:"Nolt, Rohatyn, Varzi",topic:"Матем. логика",diff:"Начальный",rel:"mid",gr:3.87,must:false,ml:"Задачник по логике; закрепляет формальное мышление через упражнения"},
+  {title:"Practical Foundations for Programming Languages",author:"R. Harper",topic:"Теория типов",diff:"Продвинутый",rel:"low",gr:3.87,must:false,ml:"Теория типов и операционная семантика; нишево для ML-инженеров с фокусом на ЯП"},
+  {title:"Reverse Mathematics",author:"J. Stillwell",topic:"Основания",diff:"Продвинутый",rel:"low",gr:4.20,must:false,ml:"Обратная математика — интересная идея, но нет применения в ML/DS"},
+  {title:"Logic and Structure",author:"D. van Dalen",topic:"Матем. логика",diff:"Средний",rel:"low",gr:3.96,must:false,ml:"Классический курс логики; косвенно полезен как часть математического образования"},
+  {title:"The Lambda Calculus",author:"H. Barendregt",topic:"Теория типов",diff:"Продвинутый",rel:"mid",gr:4.17,must:false,ml:"Лямбда-исчисление — математическая основа функционального программирования и JAX/Haskell"},
+  {title:"Discrete Mathematics: Intro to Mathematical Reasoning",author:"S. S. Epp",topic:"Дискретная математика",diff:"Начальный",rel:"high",gr:4.21,must:true,ml:"Практичная дискретная математика: логика, доказательства, теория графов, комбинаторика — прямая база ML"},
+  {title:"Interactive Theorem Proving and Program Development",author:"Bertot & Castéran",topic:"Теория типов",diff:"Экспертный",rel:"low",gr:4.14,must:false,ml:"Coq и индуктивные типы; формальная верификация, не применимо в практике ML/DS"},
+  {title:"A Beginner's Guide to Mathematical Logic",author:"R. M. Smullyan",topic:"Матем. логика",diff:"Начальный",rel:"mid",gr:3.95,must:false,ml:"Доступное введение с головоломками; развивает логическое мышление, приятное чтение"},
+  {title:"Introduction to Logic: Methodology of Deductive Sciences",author:"A. Tarski",topic:"Матем. логика",diff:"Начальный",rel:"mid",gr:4.01,must:false,ml:"Классика от создателя формальной семантики; хорошая основа для понимания формальных языков"},
+];
+
+const diffOrder = {Начальный:1,Средний:2,Продвинутый:3,Экспертный:4};
+const relOrder  = {high:1,mid:2,low:3};
+let sortKey = 'rel', sortDir = 1;
+
+function sortBy(k) {
+  sortDir = sortKey === k ? sortDir * -1 : 1;
+  sortKey = k;
+  render();
+}
+
+function reset() {
+  ['search','rel-f','diff-f','topic-f'].forEach(id => document.getElementById(id).value = '');
+  sortKey = 'rel'; sortDir = 1;
+  render();
+}
+
+function render() {
+  const s  = document.getElementById('search').value.toLowerCase();
+  const rf = document.getElementById('rel-f').value;
+  const df = document.getElementById('diff-f').value;
+  const tf = document.getElementById('topic-f').value;
+
+  let data = BOOKS.filter(b => {
+    if (s  && !b.title.toLowerCase().includes(s) && !b.author.toLowerCase().includes(s)) return false;
+    if (rf && b.rel  !== rf) return false;
+    if (df && b.diff !== df) return false;
+    if (tf && b.topic !== tf) return false;
+    return true;
+  });
+
+  data.sort((a, b) => {
+    if (sortKey === 'title') return sortDir * a.title.localeCompare(b.title);
+    if (sortKey === 'topic') return sortDir * a.topic.localeCompare(b.topic);
+    if (sortKey === 'diff')  return sortDir * (diffOrder[a.diff] - diffOrder[b.diff]);
+    if (sortKey === 'rel')   return sortDir * (relOrder[a.rel]   - relOrder[b.rel]);
+    if (sortKey === 'gr')    return sortDir * (b.gr - a.gr);
+    return 0;
+  });
+
+  ['title','topic','diff','rel','gr'].forEach(k => {
+    const th = document.getElementById('h-' + k);
+    if (!th) return;
+    th.classList.toggle('sorted', sortKey === k);
+    th.querySelector('.sarr').textContent = sortKey === k ? (sortDir === 1 ? '↑' : '↓') : '↕';
+  });
+
+  document.getElementById('counter').textContent = data.length;
+
+  const RL = {high:'▲ Высокая', mid:'● Средняя', low:'▼ Низкая'};
+  const RC = {high:'pill-high', mid:'pill-mid',  low:'pill-low'};
+  const DC = {Начальный:'pill-d1',Средний:'pill-d2',Продвинутый:'pill-d3',Экспертный:'pill-d4'};
+
+  const tbody = document.getElementById('tbody');
+  if (!data.length) {
+    tbody.innerHTML = '<tr><td colspan="6" class="no-results">Книги не найдены — попробуйте изменить фильтры</td></tr>';
+    return;
+  }
+
+  tbody.innerHTML = data.map(b => `
+    <tr>
+      <td>
+        <div class="bk-title">${b.title}</div>
+        <div class="bk-author">${b.author}</div>
+        ${b.must ? '<span class="bk-star">★ рекомендую</span>' : ''}
+      </td>
+      <td><span class="topic-tag">${b.topic}</span></td>
+      <td><span class="pill ${DC[b.diff]}">${b.diff}</span></td>
+      <td><span class="pill ${RC[b.rel]}">${RL[b.rel]}</span></td>
+      <td class="gr-val">${b.gr.toFixed(2)}</td>
+      <td class="ml-text">${b.ml}</td>
+    </tr>`).join('');
+}
+
+render();
+</script>
+</body>
+</html>
