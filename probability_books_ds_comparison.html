@@ -1,190 +1,365 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Probability Books — DS Comparison</title>
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:system-ui,sans-serif;background:#fff;color:#111;padding:1.5rem}
-h1{font-size:18px;font-weight:500;margin-bottom:1rem}
-.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:1rem}
-.filters select{font-size:13px;padding:6px 10px;border:1px solid #ccc;border-radius:8px;background:#fff;color:#111;cursor:pointer}
-.stats{font-size:13px;color:#666;margin-bottom:12px}
-.tbl-wrap{overflow-x:auto;border:1px solid #e5e5e5;border-radius:12px}
-table{width:100%;border-collapse:collapse;font-size:13px;table-layout:fixed}
-thead tr{background:#f7f7f7}
-th{padding:10px 12px;text-align:left;font-weight:500;font-size:12px;color:#666;border-bottom:1px solid #e5e5e5;cursor:pointer;white-space:nowrap;user-select:none}
-th:hover{color:#111}
-th .arr{font-size:10px;margin-left:4px;opacity:0.5}
-th.sorted .arr{opacity:1}
-td{padding:9px 12px;border-bottom:1px solid #f0f0f0;vertical-align:top;color:#111}
-tr:last-child td{border-bottom:none}
-tr:hover td{background:#fafafa}
-.badge{display:inline-block;font-size:11px;padding:2px 8px;border-radius:10px;font-weight:500;white-space:nowrap}
-.b-h{background:#E1F5EE;color:#0F6E56}
-.b-m{background:#FAEEDA;color:#854F0B}
-.b-l{background:#FCEBEB;color:#A32D2D}
-.b-beg{background:#E6F1FB;color:#185FA5}
-.b-int{background:#EEEDFE;color:#534AB7}
-.b-adv{background:#FAECE7;color:#993C1D}
-.b-res{background:#F1EFE8;color:#5F5E5A}
-.title-cell{font-weight:500;font-size:13px;line-height:1.4}
-.author-cell{font-size:12px;color:#666;margin-top:2px}
-.topic-tag{display:inline-block;font-size:11px;background:#f2f2f2;border:1px solid #e5e5e5;border-radius:4px;padding:1px 6px;margin:1px 2px 1px 0}
-.rating{font-size:12px;color:#666}
-col.c1{width:26%}col.c2{width:10%}col.c3{width:12%}col.c4{width:22%}col.c5{width:7%}col.c6{width:23%}
-</style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Probability Books — DS Comparison</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0
+    }
+
+    body {
+      font-family: system-ui, sans-serif;
+      background: #fff;
+      color: #111;
+      padding: 1.5rem
+    }
+
+    h1 {
+      font-size: 18px;
+      font-weight: 500;
+      margin-bottom: 1rem
+    }
+
+    .filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 1rem
+    }
+
+    .filters select {
+      font-size: 13px;
+      padding: 6px 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      background: #fff;
+      color: #111;
+      cursor: pointer
+    }
+
+    .stats {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 12px
+    }
+
+    .tbl-wrap {
+      overflow-x: auto;
+      border: 1px solid #e5e5e5;
+      border-radius: 12px
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      table-layout: fixed
+    }
+
+    thead tr {
+      background: #f7f7f7
+    }
+
+    th {
+      padding: 10px 12px;
+      text-align: left;
+      font-weight: 500;
+      font-size: 12px;
+      color: #666;
+      border-bottom: 1px solid #e5e5e5;
+      cursor: pointer;
+      white-space: nowrap;
+      user-select: none
+    }
+
+    th:hover {
+      color: #111
+    }
+
+    th .arr {
+      font-size: 10px;
+      margin-left: 4px;
+      opacity: 0.5
+    }
+
+    th.sorted .arr {
+      opacity: 1
+    }
+
+    td {
+      padding: 9px 12px;
+      border-bottom: 1px solid #f0f0f0;
+      vertical-align: top;
+      color: #111
+    }
+
+    tr:last-child td {
+      border-bottom: none
+    }
+
+    tr:hover td {
+      background: #fafafa
+    }
+
+    .badge {
+      display: inline-block;
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-weight: 500;
+      white-space: nowrap
+    }
+
+    .b-h {
+      background: #E1F5EE;
+      color: #0F6E56
+    }
+
+    .b-m {
+      background: #FAEEDA;
+      color: #854F0B
+    }
+
+    .b-l {
+      background: #FCEBEB;
+      color: #A32D2D
+    }
+
+    .b-beg {
+      background: #E6F1FB;
+      color: #185FA5
+    }
+
+    .b-int {
+      background: #EEEDFE;
+      color: #534AB7
+    }
+
+    .b-pro {
+      background: #FAECE7;
+      color: #993C1D
+    }
+
+    .b-res {
+      background: #F1EFE8;
+      color: #5F5E5A
+    }
+
+    .title-cell {
+      font-weight: 500;
+      font-size: 13px;
+      line-height: 1.4
+    }
+
+    .author-cell {
+      font-size: 12px;
+      color: #666;
+      margin-top: 2px
+    }
+
+    .topic-tag {
+      display: inline-block;
+      font-size: 11px;
+      background: #f2f2f2;
+      border: 1px solid #e5e5e5;
+      border-radius: 4px;
+      padding: 1px 6px;
+      margin: 1px 2px 1px 0
+    }
+
+    .rating {
+      font-size: 12px;
+      color: #666
+    }
+
+    col.c1 {
+      width: 26%
+    }
+
+    col.c2 {
+      width: 10%
+    }
+
+    col.c3 {
+      width: 12%
+    }
+
+    col.c4 {
+      width: 22%
+    }
+
+    col.c5 {
+      width: 7%
+    }
+
+    col.c6 {
+      width: 23%
+    }
+  </style>
 </head>
+
 <body>
-<h1>Probability &amp; Stochastic Processes — сравнительная таблица для Data Science</h1>
-<div class="filters">
-  <select id="fRel" onchange="render()">
-    <option value="">Все уровни DS-релевантности</option>
-    <option value="Высокая">Высокая</option>
-    <option value="Средняя">Средняя</option>
-    <option value="Низкая">Низкая</option>
-  </select>
-  <select id="fLvl" onchange="render()">
-    <option value="">Все уровни сложности</option>
-    <option value="Начальный">Начальный</option>
-    <option value="Средний">Средний</option>
-    <option value="Продвинутый">Продвинутый</option>
-    <option value="Исследовательский">Исследовательский</option>
-  </select>
-  <select id="fTopic" onchange="render()">
-    <option value="">Все темы</option>
-    <option value="Теория вероятностей">Теория вероятностей</option>
-    <option value="Стохастические процессы">Стохастические процессы</option>
-    <option value="Байесовский подход">Байесовский подход</option>
-    <option value="Теория меры">Теория меры</option>
-    <option value="Статистика">Статистика</option>
-    <option value="ML-теория">ML-теория</option>
-    <option value="Прикладная">Прикладная</option>
-  </select>
-</div>
-<div class="stats" id="stats"></div>
-<div class="tbl-wrap">
-<table>
-<colgroup><col class="c1"><col class="c2"><col class="c3"><col class="c4"><col class="c5"><col class="c6"></colgroup>
-<thead>
-<tr>
-  <th onclick="sortBy('title')">Книга <span class="arr" id="arr-title">↕</span></th>
-  <th onclick="sortBy('level')">Уровень <span class="arr" id="arr-level">↕</span></th>
-  <th onclick="sortBy('rel')">DS-релевантность <span class="arr" id="arr-rel">↕</span></th>
-  <th onclick="sortBy('topic')">Темы <span class="arr" id="arr-topic">↕</span></th>
-  <th onclick="sortBy('rating')">Рейтинг <span class="arr" id="arr-rating">↕</span></th>
-  <th>Применение в DS</th>
-</tr>
-</thead>
-<tbody id="tbody"></tbody>
-</table>
-</div>
-<script>
-const books=[
-{title:"Introduction to Probability",author:"Blitzstein & Hwang",level:"Начальный",rel:"Высокая",relC:"h",lvlC:"beg",topics:["Теория вероятностей","Байесовский подход"],rating:4.52,ds:"Лучший старт для DS: условная вероятность, случайные переменные, байесовский вывод. Онлайн-курс Harvard Stat 110."},
-{title:"All of Statistics",author:"Wasserman",level:"Средний",rel:"Высокая",relC:"h",lvlC:"int",topics:["Статистика","Теория вероятностей"],rating:4.26,ds:"Стандартный учебник для ML/DS: оценка параметров, тест гипотез, регрессия, байесовские методы, бутстрап."},
-{title:"Probability Theory: The Logic of Science",author:"E.T. Jaynes",level:"Средний",rel:"Высокая",relC:"h",lvlC:"int",topics:["Байесовский подход","Теория вероятностей"],rating:4.41,ds:"Фундамент байесовского ML: вероятность как степень убеждённости, максентропия, байесовские сети."},
-{title:"High-Dimensional Probability",author:"Vershynin",level:"Продвинутый",rel:"Высокая",relC:"h",lvlC:"adv",topics:["ML-теория","Теория вероятностей"],rating:4.58,ds:"Прямо для DS: концентрация меры, случайные матрицы, PCA, теория обобщения в ML."},
-{title:"Concentration Inequalities",author:"Boucheron et al.",level:"Продвинутый",rel:"Высокая",relC:"h",lvlC:"adv",topics:["ML-теория","Теория вероятностей"],rating:4.56,ds:"Теоретический ML: неравенства Хефдинга, Бернштейна — основа анализа алгоритмов обучения."},
-{title:"First Course in Probability",author:"Sheldon Ross",level:"Начальный",rel:"Высокая",relC:"h",lvlC:"beg",topics:["Теория вероятностей"],rating:3.94,ds:"Классический вводный курс: дискретные и непрерывные распределения, ЦПТ, моменты."},
-{title:"Introduction to Probability",author:"Bertsekas & Tsitsiklis",level:"Начальный",rel:"Высокая",relC:"h",lvlC:"beg",topics:["Теория вероятностей","Байесовский подход"],rating:4.30,ds:"Строгий и прикладной. Широко используется в MIT. Байесовский вывод, MCMC, марковские цепи."},
-{title:"Introduction to Probability Models",author:"Sheldon Ross",level:"Средний",rel:"Высокая",relC:"h",lvlC:"int",topics:["Стохастические процессы","Прикладная"],rating:3.98,ds:"Цепи Маркова, пуассоновские процессы, симуляция — прямое применение в DS и RL."},
-{title:"Applied Probability Models",author:"Sheldon Ross",level:"Средний",rel:"Высокая",relC:"h",lvlC:"int",topics:["Прикладная","Стохастические процессы"],rating:4.44,ds:"Оптимизация под неопределённостью: управление очередями, оптимальные стратегии."},
-{title:"Markov Chains",author:"J.R. Norris",level:"Средний",rel:"Высокая",relC:"h",lvlC:"int",topics:["Стохастические процессы"],rating:3.37,ds:"Базовые цепи Маркова: стационарные распределения, MCMC, скрытые марковские модели (HMM)."},
-{title:"Markov Chains and Mixing Times",author:"Levin et al.",level:"Продвинутый",rel:"Высокая",relC:"h",lvlC:"adv",topics:["Стохастические процессы","ML-теория"],rating:4.25,ds:"MCMC, скорость перемешивания — критично для байесовского вывода и сэмплирования."},
-{title:"Simulation",author:"Sheldon Ross",level:"Средний",rel:"Высокая",relC:"h",lvlC:"int",topics:["Прикладная","Стохастические процессы"],rating:4.08,ds:"Методы Монте-Карло, Bootstrap, генерация случайных величин — ключевые инструменты DS."},
-{title:"A First Course in Stochastic Processes",author:"Karlin & Taylor",level:"Средний",rel:"Средняя",relC:"m",lvlC:"int",topics:["Стохастические процессы"],rating:4.37,ds:"Цепи Маркова, процессы рождения-гибели, применение в моделировании временных рядов."},
-{title:"Fifty Challenging Problems in Probability",author:"Mosteller",level:"Начальный",rel:"Средняя",relC:"m",lvlC:"beg",topics:["Теория вероятностей"],rating:4.14,ds:"Развивает интуицию через задачи — полезно для DS-интервью и понимания парадоксов."},
-{title:"Probability and Statistics",author:"DeGroot & Schervish",level:"Средний",rel:"Средняя",relC:"m",lvlC:"int",topics:["Статистика","Теория вероятностей"],rating:3.84,ds:"Полный курс статистики: байесовский и частотный подходы, регрессия, дисперсионный анализ."},
-{title:"Probability, Random Variables and Stochastic Processes",author:"Papoulis",level:"Средний",rel:"Средняя",relC:"m",lvlC:"int",topics:["Стохастические процессы","Теория вероятностей"],rating:4.27,ds:"Классика для инженеров: спектральный анализ, случайные сигналы — применимо в обработке данных."},
-{title:"Probability and Random Processes",author:"Grimmett & Stirzaker",level:"Средний",rel:"Средняя",relC:"m",lvlC:"int",topics:["Стохастические процессы","Теория вероятностей"],rating:3.85,ds:"Широкий охват: мартингалы, диффузии, статистика. Хорош как справочник."},
-{title:"Understanding Probability",author:"H.C. Tijms",level:"Начальный",rel:"Средняя",relC:"m",lvlC:"beg",topics:["Теория вероятностей"],rating:4.16,ds:"Интуитивное понимание вероятности без тяжёлой математики — хорошая разминка перед DS."},
-{title:"Stochastic Differential Equations",author:"Øksendal",level:"Продвинутый",rel:"Средняя",relC:"m",lvlC:"adv",topics:["Стохастические процессы"],rating:4.11,ds:"SDE, уравнение Ланжевена — диффузионные модели в генеративном ML (DDPM, Score Matching)."},
-{title:"Statistics As Principled Argument",author:"Abelson",level:"Начальный",rel:"Средняя",relC:"m",lvlC:"beg",topics:["Статистика"],rating:4.14,ds:"Статистическое мышление и интерпретация результатов — важно для DS-коммуникации."},
-{title:"The Art Of Probability",author:"Hamming",level:"Начальный",rel:"Средняя",relC:"m",lvlC:"beg",topics:["Теория вероятностей"],rating:4.21,ds:"Глубокое понимание вероятностных концепций, стиль Хэмминга — подходит для CS-специалистов."},
-{title:"Probability with Martingales",author:"David Williams",level:"Продвинутый",rel:"Средняя",relC:"m",lvlC:"adv",topics:["Теория меры","Стохастические процессы"],rating:4.21,ds:"Мартингалы — основа финансовых DS-моделей и некоторых алгоритмов RL."},
-{title:"Probability and Measure",author:"Billingsley",level:"Продвинутый",rel:"Средняя",relC:"m",lvlC:"adv",topics:["Теория меры","Теория вероятностей"],rating:4.23,ds:"Теоретическая база: сходимость, ЦПТ для ML-теоремы, функциональный ЦПТ."},
-{title:"Foundations of Modern Probability",author:"Kallenberg",level:"Исследовательский",rel:"Низкая",relC:"l",lvlC:"res",topics:["Теория меры","Стохастические процессы"],rating:4.14,ds:"Энциклопедический справочник. Нужен исследователям в теоретическом ML, не практикам."},
-{title:"Probability Theory: A Comprehensive Course",author:"Klenke",level:"Исследовательский",rel:"Низкая",relC:"l",lvlC:"res",topics:["Теория меры","Теория вероятностей"],rating:4.67,ds:"Строгий теоретический курс. Полезен при написании диссертации по ML, не для прикладного DS."},
-{title:"An Intro to Probability Theory (Vol. 1)",author:"Feller",level:"Продвинутый",rel:"Средняя",relC:"m",lvlC:"adv",topics:["Теория вероятностей"],rating:4.30,ds:"Классика: дискретная вероятность, цепи Маркова. Формирует глубокое теоретическое понимание."},
-{title:"Probability Path",author:"Resnick",level:"Продвинутый",rel:"Средняя",relC:"m",lvlC:"adv",topics:["Теория меры","Теория вероятностей"],rating:4.43,ds:"Переход от базовой теории к мере. Хорошая подготовка к теоретическому ML."},
-{title:"Foundations of the Theory of Probability",author:"Kolmogorov",level:"Исследовательский",rel:"Низкая",relC:"l",lvlC:"res",topics:["Теория меры","Теория вероятностей"],rating:4.31,ds:"Исторически важная работа. Для DS имеет только образовательную ценность."},
-{title:"Stochastic Processes",author:"J.L. Doob",level:"Исследовательский",rel:"Низкая",relC:"l",lvlC:"res",topics:["Стохастические процессы","Теория меры"],rating:4.45,ds:"Фундаментальная монография. Практической ценности для прикладного DS почти нет."},
-{title:"Poisson Processes",author:"Kingman",level:"Продвинутый",rel:"Низкая",relC:"l",lvlC:"adv",topics:["Стохастические процессы"],rating:4.44,ds:"Специализированная монография. Применимо в моделировании событий (event DS, log analysis)."},
-{title:"Brownian Motion and Stochastic Calculus",author:"Karatzas & Shreve",level:"Исследовательский",rel:"Низкая",relC:"l",lvlC:"res",topics:["Стохастические процессы","Теория меры"],rating:3.89,ds:"Строгий стохастический анализ. Нужен только для финансовой математики или диффузионных моделей."},
-{title:"Probability: Theory and Examples",author:"Durrett",level:"Продвинутый",rel:"Низкая",relC:"l",lvlC:"adv",topics:["Теория меры","Теория вероятностей"],rating:3.85,ds:"Сильный теоретический курс. Полезен для PhD в ML, менее — для индустриального DS."},
-{title:"Measures, Integrals and Martingales",author:"Schilling",level:"Продвинутый",rel:"Низкая",relC:"l",lvlC:"adv",topics:["Теория меры"],rating:4.09,ds:"Математическая база для строгого понимания вероятности. Опосредованная польза для DS."},
-{title:"A Course in Probability Theory",author:"Kai Lai Chung",level:"Продвинутый",rel:"Низкая",relC:"l",lvlC:"adv",topics:["Теория меры","Теория вероятностей"],rating:4.29,ds:"Классический аспирантский курс. Теоретически строг, но мало DS-приложений."},
-{title:"Measure, Integral and Probability",author:"Capiński",level:"Средний",rel:"Низкая",relC:"l",lvlC:"int",topics:["Теория меры"],rating:3.83,ds:"Доступное введение в теорию меры. Помогает понять матстатистику на глубоком уровне."},
-{title:"Real Analysis and Probability",author:"Dudley",level:"Исследовательский",rel:"Низкая",relC:"l",lvlC:"res",topics:["Теория меры","Теория вероятностей"],rating:3.68,ds:"Математическая строгость для исследователей. Почти не применимо в практическом DS."},
-{title:"Basic Stochastic Processes",author:"Brzezniak",level:"Средний",rel:"Низкая",relC:"l",lvlC:"int",topics:["Стохастические процессы"],rating:3.28,ds:"Базовое введение в стохастические процессы, ограниченное практическое DS-применение."},
-{title:"Probability: An Introduction",author:"Grimmett",level:"Начальный",rel:"Средняя",relC:"m",lvlC:"beg",topics:["Теория вероятностей"],rating:4.10,ds:"Чёткое и строгое введение. Хорошая подготовка перед Blitzstein или Ross."},
-{title:"Schaum's Outline of Probability and Statistics",author:"Spiegel et al.",level:"Начальный",rel:"Средняя",relC:"m",lvlC:"beg",topics:["Статистика","Теория вероятностей"],rating:3.78,ds:"Много задач с решениями. Хорош для практики перед DS-собеседованием."},
-{title:"Schaum's Outline: Intro to Probability and Statistics",author:"Lipschutz",level:"Начальный",rel:"Средняя",relC:"m",lvlC:"beg",topics:["Статистика","Теория вероятностей"],rating:4.18,ds:"Аналог выше — сборник задач для закрепления базы."},
-{title:"One Thousand Exercises in Probability",author:"Grimmett",level:"Средний",rel:"Средняя",relC:"m",lvlC:"int",topics:["Теория вероятностей"],rating:3.93,ds:"1000 задач: отличная практика для подготовки к DS-интервью и экзаменам."},
-{title:"A Treatise on Probability",author:"Keynes",level:"Исследовательский",rel:"Низкая",relC:"l",lvlC:"res",topics:["Теория вероятностей","Байесовский подход"],rating:4.09,ds:"Философия вероятности. Историческая ценность, для практического DS нерелевантна."},
-{title:"Lady Luck",author:"Warren Weaver",level:"Начальный",rel:"Низкая",relC:"l",lvlC:"beg",topics:["Теория вероятностей"],rating:4.09,ds:"Популярное изложение. Подходит как мотивационное чтение, не как учебник."},
-{title:"The Pleasures of Probability",author:"Richard Isaac",level:"Начальный",rel:"Низкая",relC:"l",lvlC:"beg",topics:["Теория вероятностей"],rating:4.27,ds:"Лёгкое введение с парадоксами. Развивает интуицию, не заменяет учебник."},
-{title:"Music and Probability",author:"Temperley",level:"Средний",rel:"Низкая",relC:"l",lvlC:"int",topics:["Прикладная"],rating:3.96,ds:"Специфическое применение вероятности в музыке. DS-нишевое (аудио-ML)."},
-];
+  <h1>Probability &amp; Stochastic Processes — сравнительная таблица для Data Science</h1>
+  <div class="filters">
+    <select id="fRel" onchange="render()">
+      <option value="">Все уровни DS-релевантности</option>
+      <option value="Высокая">Высокая</option>
+      <option value="Средняя">Средняя</option>
+      <option value="Низкая">Низкая</option>
+    </select>
+    <select id="fLvl" onchange="render()">
+      <option value="">Все уровни сложности</option>
+      <option value="Начальный">Начальный</option>
+      <option value="Средний">Средний</option>
+      <option value="Продвинутый">Продвинутый</option>
+      <option value="Исследовательский">Исследовательский</option>
+    </select>
+    <select id="fTopic" onchange="render()">
+      <option value="">Все темы</option>
+      <option value="Теория вероятностей">Теория вероятностей</option>
+      <option value="Стохастические процессы">Стохастические процессы</option>
+      <option value="Байесовский подход">Байесовский подход</option>
+      <option value="Теория меры">Теория меры</option>
+      <option value="Статистика">Статистика</option>
+      <option value="ML-теория">ML-теория</option>
+      <option value="Прикладная">Прикладная</option>
+    </select>
+  </div>
+  <div class="stats" id="stats"></div>
+  <div class="tbl-wrap">
+    <table>
+      <colgroup>
+        <col class="c1">
+        <col class="c2">
+        <col class="c3">
+        <col class="c4">
+        <col class="c5">
+        <col class="c6">
+      </colgroup>
+      <thead>
+        <tr>
+          <th onclick="sortBy('title')">Книга <span class="arr" id="arr-title">↕</span></th>
+          <th onclick="sortBy('level')">Уровень <span class="arr" id="arr-level">↕</span></th>
+          <th onclick="sortBy('rel')">DS-релевантность <span class="arr" id="arr-rel">↕</span></th>
+          <th onclick="sortBy('topic')">Темы <span class="arr" id="arr-topic">↕</span></th>
+          <th onclick="sortBy('rating')">Рейтинг <span class="arr" id="arr-rating">↕</span></th>
+          <th>Применение в DS</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+  <script>
+    const books = [
+      { title: "Introduction to Probability", author: "Blitzstein & Hwang", level: "Начальный", rel: "Высокая", relC: "h", lvlC: "beg", topics: ["Теория вероятностей", "Байесовский подход"], rating: 4.52, ds: "Лучший старт для DS: условная вероятность, случайные переменные, байесовский вывод. Онлайн-курс Harvard Stat 110." },
+      { title: "All of Statistics", author: "Wasserman", level: "Средний", rel: "Высокая", relC: "h", lvlC: "int", topics: ["Статистика", "Теория вероятностей"], rating: 4.26, ds: "Стандартный учебник для ML/DS: оценка параметров, тест гипотез, регрессия, байесовские методы, бутстрап." },
+      { title: "Probability Theory: The Logic of Science", author: "E.T. Jaynes", level: "Средний", rel: "Высокая", relC: "h", lvlC: "int", topics: ["Байесовский подход", "Теория вероятностей"], rating: 4.41, ds: "Фундамент байесовского ML: вероятность как степень убеждённости, максентропия, байесовские сети." },
+      { title: "High-Dimensional Probability", author: "Vershynin", level: "Продвинутый", rel: "Высокая", relC: "h", lvlC: "pro", topics: ["ML-теория", "Теория вероятностей"], rating: 4.58, ds: "Прямо для DS: концентрация меры, случайные матрицы, PCA, теория обобщения в ML." },
+      { title: "Concentration Inequalities", author: "Boucheron et al.", level: "Продвинутый", rel: "Высокая", relC: "h", lvlC: "pro", topics: ["ML-теория", "Теория вероятностей"], rating: 4.56, ds: "Теоретический ML: неравенства Хефдинга, Бернштейна — основа анализа алгоритмов обучения." },
+      { title: "First Course in Probability", author: "Sheldon Ross", level: "Начальный", rel: "Высокая", relC: "h", lvlC: "beg", topics: ["Теория вероятностей"], rating: 3.94, ds: "Классический вводный курс: дискретные и непрерывные распределения, ЦПТ, моменты." },
+      { title: "Introduction to Probability", author: "Bertsekas & Tsitsiklis", level: "Начальный", rel: "Высокая", relC: "h", lvlC: "beg", topics: ["Теория вероятностей", "Байесовский подход"], rating: 4.30, ds: "Строгий и прикладной. Широко используется в MIT. Байесовский вывод, MCMC, марковские цепи." },
+      { title: "Introduction to Probability Models", author: "Sheldon Ross", level: "Средний", rel: "Высокая", relC: "h", lvlC: "int", topics: ["Стохастические процессы", "Прикладная"], rating: 3.98, ds: "Цепи Маркова, пуассоновские процессы, симуляция — прямое применение в DS и RL." },
+      { title: "Applied Probability Models", author: "Sheldon Ross", level: "Средний", rel: "Высокая", relC: "h", lvlC: "int", topics: ["Прикладная", "Стохастические процессы"], rating: 4.44, ds: "Оптимизация под неопределённостью: управление очередями, оптимальные стратегии." },
+      { title: "Markov Chains", author: "J.R. Norris", level: "Средний", rel: "Высокая", relC: "h", lvlC: "int", topics: ["Стохастические процессы"], rating: 3.37, ds: "Базовые цепи Маркова: стационарные распределения, MCMC, скрытые марковские модели (HMM)." },
+      { title: "Markov Chains and Mixing Times", author: "Levin et al.", level: "Продвинутый", rel: "Высокая", relC: "h", lvlC: "pro", topics: ["Стохастические процессы", "ML-теория"], rating: 4.25, ds: "MCMC, скорость перемешивания — критично для байесовского вывода и сэмплирования." },
+      { title: "Simulation", author: "Sheldon Ross", level: "Средний", rel: "Высокая", relC: "h", lvlC: "int", topics: ["Прикладная", "Стохастические процессы"], rating: 4.08, ds: "Методы Монте-Карло, Bootstrap, генерация случайных величин — ключевые инструменты DS." },
+      { title: "A First Course in Stochastic Processes", author: "Karlin & Taylor", level: "Средний", rel: "Средняя", relC: "m", lvlC: "int", topics: ["Стохастические процессы"], rating: 4.37, ds: "Цепи Маркова, процессы рождения-гибели, применение в моделировании временных рядов." },
+      { title: "Fifty Challenging Problems in Probability", author: "Mosteller", level: "Начальный", rel: "Средняя", relC: "m", lvlC: "beg", topics: ["Теория вероятностей"], rating: 4.14, ds: "Развивает интуицию через задачи — полезно для DS-интервью и понимания парадоксов." },
+      { title: "Probability and Statistics", author: "DeGroot & Schervish", level: "Средний", rel: "Средняя", relC: "m", lvlC: "int", topics: ["Статистика", "Теория вероятностей"], rating: 3.84, ds: "Полный курс статистики: байесовский и частотный подходы, регрессия, дисперсионный анализ." },
+      { title: "Probability, Random Variables and Stochastic Processes", author: "Papoulis", level: "Средний", rel: "Средняя", relC: "m", lvlC: "int", topics: ["Стохастические процессы", "Теория вероятностей"], rating: 4.27, ds: "Классика для инженеров: спектральный анализ, случайные сигналы — применимо в обработке данных." },
+      { title: "Probability and Random Processes", author: "Grimmett & Stirzaker", level: "Средний", rel: "Средняя", relC: "m", lvlC: "int", topics: ["Стохастические процессы", "Теория вероятностей"], rating: 3.85, ds: "Широкий охват: мартингалы, диффузии, статистика. Хорош как справочник." },
+      { title: "Understanding Probability", author: "H.C. Tijms", level: "Начальный", rel: "Средняя", relC: "m", lvlC: "beg", topics: ["Теория вероятностей"], rating: 4.16, ds: "Интуитивное понимание вероятности без тяжёлой математики — хорошая разминка перед DS." },
+      { title: "Stochastic Differential Equations", author: "Øksendal", level: "Продвинутый", rel: "Средняя", relC: "m", lvlC: "pro", topics: ["Стохастические процессы"], rating: 4.11, ds: "SDE, уравнение Ланжевена — диффузионные модели в генеративном ML (DDPM, Score Matching)." },
+      { title: "Statistics As Principled Argument", author: "Abelson", level: "Начальный", rel: "Средняя", relC: "m", lvlC: "beg", topics: ["Статистика"], rating: 4.14, ds: "Статистическое мышление и интерпретация результатов — важно для DS-коммуникации." },
+      { title: "The Art Of Probability", author: "Hamming", level: "Начальный", rel: "Средняя", relC: "m", lvlC: "beg", topics: ["Теория вероятностей"], rating: 4.21, ds: "Глубокое понимание вероятностных концепций, стиль Хэмминга — подходит для CS-специалистов." },
+      { title: "Probability with Martingales", author: "David Williams", level: "Продвинутый", rel: "Средняя", relC: "m", lvlC: "pro", topics: ["Теория меры", "Стохастические процессы"], rating: 4.21, ds: "Мартингалы — основа финансовых DS-моделей и некоторых алгоритмов RL." },
+      { title: "Probability and Measure", author: "Billingsley", level: "Продвинутый", rel: "Средняя", relC: "m", lvlC: "pro", topics: ["Теория меры", "Теория вероятностей"], rating: 4.23, ds: "Теоретическая база: сходимость, ЦПТ для ML-теоремы, функциональный ЦПТ." },
+      { title: "Foundations of Modern Probability", author: "Kallenberg", level: "Исследовательский", rel: "Низкая", relC: "l", lvlC: "res", topics: ["Теория меры", "Стохастические процессы"], rating: 4.14, ds: "Энциклопедический справочник. Нужен исследователям в теоретическом ML, не практикам." },
+      { title: "Probability Theory: A Comprehensive Course", author: "Klenke", level: "Исследовательский", rel: "Низкая", relC: "l", lvlC: "res", topics: ["Теория меры", "Теория вероятностей"], rating: 4.67, ds: "Строгий теоретический курс. Полезен при написании диссертации по ML, не для прикладного DS." },
+      { title: "An Intro to Probability Theory (Vol. 1)", author: "Feller", level: "Продвинутый", rel: "Средняя", relC: "m", lvlC: "pro", topics: ["Теория вероятностей"], rating: 4.30, ds: "Классика: дискретная вероятность, цепи Маркова. Формирует глубокое теоретическое понимание." },
+      { title: "Probability Path", author: "Resnick", level: "Продвинутый", rel: "Средняя", relC: "m", lvlC: "pro", topics: ["Теория меры", "Теория вероятностей"], rating: 4.43, ds: "Переход от базовой теории к мере. Хорошая подготовка к теоретическому ML." },
+      { title: "Foundations of the Theory of Probability", author: "Kolmogorov", level: "Исследовательский", rel: "Низкая", relC: "l", lvlC: "res", topics: ["Теория меры", "Теория вероятностей"], rating: 4.31, ds: "Исторически важная работа. Для DS имеет только образовательную ценность." },
+      { title: "Stochastic Processes", author: "J.L. Doob", level: "Исследовательский", rel: "Низкая", relC: "l", lvlC: "res", topics: ["Стохастические процессы", "Теория меры"], rating: 4.45, ds: "Фундаментальная монография. Практической ценности для прикладного DS почти нет." },
+      { title: "Poisson Processes", author: "Kingman", level: "Продвинутый", rel: "Низкая", relC: "l", lvlC: "pro", topics: ["Стохастические процессы"], rating: 4.44, ds: "Специализированная монография. Применимо в моделировании событий (event DS, log analysis)." },
+      { title: "Brownian Motion and Stochastic Calculus", author: "Karatzas & Shreve", level: "Исследовательский", rel: "Низкая", relC: "l", lvlC: "res", topics: ["Стохастические процессы", "Теория меры"], rating: 3.89, ds: "Строгий стохастический анализ. Нужен только для финансовой математики или диффузионных моделей." },
+      { title: "Probability: Theory and Examples", author: "Durrett", level: "Продвинутый", rel: "Низкая", relC: "l", lvlC: "pro", topics: ["Теория меры", "Теория вероятностей"], rating: 3.85, ds: "Сильный теоретический курс. Полезен для PhD в ML, менее — для индустриального DS." },
+      { title: "Measures, Integrals and Martingales", author: "Schilling", level: "Продвинутый", rel: "Низкая", relC: "l", lvlC: "pro", topics: ["Теория меры"], rating: 4.09, ds: "Математическая база для строгого понимания вероятности. Опосредованная польза для DS." },
+      { title: "A Course in Probability Theory", author: "Kai Lai Chung", level: "Продвинутый", rel: "Низкая", relC: "l", lvlC: "pro", topics: ["Теория меры", "Теория вероятностей"], rating: 4.29, ds: "Классический аспирантский курс. Теоретически строг, но мало DS-приложений." },
+      { title: "Measure, Integral and Probability", author: "Capiński", level: "Средний", rel: "Низкая", relC: "l", lvlC: "int", topics: ["Теория меры"], rating: 3.83, ds: "Доступное введение в теорию меры. Помогает понять матстатистику на глубоком уровне." },
+      { title: "Real Analysis and Probability", author: "Dudley", level: "Исследовательский", rel: "Низкая", relC: "l", lvlC: "res", topics: ["Теория меры", "Теория вероятностей"], rating: 3.68, ds: "Математическая строгость для исследователей. Почти не применимо в практическом DS." },
+      { title: "Basic Stochastic Processes", author: "Brzezniak", level: "Средний", rel: "Низкая", relC: "l", lvlC: "int", topics: ["Стохастические процессы"], rating: 3.28, ds: "Базовое введение в стохастические процессы, ограниченное практическое DS-применение." },
+      { title: "Probability: An Introduction", author: "Grimmett", level: "Начальный", rel: "Средняя", relC: "m", lvlC: "beg", topics: ["Теория вероятностей"], rating: 4.10, ds: "Чёткое и строгое введение. Хорошая подготовка перед Blitzstein или Ross." },
+      { title: "Schaum's Outline of Probability and Statistics", author: "Spiegel et al.", level: "Начальный", rel: "Средняя", relC: "m", lvlC: "beg", topics: ["Статистика", "Теория вероятностей"], rating: 3.78, ds: "Много задач с решениями. Хорош для практики перед DS-собеседованием." },
+      { title: "Schaum's Outline: Intro to Probability and Statistics", author: "Lipschutz", level: "Начальный", rel: "Средняя", relC: "m", lvlC: "beg", topics: ["Статистика", "Теория вероятностей"], rating: 4.18, ds: "Аналог выше — сборник задач для закрепления базы." },
+      { title: "One Thousand Exercises in Probability", author: "Grimmett", level: "Средний", rel: "Средняя", relC: "m", lvlC: "int", topics: ["Теория вероятностей"], rating: 3.93, ds: "1000 задач: отличная практика для подготовки к DS-интервью и экзаменам." },
+      { title: "A Treatise on Probability", author: "Keynes", level: "Исследовательский", rel: "Низкая", relC: "l", lvlC: "res", topics: ["Теория вероятностей", "Байесовский подход"], rating: 4.09, ds: "Философия вероятности. Историческая ценность, для практического DS нерелевантна." },
+      { title: "Lady Luck", author: "Warren Weaver", level: "Начальный", rel: "Низкая", relC: "l", lvlC: "beg", topics: ["Теория вероятностей"], rating: 4.09, ds: "Популярное изложение. Подходит как мотивационное чтение, не как учебник." },
+      { title: "The Pleasures of Probability", author: "Richard Isaac", level: "Начальный", rel: "Низкая", relC: "l", lvlC: "beg", topics: ["Теория вероятностей"], rating: 4.27, ds: "Лёгкое введение с парадоксами. Развивает интуицию, не заменяет учебник." },
+      { title: "Music and Probability", author: "Temperley", level: "Средний", rel: "Низкая", relC: "l", lvlC: "int", topics: ["Прикладная"], rating: 3.96, ds: "Специфическое применение вероятности в музыке. DS-нишевое (аудио-ML)." },
+    ];
 
-let sortKey='rel', sortDir=1;
-const relOrd={Высокая:0,Средняя:1,Низкая:2};
-const lvlOrd={Начальный:0,Средний:1,Продвинутый:2,Исследовательский:3};
+    let sortKey = 'rel', sortDir = 1;
+    const relOrd = { Высокая: 0, Средняя: 1, Низкая: 2 };
+    const lvlOrd = { Начальный: 0, Средний: 1, Продвинутый: 2, Исследовательский: 3 };
 
-function render(){
-  const fR=document.getElementById('fRel').value;
-  const fL=document.getElementById('fLvl').value;
-  const fT=document.getElementById('fTopic').value;
-  let data=books.filter(b=>{
-    if(fR&&b.rel!==fR)return false;
-    if(fL&&b.level!==fL)return false;
-    if(fT&&!b.topics.includes(fT))return false;
-    return true;
-  });
-  data.sort((a,b)=>{
-    let va,vb;
-    if(sortKey==='rel'){va=relOrd[a.rel];vb=relOrd[b.rel];}
-    else if(sortKey==='level'){va=lvlOrd[a.level];vb=lvlOrd[b.level];}
-    else if(sortKey==='rating'){va=a.rating;vb=b.rating;return sortDir*(vb-va);}
-    else if(sortKey==='title'){va=a.title;vb=b.title;return sortDir*va.localeCompare(vb);}
-    else if(sortKey==='topic'){va=a.topics[0];vb=b.topics[0];return sortDir*va.localeCompare(vb);}
-    else{va=relOrd[a.rel];vb=relOrd[b.rel];}
-    return sortDir*(va-vb);
-  });
-  document.getElementById('stats').textContent=`Показано книг: ${data.length} из ${books.length}`;
-  const tb=document.getElementById('tbody');
-  tb.innerHTML=data.map(b=>`
+    function render() {
+      const fR = document.getElementById('fRel').value;
+      const fL = document.getElementById('fLvl').value;
+      const fT = document.getElementById('fTopic').value;
+      let data = books.filter(b => {
+        if (fR && b.rel !== fR) return false;
+        if (fL && b.level !== fL) return false;
+        if (fT && !b.topics.includes(fT)) return false;
+        return true;
+      });
+      data.sort((a, b) => {
+        let va, vb;
+        if (sortKey === 'rel') { va = relOrd[a.rel]; vb = relOrd[b.rel]; }
+        else if (sortKey === 'level') { va = lvlOrd[a.level]; vb = lvlOrd[b.level]; }
+        else if (sortKey === 'rating') { va = a.rating; vb = b.rating; return sortDir * (vb - va); }
+        else if (sortKey === 'title') { va = a.title; vb = b.title; return sortDir * va.localeCompare(vb); }
+        else if (sortKey === 'topic') { va = a.topics[0]; vb = b.topics[0]; return sortDir * va.localeCompare(vb); }
+        else { va = relOrd[a.rel]; vb = relOrd[b.rel]; }
+        return sortDir * (va - vb);
+      });
+      document.getElementById('stats').textContent = `Показано книг: ${data.length} из ${books.length}`;
+      const tb = document.getElementById('tbody');
+      tb.innerHTML = data.map(b => `
     <tr>
       <td><div class="title-cell">${b.title}</div><div class="author-cell">${b.author}</div></td>
       <td><span class="badge b-${b.lvlC}">${b.level}</span></td>
       <td><span class="badge b-${b.relC}">${b.rel}</span></td>
-      <td>${b.topics.map(t=>`<span class="topic-tag">${t}</span>`).join('')}</td>
+      <td>${b.topics.map(t => `<span class="topic-tag">${t}</span>`).join('')}</td>
       <td class="rating">${b.rating.toFixed(2)}</td>
       <td style="font-size:12px;color:#555;line-height:1.5">${b.ds}</td>
     </tr>`).join('');
-}
+    }
 
-function sortBy(k){
-  if(sortKey===k)sortDir*=-1;
-  else{sortKey=k;sortDir=1;}
-  document.querySelectorAll('th').forEach(el=>{
-    el.classList.remove('sorted');
-    const a=el.querySelector('.arr');
-    if(a)a.textContent='↕';
-  });
-  const idx={title:0,level:1,rel:2,topic:3,rating:4};
-  const ths=document.querySelectorAll('th');
-  if(idx[k]!==undefined){
-    ths[idx[k]].classList.add('sorted');
-    const a=ths[idx[k]].querySelector('.arr');
-    if(a)a.textContent=sortDir===1?'↑':'↓';
-  }
-  render();
-}
+    function sortBy(k) {
+      if (sortKey === k) sortDir *= -1;
+      else { sortKey = k; sortDir = 1; }
+      document.querySelectorAll('th').forEach(el => {
+        el.classList.remove('sorted');
+        const a = el.querySelector('.arr');
+        if (a) a.textContent = '↕';
+      });
+      const idx = { title: 0, level: 1, rel: 2, topic: 3, rating: 4 };
+      const ths = document.querySelectorAll('th');
+      if (idx[k] !== undefined) {
+        ths[idx[k]].classList.add('sorted');
+        const a = ths[idx[k]].querySelector('.arr');
+        if (a) a.textContent = sortDir === 1 ? '↑' : '↓';
+      }
+      render();
+    }
 
-render();
-</script>
+    render();
+  </script>
 </body>
+
 </html>
