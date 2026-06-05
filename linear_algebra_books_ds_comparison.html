@@ -3,275 +3,721 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Линейная алгебра для Data Science — сравнительная таблица</title>
+<title>Линейная алгебра — 52 книги для ML/DS</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #fff; color: #1a1a1a; padding: 24px; }
-  h1 { font-size: 20px; font-weight: 500; margin-bottom: 6px; }
-  .subtitle { font-size: 13px; color: #666; margin-bottom: 20px; }
-  .controls { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 16px; }
-  .filter-btn { padding: 5px 14px; border-radius: 20px; border: 0.5px solid #ccc; background: transparent; color: #555; font-size: 13px; cursor: pointer; transition: all 0.15s; }
-  .filter-btn.active { background: #185FA5; border-color: #185FA5; color: #fff; }
-  .filter-btn:hover:not(.active) { background: #f5f5f5; color: #111; }
-  .filter-label { font-size: 13px; color: #888; align-self: center; }
-  .table-wrap { overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; table-layout: fixed; }
-  th { text-align: left; padding: 8px 10px; font-size: 11px; font-weight: 500; color: #888; border-bottom: 0.5px solid #e0e0e0; text-transform: uppercase; letter-spacing: 0.04em; }
-  td { padding: 10px 10px; border-bottom: 0.5px solid #f0f0f0; color: #1a1a1a; vertical-align: top; }
-  tr:last-child td { border-bottom: none; }
-  tr:hover td { background: #f9f9f9; }
-  .book-title { font-weight: 500; font-size: 13px; line-height: 1.3; }
-  .author { font-size: 11px; color: #888; margin-top: 2px; }
-  .badge { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 500; white-space: nowrap; }
-  .badge-high { background: #EAF3DE; color: #3B6D11; }
-  .badge-very-high { background: #E1F5EE; color: #0F6E56; }
-  .badge-medium { background: #FAEEDA; color: #854F0B; }
-  .badge-low { background: #F1EFE8; color: #5F5E5A; }
-  .badge-beginner { background: #E6F1FB; color: #185FA5; }
-  .badge-intermediate { background: #EEEDFE; color: #534AB7; }
-  .badge-advanced { background: #FBEAF0; color: #993556; }
-  .badge-applied { background: #EAF3DE; color: #3B6D11; }
-  .badge-theory { background: #EEEDFE; color: #534AB7; }
-  .badge-computational { background: #E1F5EE; color: #0F6E56; }
-  .badge-practice { background: #FAEEDA; color: #854F0B; }
-  .stars { color: #BA7517; font-size: 12px; }
-  .score { font-size: 12px; color: #888; }
-  .topics { font-size: 12px; color: #555; line-height: 1.5; }
-  .hidden { display: none; }
-  .col-title { width: 22%; }
-  .col-level { width: 10%; }
-  .col-ds { width: 10%; }
-  .col-focus { width: 11%; }
-  .col-topics { width: 27%; }
-  .col-rating { width: 10%; }
-  .col-for { width: 10%; }
-  .legend { margin-top: 12px; padding: 10px 0; border-top: 0.5px solid #e0e0e0; display: flex; gap: 16px; flex-wrap: wrap; }
-  .legend span { font-size: 12px; color: #555; }
-  .legend-label { font-size: 12px; color: #888; }
+  :root {
+    --bg: #F5F3EE;
+    --surface: #FDFCF9;
+    --surface-hover: #F9F7F2;
+    --border: #E2DDD5;
+    --border-light: #EDE9E2;
+    --text-primary: #1C1A16;
+    --text-secondary: #5C5649;
+    --text-tertiary: #958E82;
+    --accent: #2A4A3E;
+    --accent-light: #3D6B5A;
+
+    --badge-5-bg: #EEFAF3; --badge-5-text: #1A5C3A; --badge-5-border: #B8E6CE;
+    --badge-4-bg: #EBF3FF; --badge-4-text: #1A3D6B; --badge-4-border: #B8D4F5;
+    --badge-3-bg: #FEF7E8; --badge-3-text: #7A4A0A; --badge-3-border: #F0D9A8;
+    --badge-2-bg: #F3F2F0; --badge-2-text: #6B6460; --badge-2-border: #D8D4CE;
+    --badge-1-bg: #FEF0EE; --badge-1-text: #8B2A20; --badge-1-border: #F0C4BE;
+
+    --lv-i-bg: #EEFAF3; --lv-i-text: #1A5C3A; --lv-i-border: #B8E6CE;
+    --lv-m-bg: #EBF3FF; --lv-m-text: #1A3D6B; --lv-m-border: #B8D4F5;
+    --lv-a-bg: #FEF7E8; --lv-a-text: #7A4A0A; --lv-a-border: #F0D9A8;
+    --lv-s-bg: #F7F0FD; --lv-s-text: #5B2A8A; --lv-s-border: #D8B8F5;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Source Sans 3', sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    min-height: 100vh;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ─── HEADER ─── */
+  .page-header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 48px 40px 36px;
+  }
+
+  .header-inner {
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .header-eyebrow {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--accent-light);
+    margin-bottom: 14px;
+  }
+
+  h1 {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.25;
+    margin-bottom: 10px;
+    letter-spacing: -0.02em;
+  }
+
+  .header-sub {
+    font-size: 15px;
+    color: var(--text-secondary);
+    font-weight: 300;
+    line-height: 1.5;
+    max-width: 600px;
+  }
+
+  .header-meta {
+    display: flex;
+    gap: 28px;
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border-light);
+    flex-wrap: wrap;
+  }
+
+  .meta-item {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .meta-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+  }
+
+  .meta-value {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  /* ─── MAIN ─── */
+  .page-main {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 32px 40px 64px;
+  }
+
+  /* ─── FILTERS ─── */
+  .filters-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+  }
+
+  .filter-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .filter-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    white-space: nowrap;
+  }
+
+  .search-input {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 13px;
+    color: var(--text-primary);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 7px 12px;
+    width: 180px;
+    outline: none;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+
+  .search-input:focus {
+    border-color: var(--accent-light);
+    box-shadow: 0 0 0 3px rgba(61,107,90,0.1);
+  }
+
+  .search-input::placeholder { color: var(--text-tertiary); }
+
+  select.fsel {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 13px;
+    color: var(--text-primary);
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 7px 28px 7px 10px;
+    outline: none;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath d='M1 1l4 4 4-4' stroke='%23958E82' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+
+  select.fsel:focus {
+    border-color: var(--accent-light);
+    box-shadow: 0 0 0 3px rgba(61,107,90,0.1);
+  }
+
+  .divider {
+    width: 1px;
+    height: 24px;
+    background: var(--border);
+    flex-shrink: 0;
+  }
+
+  .filter-count {
+    margin-left: auto;
+    font-family: 'Libre Baskerville', serif;
+    font-size: 15px;
+    color: var(--text-secondary);
+    white-space: nowrap;
+  }
+
+  .filter-count span {
+    font-weight: 700;
+    color: var(--accent);
+  }
+
+  /* ─── LEGEND ─── */
+  .legend-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .legend-label {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    margin-right: 4px;
+  }
+
+  /* ─── BADGES ─── */
+  .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 5px;
+    border: 1px solid transparent;
+    line-height: 1.6;
+    white-space: nowrap;
+    letter-spacing: 0.01em;
+  }
+
+  .m5 { background: var(--badge-5-bg); color: var(--badge-5-text); border-color: var(--badge-5-border); }
+  .m4 { background: var(--badge-4-bg); color: var(--badge-4-text); border-color: var(--badge-4-border); }
+  .m3 { background: var(--badge-3-bg); color: var(--badge-3-text); border-color: var(--badge-3-border); }
+  .m2 { background: var(--badge-2-bg); color: var(--badge-2-text); border-color: var(--badge-2-border); }
+  .m1 { background: var(--badge-1-bg); color: var(--badge-1-text); border-color: var(--badge-1-border); }
+
+  .li { background: var(--lv-i-bg); color: var(--lv-i-text); border-color: var(--lv-i-border); }
+  .lm { background: var(--lv-m-bg); color: var(--lv-m-text); border-color: var(--lv-m-border); }
+  .la { background: var(--lv-a-bg); color: var(--lv-a-text); border-color: var(--lv-a-border); }
+  .ls { background: var(--lv-s-bg); color: var(--lv-s-text); border-color: var(--lv-s-border); }
+
+  .aap { background: #EBF5F0; color: #1A4A38; border-color: #B5DDD0; }
+  .anu { background: #EDF4FB; color: #1A3558; border-color: #B5CCE8; }
+  .acs { background: #F0EDFA; color: #3A1A7A; border-color: #C8B8F0; }
+  .ast { background: #FBF2ED; color: #5A2E1A; border-color: #E8C8B5; }
+  .apu { background: var(--badge-2-bg); color: var(--badge-2-text); border-color: var(--badge-2-border); }
+  .are { background: #F0EDF5; color: #4A3A6A; border-color: #D0C0E8; }
+  .ato { background: var(--badge-1-bg); color: var(--badge-1-text); border-color: var(--badge-1-border); }
+  .ahi { background: #FEF7E8; color: #7A4A0A; border-color: #F0D9A8; }
+
+  /* ─── TABLE ─── */
+  .table-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  }
+
+  .tscroll {
+    overflow-x: auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+  }
+
+  thead {
+    background: #F0EDE8;
+    border-bottom: 1px solid var(--border);
+  }
+
+  th {
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--text-tertiary);
+    padding: 14px 14px 12px;
+    text-align: left;
+    vertical-align: bottom;
+    white-space: nowrap;
+  }
+
+  td {
+    padding: 13px 14px;
+    border-bottom: 1px solid var(--border-light);
+    vertical-align: top;
+  }
+
+  tbody tr:last-child td { border-bottom: none; }
+
+  tbody tr {
+    transition: background 0.12s;
+  }
+
+  tbody tr:hover {
+    background: var(--surface-hover);
+  }
+
+  .col-n   { width: 42px; }
+  .col-b   { width: 220px; }
+  .col-lv  { width: 110px; }
+  .col-ap  { width: 130px; }
+  .col-ml  { width: 110px; }
+  .col-note { }
+
+  .cell-num {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 12px;
+    color: var(--text-tertiary);
+    padding-top: 2px;
+  }
+
+  .book-title {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--text-primary);
+    line-height: 1.3;
+    margin-bottom: 3px;
+  }
+
+  .book-author {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-bottom: 3px;
+  }
+
+  .book-gr {
+    font-size: 11px;
+    color: var(--text-tertiary);
+    font-style: italic;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .gr-stars {
+    color: #C8A84B;
+  }
+
+  .cell-note {
+    font-size: 12.5px;
+    color: var(--text-secondary);
+    line-height: 1.55;
+  }
+
+  tr.hidden { display: none; }
+
+  /* ─── EMPTY STATE ─── */
+  .empty-state {
+    display: none;
+    text-align: center;
+    padding: 56px 24px;
+    color: var(--text-tertiary);
+  }
+
+  .empty-state svg { margin-bottom: 16px; opacity: 0.4; }
+  .empty-state p { font-family: 'Libre Baskerville', serif; font-size: 16px; }
+
+  .empty-state.visible { display: block; }
+
+  /* ─── FOOTER ─── */
+  .page-footer {
+    text-align: center;
+    padding: 32px 40px;
+    font-size: 12px;
+    color: var(--text-tertiary);
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+  }
+
+  /* ─── FADE IN ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .page-header { animation: fadeUp 0.4s ease both; }
+  .filters-card { animation: fadeUp 0.4s 0.1s ease both; }
+  .legend-bar   { animation: fadeUp 0.4s 0.15s ease both; }
+  .table-card   { animation: fadeUp 0.4s 0.2s ease both; }
+
+  /* ─── SCROLLBAR ─── */
+  .tscroll::-webkit-scrollbar { height: 6px; }
+  .tscroll::-webkit-scrollbar-track { background: var(--bg); }
+  .tscroll::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  /* ─── RESPONSIVE (MOBILE) ─── */
+  @media (max-width: 768px) {
+    .page-header { padding: 32px 20px 24px; }
+    .page-main   { padding: 24px 16px 48px; }
+    h1 { font-size: 26px; }
+    .header-meta { gap: 16px; }
+    
+    /* Перестраиваем фильтры */
+    .filters-card {
+      flex-direction: column;
+      align-items: stretch;
+      padding: 16px;
+      gap: 12px;
+    }
+    .filter-group {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 6px;
+    }
+    .search-input, select.fsel { width: 100%; }
+    .divider { display: none; }
+    .filter-count { 
+      margin-left: 0; 
+      padding-top: 12px; 
+      border-top: 1px solid var(--border-light); 
+      text-align: center; 
+    }
+
+    /* Таблица -> Карточки */
+    .tscroll { overflow-x: visible; }
+    .table-card { 
+      border: none; 
+      background: transparent; 
+      box-shadow: none; 
+    }
+    table, thead, tbody, th, td, tr { display: block; }
+    thead { display: none; } /* Прячем классический заголовок */
+    
+    tr {
+      margin-bottom: 16px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+    }
+    tr:hover { background: var(--surface); }
+    
+    td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-light);
+      position: relative;
+    }
+    td:last-child { border-bottom: none; }
+    
+    /* Выводим метки колонок для карточек */
+    td::before {
+      content: attr(data-label);
+      display: block;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      color: var(--text-tertiary);
+      margin-bottom: 6px;
+      letter-spacing: 0.08em;
+    }
+
+    .col-n, .col-b, .col-lv, .col-ap, .col-ml, .col-note { width: 100%; }
+    .cell-num { font-size: 14px; font-weight: 600; color: var(--accent); }
+  }
 </style>
 </head>
 <body>
 
-<h1>Линейная алгебра для Data Science</h1>
-<p class="subtitle">Сравнительный анализ книг со списка Goodreads «Linear Algebra (MMath)» в контексте подготовки к DS/ML</p>
+<header class="page-header">
+  <div class="header-inner">
+    <p class="header-eyebrow">Математика для ML / Data Science</p>
+    <h1>52 книги по линейной алгебре</h1>
+    <p class="header-sub">Сравнительная таблица с оценкой релевантности для карьерного перехода в ML/DS. Фильтрация по уровню, подходу и практической ценности.</p>
+    <div class="header-meta">
+      <div class="meta-item">
+        <span class="meta-label">Всего книг</span>
+        <span class="meta-value">52</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Ключевых для ML/DS</span>
+        <span class="meta-value">6</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Высокая релевантность</span>
+        <span class="meta-value">7</span>
+      </div>
+      <div class="meta-item">
+        <span class="meta-label">Среднее GoodReads</span>
+        <span class="meta-value">4.1</span>
+      </div>
+    </div>
+  </div>
+</header>
 
-<div class="controls">
-  <span class="filter-label">Фильтр по DS-релевантности:</span>
-  <button class="filter-btn active" onclick="filter('all',this)">Все книги</button>
-  <button class="filter-btn" onclick="filter('very-high',this)">★ Очень высокая</button>
-  <button class="filter-btn" onclick="filter('high',this)">Высокая</button>
-  <button class="filter-btn" onclick="filter('medium',this)">Средняя</button>
-</div>
+<main class="page-main">
 
-<div class="table-wrap">
-<table>
-  <thead>
-    <tr>
-      <th class="col-title">Книга / Автор</th>
-      <th class="col-level">Уровень</th>
-      <th class="col-ds">DS-польза</th>
-      <th class="col-focus">Фокус</th>
-      <th class="col-topics">Ключевые темы для DS</th>
-      <th class="col-rating">Оценка</th>
-      <th class="col-for">Лучше всего для</th>
-    </tr>
-  </thead>
-  <tbody id="table-body">
+  <div class="filters-card">
+    <div class="filter-group">
+      <input type="text" id="la-s" class="search-input" placeholder="Поиск по названию…" autocomplete="off">
+    </div>
 
-    <tr data-ds="very-high">
-      <td><div class="book-title">Linear Algebra and Learning from Data</div><div class="author">Gilbert Strang</div></td>
-      <td><span class="badge badge-beginner">Нач–Ср</span></td>
-      <td><span class="badge badge-very-high">★★ Макс</span></td>
-      <td><span class="badge badge-applied">Прикл.</span></td>
-      <td class="topics">SVD, PCA, нейросети, оптимизация, пространства матриц, регрессия</td>
-      <td><div class="stars">★★★★</div><div class="score">4.35 · #20</div></td>
-      <td class="topics">ML-инженерам, дата-сайентистам</td>
-    </tr>
+    <div class="divider"></div>
 
-    <tr data-ds="very-high">
-      <td><div class="book-title">Coding the Matrix</div><div class="author">Philip N. Klein</div></td>
-      <td><span class="badge badge-beginner">Нач–Ср</span></td>
-      <td><span class="badge badge-very-high">★★ Макс</span></td>
-      <td><span class="badge badge-applied">Прикл.</span></td>
-      <td class="topics">Реализация алгоритмов на Python, компьютерное зрение, NLP-основы, геометрия данных</td>
-      <td><div class="stars">★★★★</div><div class="score">4.14 · #12</div></td>
-      <td class="topics">Программистам, входящим в DS</td>
-    </tr>
+    <div class="filter-group">
+      <span class="filter-label">Уровень</span>
+      <select class="fsel" id="la-lv">
+        <option value="">Все</option>
+        <option value="i">Вводный</option>
+        <option value="m">Средний</option>
+        <option value="a">Продвинутый</option>
+        <option value="s">Специалист</option>
+      </select>
+    </div>
 
-    <tr data-ds="very-high">
-      <td><div class="book-title">Introduction to Applied Linear Algebra</div><div class="author">Stephen Boyd</div></td>
-      <td><span class="badge badge-beginner">Нач–Ср</span></td>
-      <td><span class="badge badge-very-high">★★ Макс</span></td>
-      <td><span class="badge badge-applied">Прикл.</span></td>
-      <td class="topics">Метод наименьших квадратов, регрессия, классификация, кластеризация</td>
-      <td><div class="stars">★★★★</div><div class="score">4.20 · #37</div></td>
-      <td class="topics">Начинающим DS / ML</td>
-    </tr>
+    <div class="filter-group">
+      <span class="filter-label">Подход</span>
+      <select class="fsel" id="la-ap">
+        <option value="">Все</option>
+        <option value="ap">Прикладная</option>
+        <option value="nu">Числ. методы</option>
+        <option value="cs">CS / Код</option>
+        <option value="st">Статистика</option>
+        <option value="pu">Теория</option>
+        <option value="re">Справочник</option>
+        <option value="to">Инструмент</option>
+        <option value="hi">История</option>
+      </select>
+    </div>
 
-    <tr data-ds="very-high">
-      <td><div class="book-title">Matrix Algebra: Theory, Computations, and Applications in Statistics</div><div class="author">James E. Gentle</div></td>
-      <td><span class="badge badge-intermediate">Средний</span></td>
-      <td><span class="badge badge-very-high">★★ Макс</span></td>
-      <td><span class="badge badge-applied">Прикл.</span></td>
-      <td class="topics">Статистические модели, регрессия, ковариационные матрицы, вычисления</td>
-      <td><div class="stars">★★★★</div><div class="score">4.00 · #39</div></td>
-      <td class="topics">Статистикам, data scientists</td>
-    </tr>
+    <div class="filter-group">
+      <span class="filter-label">ML/DS ≥</span>
+      <select class="fsel" id="la-ml">
+        <option value="1">Любая</option>
+        <option value="3">3+ базовая</option>
+        <option value="4">4+ высокая</option>
+        <option value="5">5 — ключевая</option>
+      </select>
+    </div>
 
-    <tr data-ds="high">
-      <td><div class="book-title">Linear Algebra and Its Applications</div><div class="author">Gilbert Strang</div></td>
-      <td><span class="badge badge-beginner">Нач–Ср</span></td>
-      <td><span class="badge badge-high">★ Высокая</span></td>
-      <td><span class="badge badge-applied">Прикл.</span></td>
-      <td class="topics">Разложения матриц, собственные значения, ортогональность, SVD</td>
-      <td><div class="stars">★★★★</div><div class="score">4.30 · #6</div></td>
-      <td class="topics">Классический старт для DS</td>
-    </tr>
+    <div class="filter-count" id="la-cnt"><span>52</span> книги</div>
+  </div>
 
-    <tr data-ds="high">
-      <td><div class="book-title">Introduction to Linear Algebra</div><div class="author">Gilbert Strang</div></td>
-      <td><span class="badge badge-beginner">Начальный</span></td>
-      <td><span class="badge badge-high">★ Высокая</span></td>
-      <td><span class="badge badge-applied">Прикл.</span></td>
-      <td class="topics">Системы уравнений, проекции, собственные векторы, PCA-интуиция</td>
-      <td><div class="stars">★★★★</div><div class="score">4.24 · #7</div></td>
-      <td class="topics">Первая книга по LA для DS</td>
-    </tr>
+  <div class="legend-bar">
+    <span class="legend-label">Релевантность ML/DS:</span>
+    <span class="badge m5">Ключевая</span>
+    <span class="badge m4">Высокая</span>
+    <span class="badge m3">Базовая</span>
+    <span class="badge m2">Слабая</span>
+    <span class="badge m1">Нет</span>
+  </div>
 
-    <tr data-ds="high">
-      <td><div class="book-title">Matrix Computations</div><div class="author">Gene H. Golub</div></td>
-      <td><span class="badge badge-advanced">Продвинутый</span></td>
-      <td><span class="badge badge-high">★ Высокая</span></td>
-      <td><span class="badge badge-computational">Числ.</span></td>
-      <td class="topics">SVD, QR-разложение, итеративные методы, стабильность алгоритмов</td>
-      <td><div class="stars">★★★★</div><div class="score">4.26 · #3</div></td>
-      <td class="topics">DS/ML-исследователям</td>
-    </tr>
+  <div class="table-card">
+    <div class="tscroll">
+      <table>
+        <colgroup>
+          <col class="col-n">
+          <col class="col-b">
+          <col class="col-lv">
+          <col class="col-ap">
+          <col class="col-ml">
+          <col class="col-note">
+        </colgroup>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Книга / автор</th>
+            <th>Уровень</th>
+            <th>Подход</th>
+            <th>ML / DS</th>
+            <th>Заметка для ML/DS пути</th>
+          </tr>
+        </thead>
+        <tbody id="la-tb"></tbody>
+      </table>
+      <div class="empty-state" id="la-empty">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+          <path d="M21 21l-4.35-4.35M17 11A6 6 0 1 1 5 11a6 6 0 0 1 12 0z"/>
+        </svg>
+        <p>Ничего не найдено</p>
+      </div>
+    </div>
+  </div>
 
-    <tr data-ds="high">
-      <td><div class="book-title">Numerical Linear Algebra</div><div class="author">Lloyd N. Trefethen</div></td>
-      <td><span class="badge badge-advanced">Продвинутый</span></td>
-      <td><span class="badge badge-high">★ Высокая</span></td>
-      <td><span class="badge badge-computational">Числ.</span></td>
-      <td class="topics">SVD, QR, кондиционирование, решение систем, спектральный анализ</td>
-      <td><div class="stars">★★★★</div><div class="score">4.29 · #13</div></td>
-      <td class="topics">ML-исследователям, численным методам</td>
-    </tr>
+</main>
 
-    <tr data-ds="high">
-      <td><div class="book-title">Matrix Analysis</div><div class="author">Roger A. Horn</div></td>
-      <td><span class="badge badge-advanced">Продвинутый</span></td>
-      <td><span class="badge badge-high">★ Высокая</span></td>
-      <td><span class="badge badge-theory">Теория</span></td>
-      <td class="topics">Спектральная теория, SVD, матричные нормы, положительно определённые матрицы</td>
-      <td><div class="stars">★★★★</div><div class="score">4.33 · #17</div></td>
-      <td class="topics">ML-теоретикам</td>
-    </tr>
-
-    <tr data-ds="high">
-      <td><div class="book-title">Applied Linear Algebra and Matrix Analysis</div><div class="author">Thomas S. Shores</div></td>
-      <td><span class="badge badge-intermediate">Средний</span></td>
-      <td><span class="badge badge-high">★ Высокая</span></td>
-      <td><span class="badge badge-applied">Прикл.</span></td>
-      <td class="topics">Численные методы, МНК, SVD, приложения к реальным задачам</td>
-      <td><div class="stars">★★★★</div><div class="score">3.95 · #42</div></td>
-      <td class="topics">DS-специалистам</td>
-    </tr>
-
-    <tr data-ds="medium">
-      <td><div class="book-title">Linear Algebra Done Right</div><div class="author">Sheldon Axler</div></td>
-      <td><span class="badge badge-intermediate">Средний</span></td>
-      <td><span class="badge badge-medium">Средняя</span></td>
-      <td><span class="badge badge-theory">Теория</span></td>
-      <td class="topics">Векторные пространства, операторы, спектральная теория (без матриц)</td>
-      <td><div class="stars">★★★★</div><div class="score">4.40 · #1</div></td>
-      <td class="topics">Строгая теор. база для ML</td>
-    </tr>
-
-    <tr data-ds="medium">
-      <td><div class="book-title">Linear Algebra: Step by Step</div><div class="author">Kuldeep Singh</div></td>
-      <td><span class="badge badge-beginner">Начальный</span></td>
-      <td><span class="badge badge-medium">Средняя</span></td>
-      <td><span class="badge badge-applied">Прикл.</span></td>
-      <td class="topics">Базовые операции, системы, определители, собственные значения</td>
-      <td><div class="stars">★★★★</div><div class="score">4.39 · #33</div></td>
-      <td class="topics">Самостоятельное изучение</td>
-    </tr>
-
-    <tr data-ds="medium">
-      <td><div class="book-title">Finite-Dimensional Vector Spaces</div><div class="author">Paul R. Halmos</div></td>
-      <td><span class="badge badge-advanced">Продвинутый</span></td>
-      <td><span class="badge badge-medium">Средняя</span></td>
-      <td><span class="badge badge-theory">Теория</span></td>
-      <td class="topics">Абстрактные пространства, операторы, двойственность — классика</td>
-      <td><div class="stars">★★★★★</div><div class="score">4.47 · #2</div></td>
-      <td class="topics">Глубокий теор. фундамент</td>
-    </tr>
-
-    <tr data-ds="medium">
-      <td><div class="book-title">Linear Algebra (Friedberg)</div><div class="author">Stephen H. Friedberg</div></td>
-      <td><span class="badge badge-intermediate">Средний</span></td>
-      <td><span class="badge badge-medium">Средняя</span></td>
-      <td><span class="badge badge-theory">Теория</span></td>
-      <td class="topics">Строгие доказательства, каноническая форма, внутренние произведения</td>
-      <td><div class="stars">★★★★</div><div class="score">4.12 · #9</div></td>
-      <td class="topics">Матем. фундамент для ML</td>
-    </tr>
-
-    <tr data-ds="medium">
-      <td><div class="book-title">Schaum's Outline of Linear Algebra</div><div class="author">Seymour Lipschutz</div></td>
-      <td><span class="badge badge-beginner">Начальный</span></td>
-      <td><span class="badge badge-medium">Средняя</span></td>
-      <td><span class="badge badge-practice">Практика</span></td>
-      <td class="topics">Много задач с решениями, матричные операции, базис, ранг</td>
-      <td><div class="stars">★★★★</div><div class="score">3.91 · #8</div></td>
-      <td class="topics">Быстрое повторение, экзамен</td>
-    </tr>
-
-    <tr data-ds="medium">
-      <td><div class="book-title">Multivariable Mathematics</div><div class="author">Theodore Shifrin</div></td>
-      <td><span class="badge badge-intermediate">Средний</span></td>
-      <td><span class="badge badge-medium">Средняя</span></td>
-      <td><span class="badge badge-applied">Прикл.</span></td>
-      <td class="topics">LA + матанализ + многообразия — важно для продвинутого ML</td>
-      <td><div class="stars">★★★★</div><div class="score">4.18 · #15</div></td>
-      <td class="topics">Обработка и геом. данных</td>
-    </tr>
-
-    <tr data-ds="medium">
-      <td><div class="book-title">Linear Algebra Problem Book</div><div class="author">Paul R. Halmos</div></td>
-      <td><span class="badge badge-intermediate">Средний</span></td>
-      <td><span class="badge badge-medium">Средняя</span></td>
-      <td><span class="badge badge-practice">Практика</span></td>
-      <td class="topics">Задачи с подсказками — развитие математического мышления</td>
-      <td><div class="stars">★★★★★</div><div class="score">4.54 · #4</div></td>
-      <td class="topics">Углублённое понимание LA</td>
-    </tr>
-
-  </tbody>
-</table>
-</div>
-
-<div class="legend">
-  <span class="legend-label">DS-польза:</span>
-  <span><span class="badge badge-very-high">★★ Макс</span> — прямо про DS/ML</span>
-  <span><span class="badge badge-high">★ Высокая</span> — сильная база</span>
-  <span><span class="badge badge-medium">Средняя</span> — теор. фундамент</span>
-</div>
+<footer class="page-footer">
+  Рейтинги GoodReads актуальны на момент составления таблицы
+</footer>
 
 <script>
-function filter(level, btn) {
-  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  const rows = document.querySelectorAll('#table-body tr[data-ds]');
-  rows.forEach(row => {
-    if (level === 'all' || row.dataset.ds === level) {
-      row.classList.remove('hidden');
-    } else {
-      row.classList.add('hidden');
-    }
-  });
+const LV = { i:"Вводный", m:"Средний", a:"Продвинутый", s:"Специалист" };
+const AP = { pu:"Теория", ap:"Прикладная", nu:"Числ. методы", cs:"CS / Код", st:"Статистика", re:"Справочник", to:"Инструмент", hi:"История" };
+const ML = { 1:"Нет", 2:"Слабая", 3:"Базовая", 4:"Высокая", 5:"Ключевая" };
+
+const D = [
+  [1,"Linear Algebra Done Right","Axler",4.40,"m","pu",3,"Строгая абстрактная ЛА без детерминантов; глубокое теоретическое понимание PCA, SVD, спектральных разложений"],
+  [2,"Finite-Dimensional Vector Spaces","Halmos",4.47,"m","pu",2,"Элегантная классика Халмоша; математическая культура, но мало прикладного для ML"],
+  [3,"Matrix Computations","Golub & Van Loan",4.26,"a","nu",5,"Библия вычислительной ЛА: алгоритмы SVD, QR, собственных значений — то, что работает внутри NumPy и LAPACK"],
+  [4,"Linear Algebra Problem Book","Halmos",4.54,"m","pu",3,"Сборник задач Халмоша; развивает теоретическую интуицию о линейных операторах"],
+  [5,"Linear Algebra","Kaye",4.27,"m","pu",2,"Британский учебник чистой математики; мало связи с ML-приложениями"],
+  [6,"Linear Algebra and Its Applications","Strang",4.30,"i","ap",4,"Классика Strang с приложениями: геометрический смысл, МНК, собственные разложения, марковские цепи"],
+  [7,"Introduction to Linear Algebra","Strang",4.25,"i","ap",5,"Лучший старт для ML/DS; сопровождает MIT 18.06; SVD, ортогональность, факторизации матриц"],
+  [8,"Schaum's Outline of Linear Algebra","Lipschutz",3.91,"i","re",3,"Справочник-решебник; полезен для закрепления вычислений и быстрого повторения"],
+  [9,"Linear Algebra, 4th ed.","Friedberg et al.",4.12,"m","pu",3,"Строгий стандартный учебник; полная теория без ML-акцента"],
+  [10,"Linear Algebra","Hoffman & Kunze",4.07,"m","pu",3,"Классика Hoffman & Kunze: строгая, глубокая; нужна будущим ML-исследователям"],
+  [11,"Linear Algebra (Dover)","Shilov",4.08,"m","pu",3,"Советская традиция: строго и элегантно; отличный вторичный источник по теории"],
+  [12,"Coding the Matrix","Klein",4.13,"i","cs",4,"ЛА через Python: задачи с кодом; идеален для программистов, входящих в ML"],
+  [13,"Numerical Linear Algebra","Trefethen & Bau",4.29,"a","nu",5,"Элегантная вычислительная ЛА; понимание алгоритмов за фасадом ML-библиотек (SVD, QR, итерации)"],
+  [14,"Linear Algebra","Lang",3.92,"m","pu",2,"Лаконичный Ланг; без приложений; меньше ценности для ML, чем Strang"],
+  [15,"Multivariable Mathematics","Shifrin",4.18,"m","ap",3,"ЛА + многомерный анализ в одном томе; полезно перед дифгеометрией и ML-теорией"],
+  [16,"Vector Calculus, LA & Diff. Forms","Hubbard & Hubbard",4.42,"a","pu",2,"Дифференциальные формы, многообразия; глубоко, но скорее для теоретического ML research"],
+  [17,"Matrix Analysis","Horn & Johnson",4.33,"a","pu",4,"Фундаментальный справочник: матричные нормы, PSD-матрицы, матричные функции; нужен для ML research"],
+  [18,"Cauchy-Schwarz Master Class","Steele",4.65,"a","pu",2,"Математика неравенств; периферийна для ML, но развивает аналитическую интуицию"],
+  [19,"Advanced Linear Algebra","Roman",4.24,"a","pu",3,"Аспирантский уровень: тензорные произведения, спектральная теория — для ML research"],
+  [20,"LA and Learning from Data","Strang",4.35,"m","ap",5,"Strang специально для ML/DS: SVD, PCA, нейронные сети, оптимизация — лучший мост от ЛА к ML"],
+  [21,"Lectures on Linear Algebra","Gelfand",4.38,"m","pu",2,"Лаконичные лекции великого математика; вдохновение, не практический учебник ML"],
+  [22,"Linear Algebra","Jänich",4.32,"m","pu",2,"Немецкая концептуальная школа; хорош для геометрической интуиции, абстрактен для ML"],
+  [23,"A Hilbert Space Problem Book","Halmos",4.43,"s","pu",2,"Задачи по функциональному анализу; нужен для глубокого понимания RKHS и kernel methods"],
+  [24,"Topics in Random Matrix Theory","Tao",4.11,"s","pu",2,"Research-уровень; спектры случайных матриц; актуально для теоретического ML о нейросетях"],
+  [25,"Essays in Linear Algebra","Strang",4.62,"m","ap",3,"Эссе по ключевым темам ЛА; хорошее дополнение к основным книгам Strang"],
+  [26,"Learning MATLAB","Driscoll",4.50,"i","to",1,"MATLAB — не Python; практически бесполезна для современного ML/DS стека"],
+  [27,"Iterative Krylov Methods","van der Vorst",4.14,"s","nu",3,"CG, GMRES для больших линейных систем; актуально для крупномасштабной оптимизации"],
+  [28,"Numerical LA: An Introduction","Wendland",3.67,"a","nu",3,"Введение в численную ЛА; более доступно, чем Trefethen, менее глубоко"],
+  [29,"Hilbert Space and Quantum Logic","Cohen",4.43,"s","pu",1,"Квантовая логика; практически нет пересечения с ML/DS"],
+  [30,"Oxford Handbook of Random Matrices","Akemann et al.",4.75,"s","pu",2,"Энциклопедия случайных матриц; research-уровень; актуальна в ML-теории"],
+  [31,"Schaum's Outline: Tensor Calculus","Kay",3.96,"m","re",3,"Тензоры нужны для PyTorch/TensorFlow; базовое справочное введение в тензорный счёт"],
+  [32,"Matrix Analysis and Applied LA","Meyer",4.24,"a","ap",4,"Прикладной матричный анализ: обобщённые обратные, МНК, цепи Маркова — важен для ML"],
+  [33,"Linear Algebra: Step by Step","Singh",4.40,"i","ap",3,"Доступный учебник с приложениями; мягкий вход без строгой математической базы"],
+  [34,"Introduction to Linear Algebra","Lang",4.24,"i","pu",2,"Элементарный Ланг; абстрактный стиль без ML-ориентации"],
+  [35,"Basic Algebra I","Jacobson",3.96,"a","pu",1,"Абстрактная алгебра: кольца, модули; нет прямого отношения к ML/DS"],
+  [36,"Schaum's Outline: Matrix Operations","Bronson",3.97,"i","re",3,"Задачи по матрицам: хорош для закрепления вычислений"],
+  [37,"Introduction to Applied LA","Boyd & Vandenberghe",4.20,"i","ap",5,"Stanford-курс; бесплатный PDF; написан специально для инженеров и Data Scientists"],
+  [38,"Algebra (Graduate Texts)","Lang",4.09,"s","pu",1,"Монументальная абстрактная алгебра Ланга; не нужна для ML/DS"],
+  [39,"Matrix Algebra: Computations & Stats","Gentle",4.00,"a","st",4,"Матричная алгебра под углом статистики: дифференцирование матриц, PCA, ковариационные структуры"],
+  [40,"Basic Linear Algebra","Blyth",3.95,"i","pu",2,"Элементарный британский учебник; слишком абстрактен для старта в ML"],
+  [41,"Fundamentals of Matrix Computations","Watkins",4.10,"a","nu",4,"Альтернатива Golub: более доступный стиль; Гаусс, QR, SVD, собственные значения"],
+  [42,"Applied LA and Matrix Analysis","Shores",3.95,"m","ap",3,"Прикладной учебник с MATLAB-примерами; средняя ценность для Python-ориентированного DS"],
+  [43,"Iterative Methods for Sparse LS","Saad",4.11,"s","nu",3,"Sparse-методы: Krylov, предобусловливание; важно для работы с разреженными данными в ML"],
+  [44,"Linear Analysis: Intro Course","Bollobás",3.92,"a","pu",2,"Нормированные пространства, функционалы; нужен для понимания kernel methods и RKHS"],
+  [45,"Matrix Groups: Intro to Lie Groups","Baker",3.73,"s","pu",1,"Матричные группы Ли; актуальны в equivariant networks, но крайне специализировано"],
+  [46,"Linear Algebraic Groups","Humphreys",3.62,"s","pu",1,"Алгебраические группы над полями; нет прямого отношения к ML/DS"],
+  [47,"Linear Algebra Through Geometry","Banchoff & Wermer",3.91,"i","ap",3,"Геометрический подход; отличен для интуиции о линейных преобразованиях пространства"],
+  [48,"Chinese Roots of Linear Algebra","Hart",4.25,"s","hi",1,"История ЛА в Китае; нет практической ценности для ML/DS"],
+  [49,"Rings and Categories of Modules","Anderson & Fuller",4.00,"s","pu",1,"Теория категорий и модулей; абстрактная алгебра; не нужна для ML/DS"],
+  [50,"Rings, Modules and Linear Algebra","Hartley & Hawkes",3.67,"s","pu",1,"Кольца и модули; абстрактная алгебра; не нужна для ML/DS"],
+  [51,"Introduction to Random Matrices","Livan et al.",4.00,"s","pu",2,"Компактное введение; актуально для теоретического ML о динамике нейросетей"],
+  [52,"Templates for Solution of LS","Barrett et al.",3.60,"s","nu",2,"Шаблоны итерационных методов; специализировано для крупных разреженных систем"]
+];
+
+const tb = document.getElementById('la-tb');
+
+function renderStars(gr) {
+  const full = Math.floor(gr);
+  return '★'.repeat(full) + (gr - full >= 0.5 ? '½' : '');
 }
+
+// Добавлены атрибуты data-label для работы мобильных карточек
+D.forEach(([r, t, au, gr, lv, ap, ml, note]) => {
+  const tr = document.createElement('tr');
+  tr.dataset.lv = lv;
+  tr.dataset.ap = ap;
+  tr.dataset.ml = ml;
+  tr.dataset.q = (t + ' ' + au).toLowerCase();
+  tr.innerHTML = `
+    <td class="cell-num" data-label="#">${r}</td>
+    <td data-label="Книга / автор">
+      <div class="book-title">${t}</div>
+      <div class="book-author">${au}</div>
+      <div class="book-gr"><span class="gr-stars">${renderStars(gr)}</span> ${gr.toFixed(2)}</div>
+    </td>
+    <td data-label="Уровень"><span class="badge l${lv}">${LV[lv]}</span></td>
+    <td data-label="Подход"><span class="badge a${ap}">${AP[ap]}</span></td>
+    <td data-label="ML / DS"><span class="badge m${ml}">${ML[ml]}</span></td>
+    <td class="cell-note" data-label="Заметка для ML/DS пути">${note}</td>
+  `;
+  tb.appendChild(tr);
+});
+
+function pluralRu(n) {
+  if (n % 10 === 1 && n % 100 !== 11) return 'книга';
+  if (n % 10 >= 2 && n % 10 <= 4 && (n % 100 < 10 || n % 100 >= 20)) return 'книги';
+  return 'книг';
+}
+
+function filt() {
+  const q  = document.getElementById('la-s').value.toLowerCase();
+  const lv = document.getElementById('la-lv').value;
+  const ap = document.getElementById('la-ap').value;
+  const mn = +document.getElementById('la-ml').value;
+  let n = 0;
+
+  document.querySelectorAll('#la-tb tr').forEach(tr => {
+    const ok = (!q  || tr.dataset.q.includes(q))
+            && (!lv || tr.dataset.lv === lv)
+            && (!ap || tr.dataset.ap === ap)
+            && (+tr.dataset.ml >= mn);
+    tr.classList.toggle('hidden', !ok);
+    if (ok) n++;
+  });
+
+  const cntEl = document.getElementById('la-cnt');
+  cntEl.innerHTML = `<span>${n}</span> ${pluralRu(n)}`;
+
+  const empty = document.getElementById('la-empty');
+  empty.classList.toggle('visible', n === 0);
+}
+
+['la-s','la-lv','la-ap','la-ml'].forEach(id =>
+  document.getElementById(id).addEventListener('input', filt)
+);
 </script>
 </body>
 </html>
