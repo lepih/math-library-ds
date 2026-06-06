@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Анализ книг по теории информации для ML / Data Science</title>
+    <style>
+        :root {
+            --bg-body: #f8fafc;
+            --bg-card: #ffffff;
+            --bg-expanded: #f1f5f9;
+            --bg-hover: #f8fafc;
+            --border-color: #e2e8f0;
+            --border-light: #f1f5f9;
+            
+            --text-main: #0f172a;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+            --text-light: #94a3b8;
+            
+            --dot-empty: #cbd5e1;
+        }
+
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-family: system-ui, -apple-system, sans-serif;
+            margin: 0;
+            padding: 20px 14px;
+            box-sizing: border-box;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .lbl {
+            font-size: 9px;
+            letter-spacing: 0.13em;
+            color: var(--text-muted);
+            font-family: 'Courier New', monospace;
+            text-transform: uppercase;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-main);
+            font-family: Georgia, serif;
+            letter-spacing: -0.2px;
+        }
+
+        .desc {
+            margin: 7px 0 0;
+            font-size: 13px;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            max-width: 740px;
+        }
+
+        /* Кнопки и фильтры */
+        .flex-wrap { display: flex; flex-wrap: wrap; gap: 7px; }
+        .flex-center { display: flex; align-items: center; gap: 5px; }
+        
+        button {
+            border: none;
+            background: none;
+            padding: 0;
+            font-family: inherit;
+        }
+
+        .btn-pri {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            padding: 5px 11px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .btn-pri:hover { background: var(--bg-hover); }
+        .btn-pri .count { font-size: 12px; font-weight: 700; font-family: monospace; }
+        .btn-pri .label { font-size: 12px; color: var(--text-secondary); }
+
+        .chip {
+            padding: 4px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 11px;
+            font-family: 'Courier New', monospace;
+            transition: all 0.15s ease;
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        /* Таблица */
+        .table-container {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .grid-row {
+            display: grid;
+            grid-template-columns: 34px 1fr 122px 100px 58px 60px;
+            gap: 10px;
+            padding: 10px 14px;
+            align-items: start;
+        }
+
+        .table-header {
+            background: var(--bg-body);
+            border-bottom: 1px solid var(--border-color);
+            padding: 8px 14px;
+        }
+
+        .table-row {
+            border-bottom: 1px solid var(--border-light);
+            cursor: pointer;
+            transition: background 0.1s;
+        }
+        .table-row:last-child { border-bottom: none; }
+        .table-row:hover { background: var(--bg-hover); }
+        .table-row.open { background: var(--bg-expanded); }
+
+        .tag-pill {
+            font-size: 10px;
+            font-family: 'Courier New', monospace;
+            padding: 2px 6px;
+            border-radius: 4px;
+            display: inline-block;
+            line-height: 1.6;
+        }
+
+        /* Точки (Dots) */
+        .dots-container { display: flex; gap: 2.5px; padding-top: 3px; }
+        .dot { width: 7px; height: 7px; border-radius: 1.5px; }
+
+        /* Раскрытая панель */
+        .expanded-panel {
+            padding: 10px 14px 14px 58px;
+            background: var(--bg-expanded);
+            border-top: 1px dashed var(--border-color);
+        }
+        .expanded-text {
+            font-size: 13px;
+            color: var(--text-secondary);
+            margin-bottom: 12px;
+            line-height: 1.5;
+        }
+        .note-box {
+            font-size: 13px;
+            color: var(--text-main);
+            line-height: 1.7;
+            padding: 10px 14px;
+            border-radius: 5px;
+            background: var(--bg-card);
+        }
+
+        /* Рекомендованный путь */
+        .rec-path {
+            margin-top: 16px;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 14px 16px;
+        }
+        
+        .empty-state {
+            padding: 40px;
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container" id="app"></div>
+
+<script>
+const BOOKS = [
+  {id:1,  title:"The Mathematical Theory of Communication",                           author:"Claude Shannon",         year:1948, cat:"Фундамент ТИ",      ml:4, diff:2, concepts:"Энтропия, взаимная информация, ёмкость канала, теорема кодирования",                                           note:"Первоисточник cross-entropy loss и всей информационной лексики ML. Короткая (117 с.) — читается как первичный источник, а не учебник. Обязательна.",                                             priority:"must"},
+  {id:2,  title:"Quantum Computation and Quantum Information",                        author:"Nielsen & Chuang",       year:2000, cat:"Квантовые",          ml:1, diff:5, concepts:"Квантовые схемы, алгоритмы Шора/Гровера, квантовая коррекция ошибок",                                          note:"Нерелевантно для классического ML. Только если явно интересует квантовое ML — нишевое направление без массового применения.",                                                                      priority:"skip"},
+  {id:3,  title:"Information Theory, Inference, and Learning Algorithms",             author:"David J.C. MacKay",      year:2003, cat:"ТИ + ML",            ml:5, diff:4, concepts:"Байесовский вывод, нейросети, MCMC, belief propagation, сжатие данных",                                         note:"Лучший мост ТИ → ML в этом списке. Охватывает обучение, вывод, вероятностные модели. Бесплатен онлайн: inference.org.uk/mackay/itila/",                                                           priority:"must"},
+  {id:4,  title:"Quantum Information Theory",                                          author:"Mark Wilde",             year:2013, cat:"Квантовые",          ml:1, diff:5, concepts:"Квантовые каналы, квантовая энтропия, запутанность",                                                            note:"Нерелевантно для классического ML/DS.",                                                                                                                                                             priority:"skip"},
+  {id:5,  title:"Elements of Information Theory",                                      author:"Cover & Thomas",         year:1991, cat:"Фундамент ТИ",      ml:4, diff:4, concepts:"Энтропия, KL-дивергенция, взаимная информация, rate-distortion, теоремы Шеннона",                               note:"Стандартный аспирантский учебник по ТИ. KL-дивергенция и взаимная информация — ежедневные инструменты ML-теории, VAE, GAN, RL.",                                                                   priority:"high"},
+  {id:6,  title:"Science and Information Theory",                                       author:"Léon Brillouin",         year:1956, cat:"Введение",           ml:2, diff:2, concepts:"Негэнтропия, связь термодинамики и информации, принцип Максвелла–Демона",                                       note:"Историческая и концептуальная ценность. Не даёт практических ML-инструментов, но приятно читается как контекст.",                                                                                  priority:"low"},
+  {id:7,  title:"An Introduction to Information Theory: Symbols, Signals and Noise",   author:"John R. Pierce",         year:1961, cat:"Введение",           ml:3, diff:1, concepts:"Энтропия, сигнал, шум, базовые идеи Шеннона без тяжёлой математики",                                           note:"Лучшее неформальное введение в ТИ. Строит интуицию без формализма. Хорошо читать первым, до MacKay или Cover.",                                                                                    priority:"medium"},
+  {id:8,  title:"Mathematical Foundations of Information Theory",                       author:"A.Ya. Khinchin",         year:1957, cat:"Фундамент ТИ",      ml:3, diff:4, concepts:"Аксиоматика энтропии, эргодическая теория, теоремы Шеннона (строго)",                                          note:"Строгое обоснование формулы H = −Σp·log p. Важно для понимания откуда берётся сама энтропия — ценно для исследовательской позиции.",                                                             priority:"medium"},
+  {id:9,  title:"Information Theory and Statistics",                                    author:"Solomon Kullback",       year:1959, cat:"ТИ + Статистика",   ml:4, diff:4, concepts:"KL-дивергенция (namesake!), минимальная дискриминирующая информация, проверка гипотез",                        note:"Буква K в KL-дивергенции — это Kullback. Источник понимания дивергенций, критичных для VAE, GAN, вариационного вывода, байесовских методов.",                                                     priority:"high"},
+  {id:10, title:"Methods of Information Geometry",                                      author:"Amari & Nagaoka",        year:2000, cat:"Инфо-геометрия",     ml:4, diff:5, concepts:"Метрика Фишера, натуральный градиент, экспоненциальные семейства, двойственная геометрия",                     note:"Натуральный градиент Амари лежит в основе современной оптимизации (Adam, K-FAC, NGD). Требует дифф. геометрии — отложить до её освоения.",                                                        priority:"high"},
+  {id:11, title:"Network Information Theory",                                            author:"El Gamal & Kim",         year:2011, cat:"Теория кодирования", ml:2, diff:5, concepts:"Множественный доступ, широковещание, ретрансляционные каналы",                                                note:"Специализация в телекоммуникациях. Нерелевантно для ML/DS.",                                                                                                                                        priority:"skip"},
+  {id:12, title:"Quantum Information Theory and the Foundations of Quantum Mechanics",  author:"C.G. Timpson",           year:2013, cat:"Квантовые",          ml:1, diff:4, concepts:"Философия физики, интерпретации квантовой механики",                                                           note:"Философия квантовой физики. Нерелевантно для ML/DS.",                                                                                                                                               priority:"skip"},
+  {id:13, title:"The Mathematics of Signal Processing",                                 author:"Damelin & Miller Jr.",   year:2012, cat:"Сигналы",            ml:3, diff:4, concepts:"Фурье-анализ, вейвлеты, сэмплирование, аппроксимация функций",                                                  note:"Полезно при работе с аудио, изображениями, временными рядами. Не критично для общего ML/DS.",                                                                                                      priority:"low"},
+  {id:14, title:"Information Geometry and Its Applications",                            author:"Shun-Ichi Amari",        year:2016, cat:"Инфо-геометрия",     ml:4, diff:4, concepts:"Статистические многообразия, натуральный градиент, нейронные многообразия, Брейман-дивергенция",             note:"Более прикладная версия Methods of IG (№10) с явными связями к нейросетям и ML. Читать после основ дифф. геометрии.",                                                                              priority:"high"},
+  {id:15, title:"Stochastic Models, Information Theory, and Lie Groups, Vol. 1",        author:"G.S. Chirikjian",        year:2009, cat:"Прочее",             ml:2, diff:5, concepts:"Группы Ли, стохастические процессы, применения в робототехнике",                                               note:"Специализация в робототехнике. Нерелевантно для общего ML.",                                                                                                                                        priority:"skip"},
+  {id:16, title:"Information Geometry: Near Randomness and Near Independence",          author:"Arwini & Dodson",        year:2008, cat:"Инфо-геометрия",     ml:2, diff:5, concepts:"Статистические многообразия вблизи Пуассона и Гаусса",                                                         note:"Слишком узкоспециально. Книги Амари (10, 14) покрывают тематику полнее и с большей пользой для ML.",                                                                                              priority:"skip"},
+  {id:17, title:"Information Theoretic Learning",                                        author:"José C. Principe",       year:2010, cat:"ТИ + ML",            ml:4, diff:4, concepts:"Энтропия Реньи, ядерные методы, IT-критерии обучения, независимый компонентный анализ",                       note:"Прямо применяет ТИ к ML: альтернативные функции потерь, feature selection, ICA. Нишевое, но богатое нетривиальными идеями.",                                                                       priority:"medium"},
+  {id:18, title:"A First Introduction to Quantum Computing and Information",            author:"Bernard Zygelman",       year:2018, cat:"Квантовые",          ml:1, diff:3, concepts:"Кубиты, квантовые схемы, базовые квантовые алгоритмы",                                                         note:"Вводный курс по квантовым вычислениям. Нерелевантно для классического ML.",                                                                                                                         priority:"skip"},
+  {id:19, title:"Schaum's Outline of Signals and Systems",                              author:"Hwei P. Hsu",            year:2013, cat:"Сигналы",            ml:2, diff:2, concepts:"ЛТИ-системы, Фурье, Лаплас, Z-преобразование",                                                                note:"Справочник по сигналам. Полезен только при работе с DSP-задачами. Не читать последовательно.",                                                                                                      priority:"low"},
+  {id:20, title:"A First Course in Coding Theory",                                      author:"Raymond Hill",           year:1986, cat:"Теория кодирования", ml:2, diff:3, concepts:"Линейные коды, коды Хэмминга, границы кодов, теоремы о расстоянии",                                           note:"Расстояние Хэмминга используется в ML, но книга — о теории связи, не о ML.",                                                                                                                       priority:"low"},
+  {id:21, title:"Coding and Information Theory",                                         author:"Richard Hamming",        year:1980, cat:"Теория кодирования", ml:2, diff:3, concepts:"Коды Хэмминга, обнаружение ошибок, базовая ТИ",                                                             note:"Исторический интерес (создатель Hamming distance). Интуитивный стиль Хэмминга ценен, но это не ML-книга.",                                                                                          priority:"low"},
+  {id:22, title:"Coding and Information Theory (GTM 134)",                               author:"Steven Roman",           year:1992, cat:"Теория кодирования", ml:2, diff:4, concepts:"Алгебраическая теория кодирования, поля Галуа, линейные коды",                                               note:"Абстрактная алгебра + коды. Нерелевантно для ML.",                                                                                                                                                  priority:"skip"},
+  {id:23, title:"Picturing Quantum Processes",                                           author:"Coecke & Kissinger",     year:2017, cat:"Квантовые",          ml:2, diff:3, concepts:"Диаграммный расчёт, ZX-исчисление, категориальная квантовая механика",                                        note:"Оригинальный категорный подход к квантовой механике. Нерелевантен для ML/DS практики.",                                                                                                             priority:"skip"},
+  {id:24, title:"Protecting Information",                                                author:"Loepp & Wootters",       year:2006, cat:"Теория кодирования", ml:1, diff:3, concepts:"Коды с исправлением ошибок, квантовая криптография",                                                          note:"Ориентирован на защиту информации. Нерелевантен для ML.",                                                                                                                                           priority:"skip"},
+  {id:25, title:"Introduction to Coding Theory (GTM 86)",                               author:"J.H. Van Lint",          year:1982, cat:"Теория кодирования", ml:2, diff:4, concepts:"Алгебраические коды, Рид-Соломон, границы Хэмминга–Синглтона",                                               note:"Классический учебник по алгебраическим кодам. Нерелевантно для ML.",                                                                                                                               priority:"skip"},
+  {id:26, title:"Probability and Information: An Integrated Approach",                  author:"David Applebaum",        year:1996, cat:"ТИ + Статистика",   ml:3, diff:3, concepts:"Вероятность, энтропия, цепи Маркова, основы ТИ",                                                               note:"Хороший мост между теорией вероятностей и ТИ. Доступный уровень, полезен как связующее чтение перед Cover или MacKay.",                                                                            priority:"medium"},
+  {id:27, title:"A Student's Guide to Coding and Information Theory",                   author:"Moser & Chen",           year:2012, cat:"Введение",           ml:3, diff:2, concepts:"Энтропия, ёмкость канала, базовые коды",                                                                       note:"Компактное и ясное введение. Хорошо читать перед MacKay (3) или Cover & Thomas (5).",                                                                                                              priority:"medium"},
+  {id:28, title:"Coding Theory: Algorithms, Architectures and Applications",            author:"Neubauer et al.",        year:2007, cat:"Теория кодирования", ml:1, diff:3, concepts:"Турбо-коды, LDPC, аппаратные реализации",                                                                      note:"Инженерная книга по телекоммуникациям. Нерелевантна для ML.",                                                                                                                                       priority:"skip"},
+  {id:29, title:"Introduction to Coding and Information Theory",                        author:"Steven Roman",           year:1997, cat:"Введение",           ml:2, diff:3, concepts:"Базовые коды, элементарная теория информации",                                                                 note:"Вводная версия GTM-книги Романа. Нерелевантна для ML.",                                                                                                                                             priority:"skip"},
+  {id:30, title:"Entropy and Information Theory",                                        author:"Robert M. Gray",         year:2011, cat:"Фундамент ТИ",      ml:3, diff:4, concepts:"Энтропия, АЭП, стохастические процессы, теория меры",                                                          note:"Строгий мера-теоретический подход к ТИ. Важно для исследовательского понимания оснований ML-теории.",                                                                                             priority:"medium"},
+  {id:31, title:"Modern Coding Theory",                                                  author:"Richardson & Urbanke",   year:2008, cat:"Теория кодирования", ml:2, diff:5, concepts:"LDPC-коды, belief propagation, пороговый анализ",                                                            note:"Belief propagation применяется в графических моделях ML, но текст — чистая теория кодов, математически очень тяжёлая.",                                                                           priority:"low"},
+  {id:32, title:"Information Geometry (Ergebnisse, v.64)",                              author:"Nihat Ay et al.",        year:2017, cat:"Инфо-геометрия",     ml:3, diff:5, concepts:"Статистические многообразия, дивергенции, дифференциальная геометрия",                                        note:"Современный строгий обзор информационной геометрии. Лучше начать с Амари (10, 14) для прикладного понимания.",                                                                                     priority:"low"},
+  {id:33, title:"Quantum Information Theory: Mathematical Foundation",                  author:"Masahito Hayashi",       year:2006, cat:"Квантовые",          ml:1, diff:5, concepts:"Квантовые оценки, квантовая ёмкость, квантовые гипотезы",                                                      note:"Чисто квантовое. Нерелевантно для классического ML/DS.",                                                                                                                                            priority:"skip"},
+  {id:34, title:"Information Criteria and Statistical Modeling",                        author:"Konishi & Kitagawa",     year:2008, cat:"ТИ + Статистика",   ml:4, diff:4, concepts:"AIC, BIC, GIC, выбор модели, регуляризация, байесовские информационные критерии",                             note:"Прямая связь с DS-практикой: информационные критерии выбора модели — ежедневный инструмент data scientist.",                                                                                       priority:"high"},
+];
+
+const CATS_ORDER = ["Все","Фундамент ТИ","ТИ + ML","ТИ + Статистика","Инфо-геометрия","Теория кодирования","Квантовые","Введение","Сигналы","Прочее"];
+
+// Адаптированные цвета для светлой темы
+const PRI = {
+  must:   { label:"Must-read",  color:"#d97706", order:0 },
+  high:   { label:"Высокий",   color:"#2563eb", order:1 },
+  medium: { label:"Средний",   color:"#059669", order:2 },
+  low:    { label:"Низкий",    color:"#475569", order:3 },
+  skip:   { label:"Пропустить",color:"#94a3b8", order:4 },
+};
+
+const CAT_COLOR = {
+  "Фундамент ТИ":      "#c2410c",
+  "ТИ + ML":           "#059669",
+  "ТИ + Статистика":   "#0d9488",
+  "Инфо-геометрия":    "#7c3aed",
+  "Теория кодирования":"#475569",
+  "Квантовые":         "#2563eb",
+  "Введение":          "#b45309",
+  "Сигналы":           "#be123c",
+  "Прочее":            "#475569",
+};
+
+// Состояние приложения
+let state = {
+    cat: "Все",
+    pri: "Все",
+    openId: null,
+    byPri: false
+};
+
+// Генерация точек (Dots)
+function getDotsHtml(n, color) {
+    let html = '<div class="dots-container">';
+    for(let i=0; i<5; i++) {
+        const bg = i < n ? color : 'var(--dot-empty)';
+        html += `<div class="dot" style="background: ${bg}"></div>`;
+    }
+    html += '</div>';
+    return html;
+}
+
+// Изменение состояния
+function setCat(newCat) { state.cat = newCat; render(); }
+function setPri(newPri) { state.pri = state.pri === newPri ? "Все" : newPri; render(); }
+function toggleOpen(id) { state.openId = state.openId === id ? null : id; render(); }
+function toggleByPri() { state.byPri = !state.byPri; render(); }
+function resetFilters() { state.cat = "Все"; state.pri = "Все"; render(); }
+
+// Главный рендер
+function render() {
+    const app = document.getElementById('app');
+    
+    // Статистика
+    const stats = { must:0, high:0, medium:0, low:0, skip:0 };
+    BOOKS.forEach(b => stats[b.priority]++);
+
+    // Фильтрация и сортировка
+    let list = BOOKS.filter(b => 
+        (state.cat === "Все" || b.cat === state.cat) &&
+        (state.pri === "Все" || b.priority === state.pri)
+    );
+    if (state.byPri) {
+        list.sort((a, b) => PRI[a.priority].order - PRI[b.priority].order);
+    }
+
+    let html = `
+        <div style="margin-bottom:20px">
+            <div class="lbl" style="margin-bottom:6px">MSC 94 · ТЕОРИЯ ИНФОРМАЦИИ И СВЯЗИ · GOODREADS MMATH LIST [162848]</div>
+            <h1>34 книги по теории информации — анализ для ML / Data Science</h1>
+            <p class="desc">
+                Список академический (классификация MSC 94 — «теория связи и кодирования»). Большинство книг посвящены
+                теории кодирования, квантовым вычислениям и чистой математике ТИ — нишам, далёким от ML/DS.
+                Прямо-релевантных книг значительно меньше. Нажмите строку, чтобы раскрыть оценку.
+            </p>
+        </div>
+
+        <div class="flex-wrap" style="margin-bottom:20px">
+            ${Object.entries(PRI).map(([k, v]) => `
+                <button class="btn-pri" 
+                        onclick="setPri('${k}')"
+                        style="border-color: ${state.pri === k ? v.color : 'var(--border-color)'}; 
+                               background: ${state.pri === k ? v.color + '10' : 'var(--bg-card)'}">
+                    <div class="dot" style="background:${v.color}"></div>
+                    <span class="label" style="color: ${state.pri === k ? v.color : 'var(--text-secondary)'}">${v.label}</span>
+                    <span class="count" style="color: ${state.pri === k ? v.color : 'var(--text-muted)'}">${stats[k]}</span>
+                </button>
+            `).join('')}
+        </div>
+
+        <div style="margin-bottom:14px">
+            <div class="lbl" style="margin-bottom:8px">КАТЕГОРИЯ</div>
+            <div class="flex-wrap">
+                ${CATS_ORDER.map(c => {
+                    const isActive = state.cat === c;
+                    const cColor = CAT_COLOR[c] || '#2563eb';
+                    return `
+                    <button class="chip" 
+                            onclick="setCat('${c}')"
+                            style="border-color: ${isActive ? cColor : 'var(--border-color)'};
+                                   background: ${isActive ? cColor + '10' : 'transparent'};
+                                   color: ${isActive ? cColor : 'var(--text-secondary)'}">
+                        ${c}
+                    </button>
+                    `;
+                }).join('')}
+            </div>
+        </div>
+
+        <div class="flex-center" style="margin-bottom:20px; gap: 12px;">
+            <div class="lbl">СОРТИРОВКА ПО ПРИОРИТЕТУ:</div>
+            <button class="chip" onclick="toggleByPri()"
+                    style="border-color: ${state.byPri ? '#2563eb' : 'var(--border-color)'};
+                           background: ${state.byPri ? '#2563eb10' : 'transparent'};
+                           color: ${state.byPri ? '#2563eb' : 'var(--text-secondary)'}">
+                ${state.byPri ? "✓ включена" : "по списку GR"}
+            </button>
+            ${(state.cat !== "Все" || state.pri !== "Все") ? `
+                <button class="chip" onclick="resetFilters()" style="color: #dc2626; border-color: #fca5a5; background: #fef2f2;">
+                    × сбросить фильтры
+                </button>
+            ` : ''}
+        </div>
+
+        <div class="table-container">
+            <div class="grid-row table-header">
+                ${["#","КНИГА / АВТОР","КАТЕГОРИЯ","ПРИОРИТЕТ","ML","МАТЕМ."].map(h => `<div class="lbl">${h}</div>`).join('')}
+            </div>
+
+            ${list.length === 0 ? `<div class="empty-state">Ничего не найдено с такими фильтрами</div>` : ''}
+
+            ${list.map(b => {
+                const isOpen = state.openId === b.id;
+                const pc = PRI[b.priority];
+                const cc = CAT_COLOR[b.cat] || '#475569';
+                const isSkip = b.priority === "skip";
+                
+                const titleColor = b.priority === "must" ? "#000" : isSkip ? "var(--text-light)" : "var(--text-main)";
+                const titleWeight = b.priority === "must" ? "600" : "400";
+                
+                return `
+                <div class="table-row ${isOpen ? 'open' : ''}">
+                    <div class="grid-row" onclick="toggleOpen(${b.id})">
+                        <div style="font-size:12px; color:var(--text-light); font-family:monospace; padding-top:2px">${b.id}</div>
+                        <div>
+                            <div style="font-size:14px; line-height:1.4; margin-bottom:4px; color:${titleColor}; font-weight:${titleWeight}">
+                                ${b.title}
+                            </div>
+                            <div style="font-size:12px; color:var(--text-muted)">${b.author} · ${b.year}</div>
+                        </div>
+                        <div style="padding-top:2px">
+                            <span class="tag-pill" style="color: ${isSkip ? 'var(--text-muted)' : cc}; background: ${isSkip ? 'var(--bg-body)' : cc+'10'}; border: 1px solid ${isSkip ? 'var(--border-color)' : cc+'30'}">
+                                ${b.cat}
+                            </span>
+                        </div>
+                        <div style="padding-top:2px">
+                            <span class="tag-pill" style="color: ${isSkip ? 'var(--text-muted)' : pc.color}; background: ${isSkip ? 'var(--bg-body)' : pc.color+'10'}; border: 1px solid ${isSkip ? 'var(--border-color)' : pc.color+'30'}">
+                                ${pc.label}
+                            </span>
+                        </div>
+                        ${getDotsHtml(b.ml, isSkip ? 'var(--dot-empty)' : '#d97706')}
+                        ${getDotsHtml(b.diff, isSkip ? 'var(--dot-empty)' : '#2563eb')}
+                    </div>
+
+                    ${isOpen ? `
+                    <div class="expanded-panel">
+                        <div class="lbl" style="margin-bottom:6px">КЛЮЧЕВЫЕ КОНЦЕПЦИИ</div>
+                        <div class="expanded-text">${b.concepts}</div>
+                        <div class="lbl" style="margin-bottom:6px">ОЦЕНКА ДЛЯ ML / DS</div>
+                        <div class="note-box" style="border-left: 3px solid ${isSkip ? 'var(--border-color)' : pc.color}">
+                            ${b.note}
+                        </div>
+                    </div>
+                    ` : ''}
+                </div>
+                `;
+            }).join('')}
+        </div>
+
+        <div class="rec-path">
+            <div class="lbl" style="margin-bottom:12px">РЕКОМЕНДУЕМЫЙ ПУТЬ (MUST + HIGH) ДЛЯ ML/DS</div>
+            <div class="flex-wrap flex-center" style="gap: 8px;">
+                ${[
+                    { id:7,  short:"Pierce (7)",   color:"#059669", note:"интуиция" },
+                    { id:1,  short:"Shannon (1)",  color:"#d97706", note:"первоисточник" },
+                    { id:3,  short:"MacKay (3)",   color:"#d97706", note:"ТИ → ML" },
+                    { id:5,  short:"Cover (5)",    color:"#2563eb", note:"стандарт" },
+                    { id:9,  short:"Kullback (9)", color:"#2563eb", note:"KL-дивергенция" },
+                    { id:34, short:"Konishi (34)", color:"#2563eb", note:"AIC/BIC" },
+                    { id:10, short:"Amari (10)",   color:"#7c3aed", note:"после дифф.геом." },
+                    { id:14, short:"Amari (14)",   color:"#7c3aed", note:"прикладная" },
+                ].map((item, i, arr) => `
+                    <span class="flex-center">
+                        <span class="chip" 
+                              onclick="resetFilters(); state.byPri = false; state.openId = ${state.openId === item.id ? null : item.id}; render();"
+                              style="color:${item.color}; background:${item.color}10; border-color:${item.color}30">
+                            ${item.short}
+                        </span>
+                        <span class="lbl" style="letter-spacing:0; text-transform:none">${item.note}</span>
+                        ${i < arr.length-1 ? `<span style="color:var(--text-light); font-size:16px; margin: 0 4px">→</span>` : ''}
+                    </span>
+                `).join('')}
+            </div>
+        </div>
+
+        <div class="flex-center flex-wrap" style="margin-top:16px; gap:24px">
+            <div class="lbl">ПОКАЗАНО ${list.length} / ${BOOKS.length} КНИГ</div>
+            <div class="flex-center">
+                ${getDotsHtml(5, '#d97706')}
+                <span class="lbl" style="margin-left:6px; letter-spacing:0; text-transform:none">ML-релевантность</span>
+            </div>
+            <div class="flex-center">
+                ${getDotsHtml(5, '#2563eb')}
+                <span class="lbl" style="margin-left:6px; letter-spacing:0; text-transform:none">математическая сложность</span>
+            </div>
+        </div>
+    `;
+
+    app.innerHTML = html;
+}
+
+// Первичный запуск
+render();
+</script>
+</body>
+</html>
