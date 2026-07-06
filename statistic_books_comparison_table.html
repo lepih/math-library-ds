@@ -1,621 +1,351 @@
 <!DOCTYPE html>
 <html lang="ru">
-
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="color-scheme" content="light">
-  <title>Книги по статистике и ML — сравнение</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&display=swap"
-    rel="stylesheet">
-  <style>
-    :root {
-      --bg: #F5F7FA;
-      --surface: #FFFFFF;
-      --ink: #161A21;
-      --muted: #5B6472;
-      --muted-2: #8A93A2;
-      --line: #E2E6EC;
-      --line-soft: #EDEFF3;
-      --accent: #2C5B94;
-      --accent-soft: #E8F0FA;
-      --accent-ink: #17416E;
-      --beg: #3F7D4A;
-      --beg-bg: #E6F3E7;
-      --int: #9A6B0F;
-      --int-bg: #FBF0D9;
-      --adv: #9C3B3B;
-      --adv-bg: #F8E8E8;
-      --radius: 10px;
-      --grid-line: rgba(44, 91, 148, .06);
-      --shadow: 0 1px 2px rgba(22, 26, 33, .04), 0 6px 16px rgba(22, 26, 33, .05);
-    }
-
-    * {
-      box-sizing: border-box
-    }
-
-    html,
-    body {
-      margin: 0;
-      padding: 0
-    }
-
-    body {
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
-      background: var(--bg);
-      color: var(--ink);
-      padding: clamp(16px, 4vw, 40px);
-      -webkit-font-smoothing: antialiased;
-    }
-
-    .page {
-      max-width: 1180px;
-      margin: 0 auto
-    }
-
-    /* ---------- Hero ---------- */
-    .hero {
-      background: var(--surface);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: clamp(20px, 4vw, 32px) clamp(20px, 4vw, 32px) 18px;
-      margin-bottom: 20px;
-      background-image:
-        linear-gradient(var(--grid-line) 1px, transparent 1px),
-        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
-      background-size: 26px 26px;
-      background-position: top left;
-    }
-
-    .hero-inner {
-      display: flex;
-      align-items: center;
-      gap: 28px;
-      justify-content: space-between
-    }
-
-    .eyebrow {
-      font-size: 11.5px;
-      letter-spacing: .06em;
-      text-transform: uppercase;
-      color: var(--accent);
-      font-weight: 600;
-      margin: 0 0 8px;
-    }
-
-    h1 {
-      font-family: "Source Serif 4", Georgia, serif;
-      font-weight: 600;
-      font-size: clamp(21px, 2.6vw, 27px);
-      line-height: 1.25;
-      margin: 0 0 8px;
-      letter-spacing: -.01em;
-    }
-
-    .subtitle {
-      font-size: 13.5px;
-      color: var(--muted);
-      margin: 0;
-      max-width: 56ch;
-      line-height: 1.5
-    }
-
-    .hero-curve {
-      flex: 0 0 auto;
-      width: 150px;
-      height: 64px;
-      opacity: .9
-    }
-
-    .legend {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 6px 20px;
-      margin-top: 16px;
-      padding-top: 14px;
-      border-top: 1px solid var(--line-soft);
-      font-size: 12px;
-      color: var(--muted-2);
-    }
-
-    .legend b {
-      color: var(--muted);
-      font-weight: 600
-    }
-
-    /* ---------- Controls ---------- */
-    .controls {
-      display: flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      align-items: center;
-      margin-bottom: 10px
-    }
-
-    .filters {
-      display: flex;
-      gap: 8px;
-      flex-wrap: wrap
-    }
-
-    .filter-btn {
-      font-size: 12.5px;
-      padding: 6px 13px;
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      background: var(--surface);
-      color: var(--muted);
-      cursor: pointer;
-      font-weight: 500;
-      transition: background .12s, color .12s, border-color .12s;
-    }
-
-    .filter-btn:hover {
-      border-color: var(--muted-2);
-      color: var(--ink)
-    }
-
-    .filter-btn.active {
-      background: var(--accent-soft);
-      color: var(--accent-ink);
-      border-color: transparent
-    }
-
-    .search-box {
-      font-size: 13px;
-      padding: 7px 12px;
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      background: var(--surface);
-      color: var(--ink);
-      width: 220px;
-      margin-left: auto;
-    }
-
-    .search-box::placeholder {
-      color: var(--muted-2)
-    }
-
-    .search-box:focus {
-      outline: none;
-      border-color: var(--accent)
-    }
-
-    .count {
-      font-size: 12.5px;
-      color: var(--muted-2);
-      margin: 0 0 10px
-    }
-
-    button:focus-visible,
-    input:focus-visible,
-    th:focus-visible {
-      outline: 2px solid var(--accent);
-      outline-offset: 2px;
-    }
-
-    /* ---------- Table (tablet / desktop) ---------- */
-    .table-hint {
-      font-size: 11.5px;
-      color: var(--muted-2);
-      margin: 0 0 8px
-    }
-
-    .table-scroll {
-      overflow-x: auto;
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      background: var(--surface);
-      box-shadow: var(--shadow);
-    }
-
-    table {
-      width: 100%;
-      min-width: 820px;
-      border-collapse: collapse;
-      font-size: 13px;
-      table-layout: fixed
-    }
-
-    th {
-      font-size: 11px;
-      font-weight: 600;
-      color: var(--muted);
-      text-align: left;
-      padding: 11px 10px;
-      border-bottom: 1px solid var(--line);
-      white-space: nowrap;
-      cursor: pointer;
-      user-select: none;
-      background: var(--surface);
-      letter-spacing: .01em;
-    }
-
-    th:hover {
-      color: var(--ink)
-    }
-
-    th.sorted {
-      color: var(--accent-ink)
-    }
-
-    td {
-      padding: 11px 10px;
-      border-bottom: 1px solid var(--line-soft);
-      vertical-align: top;
-      color: var(--ink)
-    }
-
-    tbody tr:last-child td {
-      border-bottom: none
-    }
-
-    tbody tr:hover td {
-      background: #FAFBFD
-    }
-
-    th:first-child,
-    td:first-child {
-      position: sticky;
-      left: 0;
-      background: inherit;
-      z-index: 1
-    }
-
-    tbody tr:hover td:first-child {
-      background: #FAFBFD
-    }
-
-    th:first-child {
-      background: var(--surface);
-      z-index: 2
-    }
-
-    .title-cell {
-      font-weight: 600;
-      font-size: 13.5px;
-      line-height: 1.3
-    }
-
-    .author {
-      font-size: 11.5px;
-      color: var(--muted-2);
-      margin-top: 2px
-    }
-
-    .badge {
-      display: inline-block;
-      font-size: 10.5px;
-      padding: 3px 9px;
-      border-radius: 999px;
-      font-weight: 600;
-      white-space: nowrap
-    }
-
-    .lvl-beg {
-      background: var(--beg-bg);
-      color: var(--beg)
-    }
-
-    .lvl-int {
-      background: var(--int-bg);
-      color: var(--int)
-    }
-
-    .lvl-adv {
-      background: var(--adv-bg);
-      color: var(--adv)
-    }
-
-    .rating {
-      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-      font-weight: 600;
-      color: var(--int)
-    }
-
-    .dot-row {
-      display: flex;
-      gap: 3px;
-      margin-top: 2px
-    }
-
-    .dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--line)
-    }
-
-    .tag {
-      display: inline-block;
-      font-size: 10px;
-      padding: 2px 7px;
-      border-radius: 6px;
-      background: var(--line-soft);
-      color: var(--muted);
-      margin: 1px 3px 1px 0;
-      white-space: nowrap;
-    }
-
-    .sort-icon {
-      margin-left: 3px;
-      opacity: .4;
-      font-size: 9px
-    }
-
-    th.sorted .sort-icon {
-      opacity: 1
-    }
-
-    .note-cell {
-      font-size: 12px;
-      color: var(--muted);
-      line-height: 1.5
-    }
-
-    .ds-val {
-      font-weight: 600;
-      font-size: 12.5px
-    }
-
-    /* ---------- Cards (mobile) ---------- */
-    .cards {
-      display: none;
-      grid-template-columns: 1fr;
-      gap: 10px
-    }
-
-    .card {
-      position: relative;
-      background: var(--surface);
-      border: 1px solid var(--line);
-      border-radius: var(--radius);
-      padding: 14px 16px 14px 18px;
-      box-shadow: var(--shadow);
-      overflow: hidden;
-    }
-
-    .card::before {
-      content: "";
-      position: absolute;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      width: 4px;
-      background: var(--bar-color, var(--accent))
-    }
-
-    .card-top {
-      display: flex;
-      justify-content: space-between;
-      gap: 10px;
-      align-items: flex-start
-    }
-
-    .card-title {
-      font-weight: 600;
-      font-size: 14.5px;
-      line-height: 1.3
-    }
-
-    .card-author {
-      font-size: 12px;
-      color: var(--muted-2);
-      margin-top: 2px
-    }
-
-    .card-rating {
-      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-      font-weight: 600;
-      color: var(--int);
-      font-size: 13px;
-      white-space: nowrap
-    }
-
-    .card-row {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin-top: 10px;
-      flex-wrap: wrap
-    }
-
-    .card-field-label {
-      font-size: 10.5px;
-      color: var(--muted-2);
-      text-transform: uppercase;
-      letter-spacing: .03em;
-      margin-right: 6px
-    }
-
-    .card-tags {
-      margin-top: 8px
-    }
-
-    .card-note {
-      font-size: 12.5px;
-      color: var(--muted);
-      line-height: 1.55;
-      margin-top: 10px
-    }
-
-    .card-tools {
-      margin-top: 8px
-    }
-
-    /* ---------- Responsive ---------- */
-    @media (max-width:760px) {
-      .hero-inner {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 14px
-      }
-
-      .hero-curve {
-        width: 120px;
-        height: 52px
-      }
-
-      .search-box {
-        width: 100%;
-        margin-left: 0
-      }
-
-      .controls {
-        flex-direction: column;
-        align-items: stretch
-      }
-
-      .filters {
-        width: 100%
-      }
-
-      .table-scroll,
-      .table-hint {
-        display: none
-      }
-
-      .cards {
-        display: grid
-      }
-    }
-
-    @media (min-width:761px) {
-      .cards {
-        display: none
-      }
-    }
-
-    @media (prefers-reduced-motion:reduce) {
-      * {
-        transition: none !important
-      }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>Книги по статистике и ML — сравнение</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#F5F7FA;
+  --surface:#FFFFFF;
+  --ink:#161A21;
+  --muted:#5B6472;
+  --muted-2:#8A93A2;
+  --line:#E2E6EC;
+  --line-soft:#EDEFF3;
+  --accent:#2C5B94;
+  --accent-soft:#E8F0FA;
+  --accent-ink:#17416E;
+  --beg:#3F7D4A;      --beg-bg:#E6F3E7;
+  --int:#9A6B0F;      --int-bg:#FBF0D9;
+  --adv:#9C3B3B;      --adv-bg:#F8E8E8;
+  --radius:10px;
+  --grid-line:rgba(44,91,148,.06);
+  --shadow:0 1px 2px rgba(22,26,33,.04), 0 6px 16px rgba(22,26,33,.05);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  padding:clamp(16px,4vw,40px);
+  -webkit-font-smoothing:antialiased;
+}
+.page{max-width:1180px;margin:0 auto}
+
+/* ---------- Hero ---------- */
+.hero{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:clamp(20px,4vw,32px) clamp(20px,4vw,32px) 18px;
+  margin-bottom:20px;
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size:26px 26px;
+  background-position:top left;
+}
+.hero-inner{display:flex;align-items:center;gap:28px;justify-content:space-between}
+.eyebrow{
+  font-size:11.5px;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--accent);font-weight:600;margin:0 0 8px;
+}
+h1{
+  font-family:"Source Serif 4",Georgia,serif;
+  font-weight:600;
+  font-size:clamp(21px,2.6vw,27px);
+  line-height:1.25;
+  margin:0 0 8px;
+  letter-spacing:-.01em;
+}
+.subtitle{font-size:13.5px;color:var(--muted);margin:0;max-width:56ch;line-height:1.5}
+.hero-curve{flex:0 0 auto;width:150px;height:64px;opacity:.9}
+.legend{
+  display:flex;flex-wrap:wrap;gap:6px 20px;margin-top:16px;padding-top:14px;
+  border-top:1px solid var(--line-soft);
+  font-size:12px;color:var(--muted-2);
+}
+.legend b{color:var(--muted);font-weight:600}
+
+/* ---------- Controls ---------- */
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+.filters{display:flex;gap:8px;flex-wrap:wrap}
+.filter-btn{
+  font-size:12.5px;padding:6px 13px;border:1px solid var(--line);border-radius:999px;
+  background:var(--surface);color:var(--muted);cursor:pointer;font-weight:500;
+  transition:background .12s,color .12s,border-color .12s;
+}
+.filter-btn:hover{border-color:var(--muted-2);color:var(--ink)}
+.filter-btn.active{background:var(--accent-soft);color:var(--accent-ink);border-color:transparent}
+.search-box{
+  font-size:13px;padding:7px 12px;border:1px solid var(--line);border-radius:999px;
+  background:var(--surface);color:var(--ink);width:220px;margin-left:auto;
+}
+.search-box::placeholder{color:var(--muted-2)}
+.search-box:focus{outline:none;border-color:var(--accent)}
+.count{font-size:12.5px;color:var(--muted-2);margin:0 0 10px}
+
+button:focus-visible,input:focus-visible,th:focus-visible{
+  outline:2px solid var(--accent);outline-offset:2px;
+}
+
+/* ---------- Table (tablet / desktop) ---------- */
+.table-hint{font-size:11.5px;color:var(--muted-2);margin:0 0 8px}
+.table-scroll{
+  overflow-x:auto;border:1px solid var(--line);border-radius:var(--radius);
+  background:var(--surface);box-shadow:var(--shadow);
+}
+table{width:100%;min-width:820px;border-collapse:collapse;font-size:13px;table-layout:fixed}
+th{
+  font-size:11px;font-weight:600;color:var(--muted);text-align:left;
+  padding:11px 10px;border-bottom:1px solid var(--line);white-space:nowrap;
+  cursor:pointer;user-select:none;background:var(--surface);
+  letter-spacing:.01em;
+}
+th:hover{color:var(--ink)}
+th.sorted{color:var(--accent-ink)}
+td{padding:11px 10px;border-bottom:1px solid var(--line-soft);vertical-align:top;color:var(--ink)}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:#FAFBFD}
+th:first-child,td:first-child{position:sticky;left:0;background:inherit;z-index:1}
+tbody tr:hover td:first-child{background:#FAFBFD}
+th:first-child{background:var(--surface);z-index:2}
+
+.title-cell{font-weight:600;font-size:13.5px;line-height:1.3}
+.author{font-size:11.5px;color:var(--muted-2);margin-top:2px}
+.badge{display:inline-block;font-size:10.5px;padding:3px 9px;border-radius:999px;font-weight:600;white-space:nowrap}
+.lvl-beg{background:var(--beg-bg);color:var(--beg)}
+.lvl-int{background:var(--int-bg);color:var(--int)}
+.lvl-adv{background:var(--adv-bg);color:var(--adv)}
+.rating{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-weight:600;color:var(--int)}
+.dot-row{display:flex;gap:3px;margin-top:2px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--line)}
+.tag{
+  display:inline-block;font-size:10px;padding:2px 7px;border-radius:6px;
+  background:var(--line-soft);color:var(--muted);margin:1px 3px 1px 0;white-space:nowrap;
+}
+.sort-icon{margin-left:3px;opacity:.4;font-size:9px}
+th.sorted .sort-icon{opacity:1}
+.note-cell{font-size:12px;color:var(--muted);line-height:1.5}
+.ds-val{font-weight:600;font-size:12.5px}
+
+/* ---------- Cards (mobile) ---------- */
+.cards{display:none;grid-template-columns:1fr;gap:10px}
+.card{
+  position:relative;background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--radius);padding:14px 16px 14px 18px;box-shadow:var(--shadow);
+  overflow:hidden;
+}
+.card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--bar-color,var(--accent))}
+.card-top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.card-title{font-weight:600;font-size:14.5px;line-height:1.3}
+.card-author{font-size:12px;color:var(--muted-2);margin-top:2px}
+.card-rating{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;font-weight:600;color:var(--int);font-size:13px;white-space:nowrap}
+.card-row{display:flex;align-items:center;gap:14px;margin-top:10px;flex-wrap:wrap}
+.card-field-label{font-size:10.5px;color:var(--muted-2);text-transform:uppercase;letter-spacing:.03em;margin-right:6px}
+.card-tags{margin-top:8px}
+.card-note{font-size:12.5px;color:var(--muted);line-height:1.55;margin-top:10px}
+.card-tools{margin-top:8px}
+
+/* ---------- Responsive ---------- */
+@media (max-width:760px){
+  .hero-inner{flex-direction:column;align-items:flex-start;gap:14px}
+  .hero-curve{width:120px;height:52px}
+  .search-box{width:100%;margin-left:0}
+  .controls{flex-direction:column;align-items:stretch}
+  .filters{width:100%}
+  .table-scroll,.table-hint{display:none}
+  .cards{display:grid}
+}
+@media (min-width:761px){
+  .cards{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none !important}
+}
+</style>
 </head>
-
 <body>
-  <div class="page">
+<div class="page">
 
-    <header class="hero">
-      <div class="hero-inner">
-        <div class="hero-text">
-          <p class="eyebrow">Goodreads · Statistics &amp; Statistical Learning (MMath)</p>
-          <h1>Книги по статистике и ML для Data Science</h1>
-          <p class="subtitle">Сравнение уровня сложности, математической нагрузки и практической ценности для DS-трека.
-          </p>
-        </div>
-        <svg class="hero-curve" viewBox="0 0 220 90" aria-hidden="true">
-          <line x1="6" y1="80" x2="214" y2="80" stroke="#E2E6EC" stroke-width="1" />
-          <path d="M8,77 C 48,77 60,10 110,10 C 160,10 172,77 212,77" fill="none" stroke="#2C5B94" stroke-width="2" />
-          <line x1="110" y1="8" x2="110" y2="80" stroke="#2C5B94" stroke-width="1" stroke-dasharray="2 4"
-            opacity=".5" />
-        </svg>
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="hero-text">
+        <p class="eyebrow">Goodreads · Statistics &amp; Statistical Learning (MMath)</p>
+        <h1>Книги по статистике и ML для Data Science</h1>
+        <p class="subtitle">Сравнение уровня сложности, математической нагрузки и практической ценности для DS-трека — с поправками после сверки с реальным содержанием книг.</p>
       </div>
-      <div class="legend">
-        <span><b>Математика</b> — интенсивность формального аппарата, 1–5</span>
-        <span><b>DS-ценность</b> — насколько книга двигает практический DS/ML-трек</span>
-      </div>
-    </header>
-
-    <div class="controls">
-      <div class="filters" role="group" aria-label="Фильтр по уровню">
-        <button class="filter-btn active" data-filter="all" aria-pressed="true">Все</button>
-        <button class="filter-btn" data-filter="beginner" aria-pressed="false">Начальный</button>
-        <button class="filter-btn" data-filter="intermediate" aria-pressed="false">Средний</button>
-        <button class="filter-btn" data-filter="advanced" aria-pressed="false">Продвинутый</button>
-        <button class="filter-btn" data-filter="bayesian" aria-pressed="false">Байесовский</button>
-        <button class="filter-btn" data-filter="ml" aria-pressed="false">ML/DL</button>
-      </div>
-      <input type="text" class="search-box" id="search" placeholder="Поиск по названию или автору…"
-        aria-label="Поиск по названию или автору">
+      <svg class="hero-curve" viewBox="0 0 220 90" aria-hidden="true">
+        <line x1="6" y1="80" x2="214" y2="80" stroke="#E2E6EC" stroke-width="1"/>
+        <path d="M8,77 C 48,77 60,10 110,10 C 160,10 172,77 212,77" fill="none" stroke="#2C5B94" stroke-width="2"/>
+        <line x1="110" y1="8" x2="110" y2="80" stroke="#2C5B94" stroke-width="1" stroke-dasharray="2 4" opacity=".5"/>
+      </svg>
     </div>
-
-    <p class="count" id="count"></p>
-
-    <p class="table-hint">Нажмите на заголовок столбца, чтобы отсортировать</p>
-    <div class="table-scroll">
-      <table id="booksTable">
-        <thead>
-          <tr>
-            <th style="width:21%" data-col="title">Книга <span class="sort-icon">↕</span></th>
-            <th style="width:8%" data-col="level">Уровень <span class="sort-icon">↕</span></th>
-            <th style="width:8%" data-col="rating">Рейтинг GR <span class="sort-icon">↕</span></th>
-            <th style="width:11%">Фокус</th>
-            <th style="width:9%" data-col="math">Математика <span class="sort-icon">↕</span></th>
-            <th style="width:10%">Инструменты</th>
-            <th style="width:9%" data-col="ds">DS-ценность <span class="sort-icon">↕</span></th>
-            <th style="width:24%">Для кого / когда читать</th>
-          </tr>
-        </thead>
-        <tbody id="tbody"></tbody>
-      </table>
+    <div class="legend">
+      <span><b>Математика</b> — интенсивность формального аппарата, 1–5</span>
+      <span><b>DS-ценность</b> — насколько книга двигает практический DS/ML-трек</span>
     </div>
+  </header>
 
-    <div class="cards" id="cards"></div>
-
+  <div class="controls">
+    <div class="filters" role="group" aria-label="Фильтр по уровню">
+      <button class="filter-btn active" data-filter="all" aria-pressed="true">Все</button>
+      <button class="filter-btn" data-filter="beginner" aria-pressed="false">Начальный</button>
+      <button class="filter-btn" data-filter="intermediate" aria-pressed="false">Средний</button>
+      <button class="filter-btn" data-filter="advanced" aria-pressed="false">Продвинутый</button>
+      <button class="filter-btn" data-filter="bayesian" aria-pressed="false">Байесовский</button>
+      <button class="filter-btn" data-filter="ml" aria-pressed="false">ML/DL</button>
+    </div>
+    <input type="text" class="search-box" id="search" placeholder="Поиск по названию или автору…" aria-label="Поиск по названию или автору">
   </div>
 
-  <script>
-    const books = [
-      { title: "Introduction to Statistical Learning", author: "James, Witten, Hastie, Tibshirani", level: "beginner", levelLabel: "Начальный", rating: 4.51, focus: ["Статистика", "ML", "Практика"], math: 2, tools: ["R", "Python"], ds: 5, tags: ["bayesian"], note: "Лучший старт для DS. Объясняет ключевые ML-методы без тяжёлой математики. Обязателен перед ESL." },
-      { title: "The Elements of Statistical Learning", author: "Hastie, Tibshirani, Friedman", level: "advanced", levelLabel: "Продвинутый", rating: 4.43, focus: ["Статистика", "ML", "Теория"], math: 5, tools: ["R"], ds: 5, tags: ["ml"], note: "Классика. Глубокая теория ML. Читать после ISL. Настольная книга исследователей." },
-      { title: "Statistical Inference", author: "Casella & Berger", level: "advanced", levelLabel: "Продвинутый", rating: 4.17, focus: ["Статистика", "Теория вероятностей", "Теория"], math: 5, tools: ["—"], ds: 3, tags: [], note: "Фундаментальный учебник по матстатистике. Для глубокого понимания основ, не для практики DS." },
-      { title: "Statistical Rethinking", author: "Richard McElreath", level: "intermediate", levelLabel: "Средний", rating: 4.70, focus: ["Байесовская", "Практика", "Причинность"], math: 3, tools: ["R", "Stan"], ds: 5, tags: ["bayesian"], note: "Лучшая книга по байесовскому мышлению. Интуитивный подход, DAG-диаграммы. Высочайший рейтинг." },
-      { title: "Machine Learning: A Probabilistic Perspective", author: "Kevin P. Murphy", level: "advanced", levelLabel: "Продвинутый", rating: 4.34, focus: ["ML", "Байесовская", "Теория"], math: 5, tools: ["MATLAB", "Python"], ds: 5, tags: ["bayesian", "ml"], note: "Энциклопедия ML с вероятностной точки зрения. Есть более новая версия — двухтомник Probabilistic Machine Learning (2022)." },
-      { title: "Bayesian Data Analysis", author: "Gelman, Carlin, Stern et al.", level: "advanced", levelLabel: "Продвинутый", rating: 4.24, focus: ["Байесовская", "Статистика", "Практика"], math: 5, tools: ["R", "Stan"], ds: 4, tags: ["bayesian"], note: "Стандарт байесовской статистики. Требует уверенного матана и линала — по факту не легче ESL. Незаменима для прикладного Байеса." },
-      { title: "Principles of Statistics", author: "M.G. Bulmer", level: "intermediate", levelLabel: "Средний", rating: 3.99, focus: ["Статистика", "Основы"], math: 3, tools: ["—"], ds: 1, tags: [], note: "Компактный классический учебник 1965 г. со строгими выводами через матан, но материал полностью устарел для DS-практики — ни бутстрапа, ни регуляризации. Ценность скорее историческая." },
-      { title: "All of Statistics", author: "Larry Wasserman", level: "advanced", levelLabel: "Продвинутый", rating: 4.22, focus: ["Статистика", "ML", "Теория"], math: 4, tools: ["R"], ds: 4, tags: [], note: "Обманчиво выглядит как «средний» учебник: на деле крайне плотный и быстрый по темпу мост к graduate-уровню, а не лёгкое чтение." },
-      { title: "Pattern Recognition and Machine Learning", author: "Christopher Bishop", level: "advanced", levelLabel: "Продвинутый", rating: 4.38, focus: ["ML", "Байесовская", "Deep Learning"], math: 5, tools: ["—"], ds: 5, tags: ["bayesian", "ml"], note: "Глубокий байесовский взгляд на ML. Стандарт для понимания нейросетей с первых принципов." },
-      { title: "Probability Theory: The Logic of Science", author: "E.T. Jaynes", level: "advanced", levelLabel: "Продвинутый", rating: 4.44, focus: ["Теория вероятностей", "Байесовская", "Философия"], math: 5, tools: ["—"], ds: 3, tags: ["bayesian"], note: "Фундаментальный труд о природе вероятности. Скорее формирует байесовское мышление, чем даёт прямые инструменты DS." },
-      { title: "Introduction to Probability", author: "Blitzstein & Hwang", level: "intermediate", levelLabel: "Средний", rating: 4.55, focus: ["Теория вероятностей", "Практика"], math: 3, tools: ["R", "Python"], ds: 4, tags: [], note: "Лучший современный учебник по теорверу, но не лёгкий вход: story proofs, MGF и условные ожидания требуют реальной работы. Строгая основа для ML." },
-      { title: "Probabilistic Graphical Models", author: "Koller & Friedman", level: "advanced", levelLabel: "Продвинутый", rating: 4.15, focus: ["Байесовская", "ML", "Теория"], math: 5, tools: ["—"], ds: 3, tags: ["bayesian", "ml"], note: "Монументальный труд по графическим моделям. Для специалистов по генеративным моделям, не для общего DS-трека." },
-      { title: "Doing Bayesian Data Analysis", author: "John K. Kruschke", level: "beginner", levelLabel: "Начальный", rating: 4.29, focus: ["Байесовская", "Практика"], math: 2, tools: ["R", "JAGS", "Stan"], ds: 4, tags: ["bayesian"], note: "«Собачья книга» — самый доступный вход в байесовский анализ. Много практики." },
-      { title: "Computer Age Statistical Inference", author: "Efron & Hastie", level: "advanced", levelLabel: "Продвинутый", rating: 4.29, focus: ["Статистика", "ML", "Теория"], math: 4, tools: ["R"], ds: 4, tags: ["ml"], note: "Мост между классической статистикой и современным ML. Бутстрап, LASSO, нейросети." },
-    ];
+  <p class="count" id="count"></p>
 
-    const tbody = document.getElementById('tbody');
-    const cardsEl = document.getElementById('cards');
-    const countEl = document.getElementById('count');
-    let activeFilter = 'all', searchVal = '', sortCol = null, sortDir = 1;
+  <p class="table-hint">Нажмите на заголовок столбца, чтобы отсортировать</p>
+  <div class="table-scroll">
+    <table id="booksTable">
+      <thead>
+        <tr>
+          <th style="width:21%" data-col="title">Книга <span class="sort-icon">↕</span></th>
+          <th style="width:8%" data-col="level">Уровень <span class="sort-icon">↕</span></th>
+          <th style="width:8%" data-col="rating">Рейтинг GR <span class="sort-icon">↕</span></th>
+          <th style="width:11%">Фокус</th>
+          <th style="width:9%" data-col="math">Математика <span class="sort-icon">↕</span></th>
+          <th style="width:10%">Инструменты</th>
+          <th style="width:9%" data-col="ds">DS-ценность <span class="sort-icon">↕</span></th>
+          <th style="width:24%">Для кого / когда читать</th>
+        </tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
 
-    const diffColor = n => n <= 2 ? 'var(--beg)' : n === 3 ? 'var(--int)' : 'var(--adv)';
-    const lvlColor = lvl => lvl === 'beginner' ? 'var(--beg)' : lvl === 'intermediate' ? 'var(--int)' : 'var(--adv)';
-    const lvlClass = lvl => lvl === 'beginner' ? 'lvl-beg' : lvl === 'intermediate' ? 'lvl-int' : 'lvl-adv';
-    const dsMeta = n => {
-      const map = { 1: ['Низкая', 'var(--muted-2)'], 2: ['Ниже средней', '#6E93BB'], 3: ['Средняя', 'var(--accent)'], 4: ['Высокая', 'var(--accent-ink)'], 5: ['Ключевая', 'var(--accent-ink)'] };
-      return map[n];
-    };
+  <div class="cards" id="cards"></div>
 
-    function dots(n, max = 5) {
-      let s = '<div class="dot-row">';
-      for (let i = 0; i < max; i++) s += `<div class="dot" style="${i < n ? `background:${diffColor(n)}` : ''}"></div>`;
-      return s + '</div>';
-    }
-    function tagsHtml(arr) { return arr.map(f => `<span class="tag">${f}</span>`).join(''); }
+</div>
 
-    function render() {
-      let data = [...books];
-      if (activeFilter === 'bayesian') data = data.filter(b => b.tags.includes('bayesian'));
-      else if (activeFilter === 'ml') data = data.filter(b => b.tags.includes('ml'));
-      else if (activeFilter !== 'all') data = data.filter(b => b.level === activeFilter);
-      if (searchVal) data = data.filter(b => b.title.toLowerCase().includes(searchVal) || b.author.toLowerCase().includes(searchVal));
-      if (sortCol) {
-        data.sort((a, b) => {
-          let av = a[sortCol], bv = b[sortCol];
-          if (typeof av === 'string') return av.localeCompare(bv) * sortDir;
-          return (av - bv) * sortDir;
-        });
-      }
-      countEl.textContent = `Показано книг: ${data.length} из ${books.length}`;
+<script>
+const books = [
+  {title:"Introduction to Statistical Learning",author:"James, Witten, Hastie, Tibshirani",level:"beginner",levelLabel:"Начальный",rating:4.59,focus:["Статистика","ML","Практика"],math:2,tools:["R","Python"],ds:5,tags:["bayesian"],note:"Лучший старт для DS. Объясняет ключевые ML-методы без тяжёлой математики. Обязателен перед ESL."},
+  {title:"The Elements of Statistical Learning",author:"Hastie, Tibshirani, Friedman",level:"advanced",levelLabel:"Продвинутый",rating:4.43,focus:["Статистика","ML","Теория"],math:5,tools:["R"],ds:5,tags:["ml"],note:"Классика. Глубокая теория ML. Читать после ISL. Настольная книга исследователей."},
+  {title:"Statistical Inference",author:"Casella & Berger",level:"advanced",levelLabel:"Продвинутый",rating:4.17,focus:["Статистика","Теория вероятностей","Теория"],math:5,tools:["—"],ds:3,tags:[],note:"Фундаментальный учебник по матстатистике. Для глубокого понимания основ, не для практики DS."},
+  {title:"Statistical Rethinking",author:"Richard McElreath",level:"intermediate",levelLabel:"Средний",rating:4.70,focus:["Байесовская","Практика","Причинность"],math:3,tools:["R","Stan"],ds:5,tags:["bayesian"],note:"Лучшая книга по байесовскому мышлению. Интуитивный подход, DAG-диаграммы. Высочайший рейтинг."},
+  {title:"Machine Learning: A Probabilistic Perspective",author:"Kevin P. Murphy",level:"advanced",levelLabel:"Продвинутый",rating:4.34,focus:["ML","Байесовская","Теория"],math:5,tools:["MATLAB","Python"],ds:5,tags:["bayesian","ml"],note:"Энциклопедия ML с вероятностной точки зрения. Есть более новая версия — двухтомник Probabilistic Machine Learning (2022)."},
+  {title:"Bayesian Data Analysis",author:"Gelman, Carlin, Stern et al.",level:"advanced",levelLabel:"Продвинутый",rating:4.21,focus:["Байесовская","Статистика","Практика"],math:5,tools:["R","Stan"],ds:4,tags:["bayesian"],note:"Стандарт байесовской статистики. Требует уверенного матана и линала — по факту не легче ESL. Незаменима для прикладного Байеса."},
+  {title:"Principles of Statistics",author:"M.G. Bulmer",level:"intermediate",levelLabel:"Средний",rating:3.99,focus:["Статистика","Основы"],math:3,tools:["—"],ds:1,tags:[],note:"Компактный классический учебник 1965 г. со строгими выводами через матан, но материал полностью устарел для DS-практики — ни бутстрапа, ни регуляризации. Ценность скорее историческая."},
+  {title:"All of Statistics",author:"Larry Wasserman",level:"advanced",levelLabel:"Продвинутый",rating:4.26,focus:["Статистика","ML","Теория"],math:4,tools:["R"],ds:4,tags:[],note:"Обманчиво выглядит как «средний» учебник: на деле крайне плотный и быстрый по темпу мост к graduate-уровню, а не лёгкое чтение."},
+  {title:"Pattern Recognition and Machine Learning",author:"Christopher Bishop",level:"advanced",levelLabel:"Продвинутый",rating:4.38,focus:["ML","Байесовская","Deep Learning"],math:5,tools:["—"],ds:5,tags:["bayesian","ml"],note:"Глубокий байесовский взгляд на ML. Стандарт для понимания нейросетей с первых принципов."},
+  {title:"Probability Theory: The Logic of Science",author:"E.T. Jaynes",level:"advanced",levelLabel:"Продвинутый",rating:4.44,focus:["Теория вероятностей","Байесовская","Философия"],math:5,tools:["—"],ds:3,tags:["bayesian"],note:"Фундаментальный труд о природе вероятности. Скорее формирует байесовское мышление, чем даёт прямые инструменты DS."},
+  {title:"Introduction to Probability",author:"Blitzstein & Hwang",level:"intermediate",levelLabel:"Средний",rating:4.55,focus:["Теория вероятностей","Практика"],math:3,tools:["R","Python"],ds:4,tags:[],note:"Лучший современный учебник по теорверу, но не лёгкий вход: story proofs, MGF и условные ожидания требуют реальной работы. Строгая основа для ML."},
+  {title:"Probabilistic Graphical Models",author:"Koller & Friedman",level:"advanced",levelLabel:"Продвинутый",rating:4.15,focus:["Байесовская","ML","Теория"],math:5,tools:["—"],ds:3,tags:["bayesian","ml"],note:"Монументальный труд по графическим моделям. Для специалистов по генеративным моделям, не для общего DS-трека."},
+  {title:"Doing Bayesian Data Analysis",author:"John K. Kruschke",level:"beginner",levelLabel:"Начальный",rating:4.29,focus:["Байесовская","Практика"],math:2,tools:["R","JAGS","Stan"],ds:4,tags:["bayesian"],note:"«Собачья книга» — самый доступный вход в байесовский анализ. Много практики."},
+  {title:"Computer Age Statistical Inference",author:"Efron & Hastie",level:"advanced",levelLabel:"Продвинутый",rating:4.29,focus:["Статистика","ML","Теория"],math:4,tools:["R"],ds:4,tags:["ml"],note:"Мост между классической статистикой и современным ML. Бутстрап, LASSO, нейросети."},
 
-      tbody.innerHTML = data.map(b => {
-        const [dsLabel, dsColor] = dsMeta(b.ds);
-        return `<tr>
+  {title:"Information Theory, Inference, and Learning Algorithms",author:"David J.C. MacKay",level:"intermediate",levelLabel:"Средний",rating:4.52,focus:["Теория информации","Байесовская","ML"],math:4,tools:["—"],ds:5,tags:["bayesian","ml"],note:"Одна из ключевых книг по теории информации, соединённой с байесовским выводом и ML. Бесплатна в PDF на сайте автора. Пишет доступно о сложных вещах."},
+  {title:"The Art of Statistics: Learning from Data",author:"David Spiegelhalter",level:"beginner",levelLabel:"Начальный",rating:4.15,focus:["Статистика","Научпоп"],math:1,tools:["—"],ds:3,tags:[],note:"Научно-популярная, но содержательная книга о статистическом мышлении и коммуникации результатов. Не техническая — не даёт инструментов, но хорошо ставит интуицию."},
+  {title:"Schaum's Outline of Probability and Statistics",author:"Murray R. Spiegel",level:"beginner",levelLabel:"Начальный",rating:3.78,focus:["Теория вероятностей","Задачник"],math:2,tools:["—"],ds:2,tags:[],note:"Сборник решённых задач для отработки базовой техники. Хорошее дополнение для практики, не для глубокого понимания."},
+  {title:"Probability and Statistics",author:"Morris H. DeGroot & Schervish",level:"intermediate",levelLabel:"Средний",rating:3.84,focus:["Теория вероятностей","Статистика","Основы"],math:3,tools:["—"],ds:3,tags:[],note:"Классический комплексный курс теорвера и статистики для перехода бакалавриат→магистратура. Крепкая теория, но не заточен под ML."},
+  {title:"Philosophy of Statistics",author:"Bandyopadhyay & Forster (ред.)",level:"advanced",levelLabel:"Продвинутый",rating:4.00,focus:["Философия","Основы"],math:1,tools:["—"],ds:2,tags:[],note:"Сборник философских эссе об основаниях статистического вывода (фреквентизм vs Байес, причинность). Не про технику — про то, что вообще значит «вывод»."},
+  {title:"Topological Data Analysis for Genomics and Evolution",author:"Raúl Rabadán & Blumberg",level:"advanced",levelLabel:"Продвинутый",rating:4.27,focus:["ML","Топология","Практика"],math:5,tools:["Python"],ds:2,tags:["ml"],note:"Специализированная книга: персистентная гомология и Mapper применительно к геномике. Нужна база по алгебраической топологии — узкая ниша."},
+  {title:"An Introduction to the Bootstrap",author:"Bradley Efron & Tibshirani",level:"intermediate",levelLabel:"Средний",rating:4.33,focus:["Статистика","Практика"],math:3,tools:["—"],ds:5,tags:[],note:"Классический источник по бутстрапу — must-read для оценки неопределённости в DS. Компактно и практично."},
+  {title:"Foundations of Machine Learning",author:"Mehryar Mohri et al.",level:"advanced",levelLabel:"Продвинутый",rating:4.22,focus:["ML","Теория"],math:5,tools:["—"],ds:4,tags:["ml"],note:"Строгая теория ML — PAC-обучаемость, VC-размерность, границы обобщения. Про то, почему ML работает, не про практику."},
+  {title:"A Student's Guide to Bayesian Statistics",author:"Ben Lambert",level:"beginner",levelLabel:"Начальный",rating:4.46,focus:["Байесовская","Основы"],math:2,tools:["R"],ds:4,tags:["bayesian"],note:"Очень доступный, наглядный вход в байесовскую статистику — компаньон к его курсу на YouTube. Хорошая точка входа перед Rethinking/Kruschke."},
+  {title:"Regression and Other Stories",author:"Gelman, Hill & Vehtari",level:"intermediate",levelLabel:"Средний",rating:4.28,focus:["Статистика","Практика","Причинность"],math:3,tools:["R","Stan"],ds:5,tags:["bayesian"],note:"Один из лучших практических учебников по регрессии и рабочему процессу анализа данных. Реальные примеры, минимум формализма ради формализма."},
+  {title:"The Nature of Statistical Learning Theory",author:"Vladimir N. Vapnik",level:"advanced",levelLabel:"Продвинутый",rating:4.29,focus:["ML","Теория"],math:5,tools:["—"],ds:4,tags:["ml"],note:"Основополагающий труд по теории статистического обучения — VC-размерность, SRM, теоретическая база SVM. Тяжёлый, но ключевой исторически текст."},
+  {title:"In All Likelihood: Statistical Modelling and Inference Using Likelihood",author:"Yudi Pawitan",level:"intermediate",levelLabel:"Средний",rating:4.29,focus:["Статистика","Практика"],math:3,tools:["R"],ds:4,tags:[],note:"Доступный, но содержательный курс по инференции на основе правдоподобия — профильное правдоподобие, GLM, выживаемость. Хороший мост теория→практика."},
+  {title:"Large-Scale Inference",author:"Bradley Efron",level:"advanced",levelLabel:"Продвинутый",rating:4.14,focus:["Статистика","Байесовская","Практика"],math:4,tools:["R"],ds:4,tags:["bayesian"],note:"Статистика эпохи больших данных — множественное тестирование, FDR, эмпирический Байес. Прямо про задачи масштаба (A/B-тесты, геномика)."},
+  {title:"The Minimum Description Length Principle",author:"Peter D. Grünwald",level:"advanced",levelLabel:"Продвинутый",rating:4.08,focus:["Теория информации","Байесовская","Теория"],math:5,tools:["—"],ds:3,tags:["bayesian"],note:"Формальная теория выбора моделей через MDL — соединяет теорию информации и байесовский подход. Специализирована, но важна для понимания overfitting с другой стороны."},
+  {title:"Foundations of Data Science",author:"Avrim Blum, Hopcroft & Kannan",level:"advanced",levelLabel:"Продвинутый",rating:4.24,focus:["ML","Теория"],math:4,tools:["—"],ds:5,tags:["ml"],note:"Бесплатная книга (PDF) о математике DS: геометрия высоких размерностей, SVD, случайные графы, алгоритмы для больших данных. Прямая ценность для ML-трека."},
+  {title:"Nonlinear Time Series Analysis",author:"Holger Kantz & Schreiber",level:"advanced",levelLabel:"Продвинутый",rating:4.39,focus:["Временные ряды","Теория"],math:4,tools:["TISEAN"],ds:2,tags:[],note:"Нелинейный анализ временных рядов через теорию хаоса (фазовое пространство, показатели Ляпунова). Нишевая книга для физических/динамических систем."},
+  {title:"Poisson Processes",author:"John F.C. Kingman",level:"advanced",levelLabel:"Продвинутый",rating:4.44,focus:["Теория вероятностей","Теория"],math:5,tools:["—"],ds:2,tags:[],note:"Изящная, но узкоспециализированная классика по пуассоновским процессам — фундамент теории точечных процессов. Прямая DS-ценность ограничена."},
+  {title:"Methods of Information Geometry",author:"Shun-Ichi Amari & Nagaoka",level:"advanced",levelLabel:"Продвинутый",rating:4.50,focus:["Информационная геометрия","Теория"],math:5,tools:["—"],ds:3,tags:["ml"],note:"Формальные основы информационной геометрии (дуальные связности, метрика Фишера). Требует дифгеометрии — связано с natural gradient, но нишево."},
+  {title:"Science and Information Theory",author:"Léon Brillouin",level:"intermediate",levelLabel:"Средний",rating:4.73,focus:["Теория информации","Философия"],math:3,tools:["—"],ds:1,tags:[],note:"Классика 1950-60х о связи энтропии, термодинамики и теории информации. Скорее физика и история идей, чем инструмент DS."},
+  {title:"Numerical Analysis for Statisticians",author:"Kenneth Lange",level:"advanced",levelLabel:"Продвинутый",rating:4.50,focus:["Вычислительные методы","Практика"],math:4,tools:["—"],ds:4,tags:["ml"],note:"Отличная книга про оптимизацию (Ньютон-Рафсон, EM, MM-алгоритмы) и численную линалгебру. Прямая ценность для понимания «машинерии» под капотом ML."},
+  {title:"Time Series Analysis by State Space Methods",author:"J. Durbin & Koopman",level:"advanced",levelLabel:"Продвинутый",rating:4.57,focus:["Временные ряды","Теория"],math:4,tools:["R"],ds:3,tags:[],note:"Эталонный текст по state-space моделям и фильтру Калмана. Ценна прицельно для time series/эконометрики, не для общего DS."},
+  {title:"Algebraic Geometry and Statistical Learning Theory",author:"Sumio Watanabe",level:"advanced",levelLabel:"Продвинутый",rating:4.38,focus:["ML","Теория"],math:5,tools:["—"],ds:3,tags:["ml"],note:"Очень продвинутая монография: анализ моделей с особенностями (нейросети, смеси) через алгебраическую геометрию — «сингулярная теория обучения». Объясняет, почему классический BIC не работает для сложных моделей. Крайне нишево."},
+  {title:"A Distribution-Free Theory of Nonparametric Regression",author:"László Györfi et al.",level:"advanced",levelLabel:"Продвинутый",rating:4.40,focus:["Непараметрика","Теория"],math:5,tools:["—"],ds:3,tags:["ml"],note:"Строгая теория непараметрической регрессии (ядра, k-NN, сплайны, нейросети) с результатами о состоятельности. Очень плотная — для тех, кто хочет доказательства."},
+  {title:"Statistics As Principled Argument",author:"Robert P. Abelson",level:"beginner",levelLabel:"Начальный",rating:4.14,focus:["Философия","Основы"],math:1,tools:["—"],ds:3,tags:[],note:"Не про технику, а про то, как аргументированно мыслить статистически и представлять результаты. Почти без формул — полезный противовес чисто техническим книгам."},
+  {title:"Optimal Statistical Decisions",author:"Morris H. DeGroot",level:"advanced",levelLabel:"Продвинутый",rating:4.20,focus:["Байесовская","Теория решений"],math:5,tools:["—"],ds:3,tags:["bayesian"],note:"Классика байесовской теории принятия решений (полезность, допустимость, минимакс). Формальная и абстрактная, закладывает понятийный фундамент."},
+  {title:"High-Dimensional Statistics: A Non-Asymptotic Viewpoint",author:"Martin J. Wainwright",level:"advanced",levelLabel:"Продвинутый",rating:4.67,focus:["ML","Теория"],math:5,tools:["—"],ds:5,tags:["ml"],note:"Одна из самых влиятельных современных книг по теории высокоразмерной статистики — concentration inequalities, теория Lasso, случайные матрицы. Ключевая для серьёзного теоретического трека."},
+  {title:"Information Geometry and Its Applications",author:"Shun-Ichi Amari",level:"advanced",levelLabel:"Продвинутый",rating:4.62,focus:["Информационная геометрия","ML"],math:5,tools:["—"],ds:3,tags:["ml"],note:"Более новая и широкая книга Амари — та же информационная геометрия, но с явными приложениями к ML (natural gradient, нейросети). Всё ещё нужна дифгеометрия."},
+  {title:"Theoretical Statistics: Topics for a Core Course",author:"Robert W. Keener",level:"advanced",levelLabel:"Продвинутый",rating:5.00,focus:["Статистика","Теория"],math:5,tools:["—"],ds:3,tags:[],note:"Плотный курс теоретической статистики уровня core graduate course — экспоненциальные семейства, теория решений, асимптотика. Формален, не про DS-приложения."},
+  {title:"Gaussian Processes for Machine Learning",author:"Carl Edward Rasmussen & Williams",level:"advanced",levelLabel:"Продвинутый",rating:4.16,focus:["Байесовская","ML"],math:4,tools:["MATLAB","Python"],ds:5,tags:["bayesian","ml"],note:"Эталонная книга по гауссовским процессам — байесовская непараметрика для ML с честной оценкой неопределённости. Бесплатна онлайн. Прямая ценность для байесовского направления."},
+  {title:"Learning Theory: An Approximation Theory Viewpoint",author:"Felipe Cucker & Zhou",level:"advanced",levelLabel:"Продвинутый",rating:4.00,focus:["ML","Теория"],math:5,tools:["—"],ds:3,tags:["ml"],note:"Теория обучения через призму теории аппроксимации (RKHS, сложность выборки). Более функционально-аналитический взгляд, чем Vapnik/Mohri."},
+  {title:"Information Geometry: Near Randomness and Near Independence",author:"Khadiga Arwini & Dodson",level:"advanced",levelLabel:"Продвинутый",rating:4.67,focus:["Информационная геометрия","Теория"],math:5,tools:["—"],ds:2,tags:[],note:"Узкоспециализированная монография для конкретных моделей (near-Poisson, near-independence) с примерами из текстиля и эпидемиологии. Крайне нишевая."},
+  {title:"Teaching Statistics: A Bag of Tricks",author:"Andrew Gelman & Nolan",level:"beginner",levelLabel:"Начальный",rating:3.96,focus:["Педагогика"],math:1,tools:["—"],ds:1,tags:[],note:"Не учебник по статистике, а книга о том, как её преподавать — демонстрации и активности для занятий. Полезна, только если планируешь кого-то учить."},
+  {title:"Schaum's Outline of Introduction to Probability and Statistics",author:"Seymour Lipschutz",level:"beginner",levelLabel:"Начальный",rating:4.18,focus:["Теория вероятностей","Задачник"],math:2,tools:["—"],ds:2,tags:[],note:"Ещё один сборник Шаума — задачи начального уровня. Полезно для отработки базовой техники, не для глубины."},
+  {title:"Statistical Decision Theory and Bayesian Analysis",author:"James O. Berger",level:"advanced",levelLabel:"Продвинутый",rating:4.19,focus:["Байесовская","Теория решений"],math:5,tools:["—"],ds:4,tags:["bayesian"],note:"Классический и исчерпывающий справочник по байесовской теории принятия решений. Прекрасное дополнение к BDA для тех, кто хочет формальные основания."},
+  {title:"All of Nonparametric Statistics",author:"Larry Wasserman",level:"advanced",levelLabel:"Продвинутый",rating:4.05,focus:["Непараметрика","Статистика"],math:4,tools:["R"],ds:4,tags:[],note:"Компаньон к «All of Statistics» — непараметрические методы (оценка плотности, сглаживание, wavelets) в том же плотном стиле. Тот же паттерн: выглядит компактно, читается тяжело."},
+  {title:"Kernel Methods for Pattern Analysis",author:"John Shawe-Taylor & Cristianini",level:"advanced",levelLabel:"Продвинутый",rating:4.00,focus:["ML","Теория"],math:4,tools:["—"],ds:4,tags:["ml"],note:"Обстоятельный текст по kernel methods и SVM. Немного устарел на фоне deep learning, но фундаментален для понимания kernel-based ML."},
+  {title:"An Introduction to Multivariate Statistical Analysis",author:"T.W. Anderson",level:"advanced",levelLabel:"Продвинутый",rating:3.64,focus:["Многомерная статистика","Теория"],math:5,tools:["—"],ds:2,tags:[],note:"Очень плотная классика по многомерной статистике (Уишарт, MANOVA, каноническая корреляция). Исторически важна, но суховата и не заточена под ML — отсюда невысокий рейтинг."},
+  {title:"Information Theory and Statistics",author:"Solomon Kullback",level:"advanced",levelLabel:"Продвинутый",rating:4.05,focus:["Теория информации","Теория"],math:5,tools:["—"],ds:3,tags:[],note:"Классика, из которой по сути выросло понятие KL-дивергенции — центральное для современного ML (VAE, information bottleneck). Плотное классическое изложение."},
+  {title:"Essentials of Statistical Inference",author:"G.A. Young & Smith",level:"advanced",levelLabel:"Продвинутый",rating:4.08,focus:["Статистика","Теория"],math:4,tools:["—"],ds:3,tags:[],note:"Компактный, но строгий обзор теории статистического вывода. Хорош как сжатый теоретический справочник."},
+  {title:"Theory of Point Estimation",author:"Erich L. Lehmann & Casella",level:"advanced",levelLabel:"Продвинутый",rating:3.83,focus:["Статистика","Теория"],math:5,tools:["—"],ds:3,tags:[],note:"Более глубокий и формальный преемник «Statistical Inference» Казеллы. Для тех, кто прошёл Casella & Berger и хочет больше строгости."},
+  {title:"Principles of Statistical Inference",author:"D.R. Cox",level:"intermediate",levelLabel:"Средний",rating:4.00,focus:["Статистика","Философия"],math:3,tools:["—"],ds:3,tags:["bayesian"],note:"Сжатая, но глубокая книга одного из важнейших статистиков XX века — сравнение фреквентистского, правдоподобного и байесовского подходов. Больше про понятийную зрелость, чем про технику."},
+  {title:"Elements of Large-Sample Theory",author:"Erich L. Lehmann",level:"advanced",levelLabel:"Продвинутый",rating:4.17,focus:["Статистика","Теория"],math:5,tools:["—"],ds:3,tags:[],note:"Классика асимптотической теории (сходимость, ЦПТ для сложных статистик, M-оценки). Основа понимания, почему оценки «работают» асимптотически."},
+  {title:"Matrix Algebra: Theory, Computations, and Applications in Statistics",author:"James E. Gentle",level:"intermediate",levelLabel:"Средний",rating:4.00,focus:["Линейная алгебра","Справочник"],math:3,tools:["—"],ds:4,tags:[],note:"Справочник по матричной алгебре именно под задачи статистики. Хорошее прикладное дополнение к чисто математическому курсу линала вроде Стрэнга."},
+  {title:"Statistical Models",author:"A.C. Davison",level:"advanced",levelLabel:"Продвинутый",rating:4.22,focus:["Статистика","Практика"],math:4,tools:["R"],ds:4,tags:[],note:"Широкий и добротный учебник по статистическому моделированию (правдоподобие, GLM, выживаемость, симуляционный вывод). Может служить настольным справочником по моделированию."},
+  {title:"Mathematical Statistics",author:"Jun Shao",level:"advanced",levelLabel:"Продвинутый",rating:4.10,focus:["Статистика","Теория"],math:5,tools:["—"],ds:3,tags:[],note:"Более формальный (теоретико-мерный) курс, чем Casella & Berger. Для тех, кто прошёл теорию меры и хочет строгости."},
+  {title:"Statistics for High-Dimensional Data",author:"Peter Bühlmann & van de Geer",level:"advanced",levelLabel:"Продвинутый",rating:4.20,focus:["ML","Теория"],math:5,tools:["R"],ds:5,tags:["ml"],note:"Современная теория Lasso и регуляризации для многомерных данных — во многом дополняет книгу Wainwright, но с более статистическим уклоном. Ключевая для теории регуляризации."},
+  {title:"Principal Component Analysis",author:"Ian T. Jolliffe",level:"intermediate",levelLabel:"Средний",rating:4.27,focus:["ML","Практика"],math:3,tools:["—"],ds:4,tags:[],note:"Исчерпывающий эталонный справочник по PCA — теория, варианты, интерпретация. Если хочешь разобраться глубоко, а не только «использовать из sklearn»."},
+  {title:"Computational Statistics (Givens & Hoeting)",author:"Geof H. Givens & Hoeting",level:"intermediate",levelLabel:"Средний",rating:3.61,focus:["Вычислительные методы","Практика"],math:3,tools:["R"],ds:4,tags:[],note:"Широкий обзор вычислительных методов статистики — оптимизация, EM, MCMC, бутстрап. Про «машинный зал» статистических вычислений."},
+  {title:"Computational Statistics (Gentle)",author:"James E. Gentle",level:"intermediate",levelLabel:"Средний",rating:4.00,focus:["Вычислительные методы","Практика"],math:3,tools:["—"],ds:3,tags:[],note:"Другая книга с тем же названием, но акцент чуть больше на численных методах и генерации случайных чисел. Пересекается с книгой Givens & Hoeting — не обязательно читать обе."},
+  {title:"Forecasting, Structural Time Series Models and the Kalman Filter",author:"Andrew C. Harvey",level:"advanced",levelLabel:"Продвинутый",rating:4.08,focus:["Временные ряды","Теория"],math:4,tools:["—"],ds:3,tags:[],note:"Эталонная книга по структурным моделям временных рядов и фильтру Калмана, эконометрический уклон. Ценна конкретно для прогнозирования."},
+  {title:"Time Series: Theory and Methods",author:"Peter J. Brockwell & Davis",level:"advanced",levelLabel:"Продвинутый",rating:4.00,focus:["Временные ряды","Теория"],math:5,tools:["R"],ds:3,tags:[],note:"Исчерпывающий и строгий эталонный курс по теории временных рядов (ARMA, спектральный анализ). Классика жанра time series, а не general DS."},
+  {title:"Fundamentals of Nonparametric Bayesian Inference",author:"Subhashis Ghosal & van der Vaart",level:"advanced",levelLabel:"Продвинутый",rating:4.33,focus:["Байесовская","Непараметрика"],math:5,tools:["—"],ds:3,tags:["bayesian"],note:"Продвинутая теория байесовской непараметрики (процесс Дирихле, гауссовские процессы, состоятельность апостериорного). Скорее для исследовательского трека, чем для повседневной практики."},
+  {title:"A Mathematical Theory of Evidence",author:"Glenn Shafer",level:"advanced",levelLabel:"Продвинутый",rating:4.00,focus:["Философия","Теория"],math:4,tools:["—"],ds:2,tags:[],note:"Основополагающая книга по теории Демпстера-Шафера (функции доверия) — альтернатива вероятностному подходу к неопределённости. Исторически важна для AI, но не мейнстрим в современном DS."},
+  {title:"Geometric Modeling in Probability and Statistics",author:"Ovidiu Calin & Udrişte",level:"advanced",levelLabel:"Продвинутый",rating:4.50,focus:["Информационная геометрия","Теория"],math:5,tools:["—"],ds:2,tags:[],note:"Ещё одна книга на стыке дифференциальной геометрии и статистики. Похожая ниша на книги Амари — узкоспециализировано."},
+  {title:"Probabilistic Graphical Models: Principles and Applications",author:"Luis Enrique Sucar",level:"intermediate",levelLabel:"Средний",rating:4.33,focus:["Байесовская","ML"],math:3,tools:["—"],ds:4,tags:["bayesian","ml"],note:"Более доступная альтернатива тому Koller & Friedman — те же байесовские/марковские сети и алгоритмы вывода, но с прикладным уклоном и куда меньшим объёмом."},
+  {title:"Principles of Uncertainty",author:"Joseph B. Kadane",level:"advanced",levelLabel:"Продвинутый",rating:4.40,focus:["Байесовская","Философия"],math:4,tools:["—"],ds:3,tags:["bayesian"],note:"Современный курс по основаниям субъективной байесовской вероятности в духе де Финетти. Дополняет Jaynes с несколько другого угла."},
+  {title:"Probability and Statistics for Engineers and Scientists",author:"Ronald E. Walpole et al.",level:"beginner",levelLabel:"Начальный",rating:4.08,focus:["Теория вероятностей","Основы"],math:2,tools:["—"],ds:2,tags:[],note:"Широко используемый вводный курс для инженеров — прикладной, с большим числом примеров, но не заточен под DS/ML. Альтернативный вход, если ISL или B&H не подошли по стилю."},
+  {title:"Numerical Methods of Statistics",author:"John F. Monahan",level:"advanced",levelLabel:"Продвинутый",rating:4.00,focus:["Вычислительные методы","Практика"],math:4,tools:["—"],ds:3,tags:[],note:"Ещё одна книга про вычислительную статистику — пересекается по темам с книгами Lange и Gentle из этого же списка. Читать все три подряд смысла немного."},
+  {title:"Networks: Optimisation and Evolution",author:"Peter Whittle",level:"advanced",levelLabel:"Продвинутый",rating:4.00,focus:["Теория вероятностей","Теория"],math:4,tools:["—"],ds:2,tags:[],note:"Прикладная теория вероятностей для сетей — оптимизация и эволюционная динамика на графах. Узкая специализация, релевантна для network-задач."},
+];
+
+const tbody=document.getElementById('tbody');
+const cardsEl=document.getElementById('cards');
+const countEl=document.getElementById('count');
+let activeFilter='all',searchVal='',sortCol=null,sortDir=1;
+
+const diffColor=n=> n<=2 ? 'var(--beg)' : n===3 ? 'var(--int)' : 'var(--adv)';
+const lvlColor=lvl=> lvl==='beginner' ? 'var(--beg)' : lvl==='intermediate' ? 'var(--int)' : 'var(--adv)';
+const lvlClass=lvl=> lvl==='beginner'?'lvl-beg':lvl==='intermediate'?'lvl-int':'lvl-adv';
+const dsMeta=n=>{
+  const map={1:['Низкая','var(--muted-2)'],2:['Ниже средней','#6E93BB'],3:['Средняя','var(--accent)'],4:['Высокая','var(--accent-ink)'],5:['Ключевая','var(--accent-ink)']};
+  return map[n];
+};
+
+function dots(n,max=5){
+  let s='<div class="dot-row">';
+  for(let i=0;i<max;i++) s+=`<div class="dot" style="${i<n?`background:${diffColor(n)}`:''}"></div>`;
+  return s+'</div>';
+}
+function tagsHtml(arr){return arr.map(f=>`<span class="tag">${f}</span>`).join('');}
+
+function render(){
+  let data=[...books];
+  if(activeFilter==='bayesian') data=data.filter(b=>b.tags.includes('bayesian'));
+  else if(activeFilter==='ml') data=data.filter(b=>b.tags.includes('ml'));
+  else if(activeFilter!=='all') data=data.filter(b=>b.level===activeFilter);
+  if(searchVal) data=data.filter(b=>b.title.toLowerCase().includes(searchVal)||b.author.toLowerCase().includes(searchVal));
+  if(sortCol){
+    data.sort((a,b)=>{
+      let av=a[sortCol],bv=b[sortCol];
+      if(typeof av==='string') return av.localeCompare(bv)*sortDir;
+      return (av-bv)*sortDir;
+    });
+  }
+  countEl.textContent=`Показано книг: ${data.length} из ${books.length}`;
+
+  tbody.innerHTML=data.map(b=>{
+    const [dsLabel,dsColor]=dsMeta(b.ds);
+    return `<tr>
       <td><div class="title-cell">${b.title}</div><div class="author">${b.author}</div></td>
       <td><span class="badge ${lvlClass(b.level)}">${b.levelLabel}</span></td>
       <td><span class="rating">★ ${b.rating.toFixed(2)}</span></td>
@@ -625,11 +355,11 @@
       <td><span class="ds-val" style="color:${dsColor}">${dsLabel}</span></td>
       <td class="note-cell">${b.note}</td>
     </tr>`;
-      }).join('');
+  }).join('');
 
-      cardsEl.innerHTML = data.map(b => {
-        const [dsLabel, dsColor] = dsMeta(b.ds);
-        return `<div class="card" style="--bar-color:${lvlColor(b.level)}">
+  cardsEl.innerHTML=data.map(b=>{
+    const [dsLabel,dsColor]=dsMeta(b.ds);
+    return `<div class="card" style="--bar-color:${lvlColor(b.level)}">
       <div class="card-top">
         <div>
           <div class="card-title">${b.title}</div>
@@ -648,31 +378,30 @@
       <div class="card-note">${b.note}</div>
       <div class="card-tools"><span class="card-field-label">Инструменты</span>${tagsHtml(b.tools)}</div>
     </div>`;
-      }).join('');
-    }
+  }).join('');
+}
 
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.filter-btn').forEach(b => { b.classList.remove('active'); b.setAttribute('aria-pressed', 'false'); });
-        btn.classList.add('active');
-        btn.setAttribute('aria-pressed', 'true');
-        activeFilter = btn.dataset.filter;
-        render();
-      });
-    });
-    document.getElementById('search').addEventListener('input', e => { searchVal = e.target.value.toLowerCase(); render(); });
-    document.querySelectorAll('th[data-col]').forEach(th => {
-      th.addEventListener('click', () => {
-        const col = th.dataset.col;
-        if (sortCol === col) sortDir *= -1; else { sortCol = col; sortDir = 1; }
-        document.querySelectorAll('th').forEach(t => { t.classList.remove('sorted'); const i = t.querySelector('.sort-icon'); if (i) i.textContent = '↕'; });
-        th.classList.add('sorted');
-        th.querySelector('.sort-icon').textContent = sortDir === 1 ? '↑' : '↓';
-        render();
-      });
-    });
+document.querySelectorAll('.filter-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.filter-btn').forEach(b=>{b.classList.remove('active');b.setAttribute('aria-pressed','false');});
+    btn.classList.add('active');
+    btn.setAttribute('aria-pressed','true');
+    activeFilter=btn.dataset.filter;
     render();
-  </script>
+  });
+});
+document.getElementById('search').addEventListener('input',e=>{searchVal=e.target.value.toLowerCase();render();});
+document.querySelectorAll('th[data-col]').forEach(th=>{
+  th.addEventListener('click',()=>{
+    const col=th.dataset.col;
+    if(sortCol===col) sortDir*=-1; else {sortCol=col;sortDir=1;}
+    document.querySelectorAll('th').forEach(t=>{t.classList.remove('sorted');const i=t.querySelector('.sort-icon');if(i)i.textContent='↕';});
+    th.classList.add('sorted');
+    th.querySelector('.sort-icon').textContent=sortDir===1?'↑':'↓';
+    render();
+  });
+});
+render();
+</script>
 </body>
-
 </html>
